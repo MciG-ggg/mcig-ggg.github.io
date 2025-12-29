@@ -1,7 +1,7 @@
 import siteConfig from "./src/utils/config";
 
 const config = siteConfig({
-	title: "ThoughtLite",
+	title: "MciG",
 	prologue: "If you need a website\nthat loads fast and has great SEO, then Astro is for you.",
 	author: {
 		name: "Your Name",
@@ -14,8 +14,8 @@ const config = siteConfig({
 		year: "2025"
 	},
 	i18n: {
-		locales: ["en", "zh-cn", "ja"],
-		defaultLocale: "en"
+		locales: ["zh-cn"],
+		defaultLocale: "zh-cn"
 	},
 	feed: {
 		section: "*",
