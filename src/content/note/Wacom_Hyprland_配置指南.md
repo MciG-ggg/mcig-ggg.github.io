@@ -1,5 +1,5 @@
 ---
-title: 
+title: Hyprland 下 Wacom 数位板映射到外接显示器配置指南
 timestamp: 2025-11-12 19:56:15+08:00
 ---
 
