@@ -1,5 +1,5 @@
 ---
-title: CS168 Project 2 路由器算法实现
+title: stage1: 安装静态路由
 timestamp: 2025-07-17 01:20:30+08:00
 ---
 
