@@ -1,10 +1,9 @@
 ---
 title: RL-Monte Carlo Methods
+timestamp: 2025-12-29 11:07:50+08:00
 tags:
   - conclusion/rl
   - conclusion/embodied-ai
-publish: "true"
-timestamp: 2025-12-29 16:00:00+08:00
 ---
 
 # RL-Monte Carlo Methods
@@ -33,7 +32,7 @@ model free 算法主要有三类:
 1. 大数定理 (LLN): 样本均值 $\bar{X}$ 几乎处处收敛到期望 $\mu$ , $P(\lim_{n \to \infty} \bar{X}_n = \mu) = 1$ , 若失效,则均值估计会有偏差（Bias）。你以为某个动作能得 10 分，其实是因为你刚好在那个局部区域连走了好几步，这叫**相关性偏差**。
 2. 中心极限定理 (CLT):大量样本的均值分布都会趋向于正态分布（高斯分布）。若失效, 则 SGD (随机梯度下降不稳定)
 
-![[Pasted image 20251228093821.png]]
+![](./images/)
 
 ## 1. MC Basic
 
@@ -51,7 +50,7 @@ $$
 
 ### 算法实现
 
-![[Pasted image 20251228170248.png]]
+![](./images/)
 1. policy evaluation
 采样一整个episode, 然后用这个 episode 里每一步的 reward, 乘上 discounted rate ( $\gamma$ ), 最终得到整个 episode 的 return, 用这个 return 去估计 $q_{\pi_k}(s,a)$ (k为第k次迭代)
 2. policy improvement
@@ -86,7 +85,7 @@ $$
 
 ### 算法实现
 
-![[Pasted image 20251229100954.png]]
+![](./images/)
 - 重点是 exploring starts condition, 随机选择开始的 (s, a), 保证每一个 (s, a) pair 都被很好的遍历到, 提高估计的准确性
 
 > [!NOTE]
