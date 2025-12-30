@@ -1,5 +1,5 @@
 ---
-title: 
+title: Obsidian 折腾总结
 timestamp: 2025-04-25 14:42:14+08:00
 tags:
   - conclusion
