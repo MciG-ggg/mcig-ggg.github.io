@@ -1,5 +1,5 @@
 ---
-title: stage1: 安装静态路由
+title: "stage1: 安装静态路由"
 timestamp: 2025-07-17 01:20:30+08:00
 ---
 
