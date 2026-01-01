@@ -4,9 +4,9 @@ const config = siteConfig({
 	title: "MciG",
 	prologue: "If you need a website\nthat loads fast and has great SEO, then Astro is for you.",
 	author: {
-		name: "Your Name",
-		email: "hi@your.mail",
-		link: "https://your.website"
+		name: "MciG",
+		email: "mcigggg399026@gmail.com",
+		link: "https://mcig-ggg.github.io"
 	},
 	description: "A modern Astro theme focused on content creation.",
 	copyright: {
