@@ -1,5 +1,5 @@
 ---
-title: 未命名文章
+title: obsidian折腾总结
 timestamp: 2025-04-25 14:42:14+08:00
 tags:
   - conclusion
@@ -22,5 +22,4 @@ tags:
 	- contribution  图 
 	- tasks
 		- tasks canlendar wraper
-![](./images/Pasted image 20250422233209.png)
-![](./images/)
+![](./Pasted-image-20250422233209.png)
