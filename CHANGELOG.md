@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.32.0](https://github.com/MciG-ggg/mcig-ggg.github.io/compare/v0.31.4...v0.32.0) (2026-01-08)
+
+
+### Features
+
+* 支持从 Obsidian BLOG 目录加载文章 ([108ddb3](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/108ddb340e855741b2c8198275db0393467ff1d1))
+* 更新作者信息以反映正确的联系信息 ([9f44419](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/9f444194285f983a04b0f3b29b08bc8520514480))
+* 添加 .nojekyll 文件以支持 GitHub Pages ([92aa309](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/92aa309961a1933c5c0c8a163656ec3d0b13e2eb))
+* 添加 Obsidian 博客文章的硬链接 ([3fcd354](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/3fcd3543666cdca5252953009c67b52fa7ba55ff))
+* 添加《原来哭也是一种能力》内容文件 ([1ff5681](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/1ff5681924b85231a4fa71ebd79f55f9b5385a2d))
+* 添加《孔乙己》和《世界人权宣言》的内容文件 ([05ef711](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/05ef711faffe015bdfeb0ff1acedbb2682de15c4))
+* 添加博客发布脚本并删除无用的总结文件 ([9b01f0d](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/9b01f0d3a380eb413133078c2df2e3cf51974a59))
+* 添加多个配置指南和内容示例，删除不再需要的模板文件 ([8caf1e7](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/8caf1e7d718a85c24e1d57ca651501abeb15f004))
+* 添加时间戳以记录内容发布时间 ([5615583](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/56155833c17714294e89539adeda9bb712d6cb6d))
+
+
+### Bug Fixes
+
+* 为'未命名 3'添加缺失的 timestamp 字段 ([4004c18](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/4004c18189104f866051b15fc7f8e8347809fb96))
+* 修复 cs168proj2.md 中 title 字段的格式问题 ([50124ab](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/50124ab11d8af43575cc0cd10e37b7ebbffcba35))
+* 修复 frontmatter 中 title 为空导致 CI/CD 失败的问题 ([195750b](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/195750bbde8d7af9114a81b7020cdfe1526d90e2))
+* 修正标签格式以确保正确解析 ([fc45122](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/fc45122b83faad89b208c5cb30d01632499222f0))
+* 删除周记模板 ([f7cd6ee](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/f7cd6ee8e3e0fa652e1b0594a11708209c974b7a))
+* 加timestamp ([b2c88a9](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/b2c88a9f365867632b23934ae4eecf4da7263d45))
+* 补充缺失的 frontmatter title 字段 ([57e0df2](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/57e0df2341f9b7ec199dd1cbc87098920ceac09a))
+
+
+### Miscellaneous Chores
+
+* 删除不再需要的测试和未命名文档 ([50a4990](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/50a4990a44c762b6673bed4625e78fb2751aa63c))
+
 ## [0.31.4](https://github.com/tuyuritio/astro-theme-thought-lite/compare/v0.31.3...v0.31.4) (2025-12-25)
 
 
