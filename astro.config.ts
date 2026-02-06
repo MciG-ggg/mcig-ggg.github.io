@@ -25,7 +25,6 @@ import anchor from "rehype-autolink-headings";
 import links from "rehype-external-links";
 import katex from "rehype-katex";
 import sectionize from "@hbsnow/rehype-sectionize";
-import mermaid from "rehype-mermaid";
 
 import spoiler from "./src/utils/remark/spoiler";
 import attr from "./src/utils/remark/attr";
@@ -85,8 +84,7 @@ export default defineConfig({
 			[links, { target: "_blank", rel: ["nofollow", "noopener", "noreferrer"] }],
 			katex,
 			figure,
-			sectionize,
-			[mermaid, { strategy: "pre-mermaid" }]
+			sectionize
 		],
 		smartypants: false,
 		shikiConfig: {

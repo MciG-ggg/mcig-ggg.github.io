@@ -3,7 +3,7 @@ title: Tonic 实现 Raft 层 RPC 通信技术文档
 date: 2026-02-06
 timestamp: 2026-02-06T20:31:22+08:00
 slug: tonic-raft-rpc
-description: Tonic 实现 Raft 层 RPC 通信技术文档 --- 目录 - 1. 概述 - 2. Raft 协议简介 - 3. 系统架构 - 4. Protocol Buffers 定义 - 5. 类型转换层 - 6. RPC 通信实现 - 7. 完整通信�...
+description: Tonic 实现 Raft 层 RPC 通信技术文档 --- 目录 - 1. 概述 - 2. Raft 协议简介 - 3. 系统架构 - 4. Protocol Buffers 定义 - 5. 类型转换层 - 6. RPC 通信实现 - 7. 完整通信�...
 category: note
 ---
 
@@ -72,7 +72,6 @@ Raft 是一种分布式一致性算法，将一致性问题分解为三个相对
   
 
 ```mermaid
-
 flowchart LR
 
     subgraph Raft Cluster
@@ -96,7 +95,6 @@ flowchart LR
     Leader -->|AppendEntries| Follower2
 
     Leader -->|AppendEntries| Follower3
-
 ```
 
   
