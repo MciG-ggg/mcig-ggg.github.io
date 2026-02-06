@@ -19,6 +19,33 @@ const title = config.title;
 <script>
 	import zoom from "medium-zoom/dist/pure";
 	import Time from "$utils/time";
+	import mermaid from "mermaid";
+
+	// Initialize Mermaid
+	mermaid.initialize({
+		startOnLoad: false,
+		theme: "dark",
+		themeVariables: {
+			darkMode: true,
+			background: "#1e1e1e",
+			primaryColor: "#bb2528",
+			primaryTextColor: "#fff",
+			primaryBorderColor: "#7f2123",
+			lineColor: "#f8b229",
+			secondaryColor: "#e6e6e6",
+			tertiaryColor: "#fff"
+		}
+	});
+
+	// Render Mermaid diagrams
+	const renderMermaid = async () => {
+		const mermaidDivs = document.querySelectorAll(".mermaid");
+		if (mermaidDivs.length > 0) {
+			await mermaid.run({
+				querySelector: ".mermaid"
+			});
+		}
+	};
 
 	// Set the `title` attribute of all `<time>` elements to localized date-time strings
 	const localizeTimes = () => document.querySelectorAll("time").forEach(time => time.dateTime && (time.title = Time.locale(time.dateTime, navigator.language, Time.userTimezone)));
@@ -30,6 +57,7 @@ const title = config.title;
 	function initialize() {
 		localizeTimes();
 		window.zoom();
+		renderMermaid();
 	}
 
 	// Execute initialization on first load
