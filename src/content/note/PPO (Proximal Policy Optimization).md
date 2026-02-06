@@ -1,7 +1,7 @@
 ---
 title: PPO (Proximal Policy Optimization)
 date: 2026-02-06
-timestamp: 2026-02-06T22:05:10+08:00
+timestamp: 2026-02-06T22:48:06+08:00
 slug: ppo-proximal-policy-optimization
 description: PPO (Proximal Policy Optimization) 理论 PPO 是为了解决 A2C 训练不稳定的问题。它最核心的贡献是限制了策略更新的“步长”。 数学公式 PPO 不直接优化 $\log \pi$...
 category: note
