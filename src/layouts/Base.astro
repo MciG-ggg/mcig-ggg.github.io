@@ -74,6 +74,36 @@ const title = config.title;
 			});
 			console.log("All unique code block classes:", Array.from(uniqueClasses));
 
+			// NEW FALLBACK: Detect mermaid by content since classList is empty
+			if (preMermaid.length === 0 && codeMermaid.length === 0) {
+				console.log("No mermaid elements found by class, checking content...");
+				const allCodeElements = document.querySelectorAll("pre > code, div.code-container > pre > code");
+				console.log("Total code elements (including nested):", allCodeElements.length);
+
+				for (const code of allCodeElements) {
+					const text = code.textContent || "";
+					// Check if code starts with common mermaid keywords
+					const mermaidKeywords = ["graph", "flowchart", "sequenceDiagram", "classDiagram", "stateDiagram", "erDiagram", "pie", "gantt", "mindmap", "journey", "gitgraph", "C4", "block", "req"];
+					const trimmedText = text.trim();
+					const isMermaid = mermaidKeywords.some(keyword =>
+						trimmedText.startsWith(keyword) || trimmedText.startsWith("```mermaid")
+					);
+
+					if (isMermaid) {
+						console.log("Found mermaid by content:", trimmedText.substring(0, 50));
+						const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).substr(2, 9)}`, trimmedText);
+						const pre = code.closest("pre");
+						const container = pre?.parentElement;
+						if (container?.classList.contains("code-container")) {
+							// Replace the entire code-container with mermaid SVG
+							container.outerHTML = `<div class="mermaid-wrapper">${svg}</div>`;
+						} else if (pre) {
+							pre.innerHTML = svg;
+						}
+					}
+				}
+			}
+
 			if (preMermaid.length > 0) {
 				await mermaid.run({
 					querySelector: "pre.mermaid"
