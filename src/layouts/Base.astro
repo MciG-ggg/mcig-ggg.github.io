@@ -80,6 +80,9 @@ const title = config.title;
 				const allCodeElements = document.querySelectorAll("pre > code, div.code-container > pre > code");
 				console.log("Total code elements (including nested):", allCodeElements.length);
 
+				// Collect all mermaid code blocks first (to avoid modifying DOM while iterating)
+				const mermaidBlocks: Array<{ code: Element; text: string }> = [];
+
 				for (const code of allCodeElements) {
 					const text = code.textContent || "";
 					// Check if code starts with common mermaid keywords
@@ -91,17 +94,39 @@ const title = config.title;
 
 					if (isMermaid) {
 						console.log("Found mermaid by content:", trimmedText.substring(0, 50));
-						const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).substr(2, 9)}`, trimmedText);
+						mermaidBlocks.push({ code, text: trimmedText });
+					}
+				}
+
+				// Now render all mermaid blocks
+				console.log("Rendering", mermaidBlocks.length, "mermaid diagrams...");
+				for (let i = 0; i < mermaidBlocks.length; i++) {
+					const { code, text } = mermaidBlocks[i];
+					try {
+						const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+						console.log(`Rendering diagram ${i + 1}/${mermaidBlocks.length} with id:`, id);
+						const result = await mermaid.render(id, text);
+						console.log("Render result type:", typeof result, "keys:", result ? Object.keys(result) : "null");
+
+						const svg = result?.svg || result;
+						console.log("SVG length:", svg?.length || 0);
+
 						const pre = code.closest("pre");
 						const container = pre?.parentElement;
+
 						if (container?.classList.contains("code-container")) {
 							// Replace the entire code-container with mermaid SVG
 							container.outerHTML = `<div class="mermaid-wrapper">${svg}</div>`;
+							console.log("Replaced code-container");
 						} else if (pre) {
 							pre.innerHTML = svg;
+							console.log("Replaced pre element");
 						}
+					} catch (err) {
+						console.error("Failed to render mermaid diagram:", err);
 					}
 				}
+				console.log("Mermaid rendering complete");
 			}
 
 			if (preMermaid.length > 0) {
