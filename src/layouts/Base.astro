@@ -53,10 +53,26 @@ const title = config.title;
 				".mermaid": anyMermaid.length
 			});
 
-			// Log first element's HTML if found
-			if (codeMermaid.length > 0) {
-				console.log("First code.language-mermaid HTML:", codeMermaid[0].outerHTML.substring(0, 200));
+			// Check all code blocks with mermaid in classList (Shiki might use different format)
+			const allCodeBlocks = document.querySelectorAll("code[class*='mermaid']");
+			console.log("Code blocks with 'mermaid' in class:", allCodeBlocks.length);
+			if (allCodeBlocks.length > 0) {
+				console.log("First mermaid code block classList:", Array.from(allCodeBlocks[0].classList));
+				console.log("First mermaid code block HTML (first 300 chars):", allCodeBlocks[0].outerHTML.substring(0, 300));
 			}
+
+			// Also check for plain mermaid class (Shiki might use just 'mermaid')
+			const plainMermaid = document.querySelectorAll("code.mermaid");
+			console.log("code.mermaid elements:", plainMermaid.length);
+
+			// Debug: list all code block classes
+			const allPreCode = document.querySelectorAll("pre > code");
+			console.log("Total pre > code elements:", allPreCode.length);
+			const uniqueClasses = new Set();
+			allPreCode.forEach(code => {
+				code.classList.forEach(cls => uniqueClasses.add(cls));
+			});
+			console.log("All unique code block classes:", Array.from(uniqueClasses));
 
 			if (preMermaid.length > 0) {
 				await mermaid.run({
@@ -64,9 +80,30 @@ const title = config.title;
 				});
 			} else if (codeMermaid.length > 0) {
 				// Fallback: if pre.mermaid not found but code.language-mermaid exists
-				// render mermaid directly from those elements
 				console.log("Using fallback: code.language-mermaid");
 				for (const code of codeMermaid) {
+					const diagram = code.textContent || "";
+					const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).substr(2, 9)}`, diagram);
+					const pre = code.parentElement;
+					if (pre?.tagName === "PRE") {
+						pre.innerHTML = svg;
+					}
+				}
+			} else if (plainMermaid.length > 0) {
+				// Fallback for code.mermaid
+				console.log("Using fallback 3: code.mermaid");
+				for (const code of plainMermaid) {
+					const diagram = code.textContent || "";
+					const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).substr(2, 9)}`, diagram);
+					const pre = code.parentElement;
+					if (pre?.tagName === "PRE") {
+						pre.innerHTML = svg;
+					}
+				}
+			} else if (allCodeBlocks.length > 0) {
+				// Second fallback: render from code blocks with mermaid in any class
+				console.log("Using fallback 2: code blocks with mermaid in class");
+				for (const code of allCodeBlocks) {
 					const diagram = code.textContent || "";
 					const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).substr(2, 9)}`, diagram);
 					const pre = code.parentElement;
