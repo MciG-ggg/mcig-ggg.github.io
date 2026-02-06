@@ -42,12 +42,38 @@ const title = config.title;
 		// Wait a bit for DOM to be fully ready after Swup page load
 		await new Promise(resolve => setTimeout(resolve, 50));
 		try {
-			const elements = document.querySelectorAll("pre.mermaid");
-			console.log("Found mermaid elements:", elements.length);
-			if (elements.length > 0) {
+			// Check all possible selectors
+			const preMermaid = document.querySelectorAll("pre.mermaid");
+			const codeMermaid = document.querySelectorAll("code.language-mermaid");
+			const anyMermaid = document.querySelectorAll(".mermaid");
+
+			console.log("Mermaid elements found:", {
+				"pre.mermaid": preMermaid.length,
+				"code.language-mermaid": codeMermaid.length,
+				".mermaid": anyMermaid.length
+			});
+
+			// Log first element's HTML if found
+			if (codeMermaid.length > 0) {
+				console.log("First code.language-mermaid HTML:", codeMermaid[0].outerHTML.substring(0, 200));
+			}
+
+			if (preMermaid.length > 0) {
 				await mermaid.run({
 					querySelector: "pre.mermaid"
 				});
+			} else if (codeMermaid.length > 0) {
+				// Fallback: if pre.mermaid not found but code.language-mermaid exists
+				// render mermaid directly from those elements
+				console.log("Using fallback: code.language-mermaid");
+				for (const code of codeMermaid) {
+					const diagram = code.textContent || "";
+					const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).substr(2, 9)}`, diagram);
+					const pre = code.parentElement;
+					if (pre?.tagName === "PRE") {
+						pre.innerHTML = svg;
+					}
+				}
 			}
 		} catch (error) {
 			console.error("Mermaid rendering error:", error);
