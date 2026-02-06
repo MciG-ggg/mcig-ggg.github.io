@@ -171,9 +171,6 @@ importers:
       '@clack/prompts':
         specifier: ^0.11.0
         version: 0.11.0
-      '@playwright/browser-chromium':
-        specifier: ^1.58.1
-        version: 1.58.1
       '@rollup/plugin-yaml':
         specifier: ^4.1.2
         version: 4.1.2(rollup@2.79.2)
@@ -207,9 +204,6 @@ importers:
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
-      playwright:
-        specifier: ^1.58.1
-        version: 1.58.1
       prettier:
         specifier: 3.7.4
         version: 3.7.4
@@ -1520,10 +1514,6 @@ packages:
 
   '@oslojs/encoding@1.1.0':
     resolution: {integrity: sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ==}
-
-  '@playwright/browser-chromium@1.58.1':
-    resolution: {integrity: sha512-L0hO/dvKTjiEyW+ReRdmw1D389qa9XkCCGH58MaSpMdGtHVJzbTsHpAN+fWcAO8Fdc+vTQTZQzjq1uZoEKOGmQ==}
-    engines: {node: '>=18'}
 
   '@rollup/plugin-alias@3.1.9':
     resolution: {integrity: sha512-QI5fsEvm9bDzt32k39wpOwZhVzRcL5ydcffUHMyLVaVaLeC70I8TJZ17F1z1eMoLu4E/UOcH9BWVkKpIKdrfiw==}
@@ -7395,10 +7385,6 @@ snapshots:
 
   '@oslojs/encoding@1.1.0': {}
 
-  '@playwright/browser-chromium@1.58.1':
-    dependencies:
-      playwright-core: 1.58.1
-
   '@rollup/plugin-alias@3.1.9(rollup@2.79.2)':
     dependencies:
       rollup: 2.79.2
@@ -11153,13 +11139,15 @@ snapshots:
       mlly: 1.7.4
       pathe: 2.0.3
 
-  playwright-core@1.58.1: {}
+  playwright-core@1.58.1:
+    optional: true
 
   playwright@1.58.1:
     dependencies:
       playwright-core: 1.58.1
     optionalDependencies:
       fsevents: 2.3.2
+    optional: true
 
   points-on-curve@0.2.0: {}
 

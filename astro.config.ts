@@ -86,7 +86,7 @@ export default defineConfig({
 			katex,
 			figure,
 			sectionize,
-			[mermaid, { strategy: "img" }]
+			[mermaid, { strategy: "pre-mermaid" }]
 		],
 		smartypants: false,
 		shikiConfig: {
