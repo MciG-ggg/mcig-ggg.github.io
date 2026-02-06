@@ -39,11 +39,18 @@ const title = config.title;
 
 	// Render Mermaid diagrams
 	const renderMermaid = async () => {
-		const mermaidDivs = document.querySelectorAll(".mermaid");
-		if (mermaidDivs.length > 0) {
-			await mermaid.run({
-				querySelector: ".mermaid"
-			});
+		// Wait a bit for DOM to be fully ready after Swup page load
+		await new Promise(resolve => setTimeout(resolve, 50));
+		try {
+			const elements = document.querySelectorAll("pre.mermaid");
+			console.log("Found mermaid elements:", elements.length);
+			if (elements.length > 0) {
+				await mermaid.run({
+					querySelector: "pre.mermaid"
+				});
+			}
+		} catch (error) {
+			console.error("Mermaid rendering error:", error);
 		}
 	};
 
@@ -63,8 +70,16 @@ const title = config.title;
 	// Execute initialization on first load
 	initialize();
 
-	// Listen for page load event and re-initialize on page transitions
+	// Listen for Swup page load event and re-initialize on page transitions
+	document.addEventListener("swup:enable", () => {
+		window.swup?.hooks.on("page:load", initialize);
+	});
+
+	// Also listen for astro:page-load as fallback
 	document.addEventListener("astro:page-load", initialize);
+
+	// Listen for Swup content replaced event (when new page content is loaded)
+	document.addEventListener("swup:content:replaced", initialize);
 </script>
 
 <App {locale} {title} {subtitle} {description} {article} author={config.author.name}>
