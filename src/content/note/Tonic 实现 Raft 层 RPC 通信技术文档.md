@@ -1,7 +1,7 @@
 ---
 title: Tonic 实现 Raft 层 RPC 通信技术文档
 date: 2026-02-07
-timestamp: 2026-02-07T08:13:34+08:00
+timestamp: 2026-02-07T08:13:48+08:00
 slug: tonic-raft-rpc
 description: Tonic 实现 Raft 层 RPC 通信技术文档 --- 目录 - 1. 概述 - 2. Raft 协议简介 - 3. 系统架构 - 4. Protocol Buffers 定义 - 5. 类型转换层 - 6. RPC 通信实现 - 7. 完整通信�...
 category: note
