@@ -29,7 +29,7 @@ $$L^{CLIP}(\theta) = \mathbb{E} \left[ \min(r_t(\theta) A_t, \text{clip}(r_t(\th
 
 
 ### 理解 Loss 的梯度截断
-![](./images/PPO-(Proximal-Policy-Optimization)Clip.png)
+![](../images/PPO-(Proximal-Policy-Optimization)Clip.png)
 - **关键点**：
     - 当优势 $A_t > 0$ 时，如果新策略比旧策略强太多（$p_{t}(\theta)$ 比率超过 $1+\epsilon$），梯度截断，不再更新。**防止一次性过度增加好策略的概率**
     - 当优势 $A_t < 0$ 时，如果新策略比旧策略弱太多（$p_{t}(\theta)$ 比率低于 $1-\epsilon$），梯度截断，不再更新。**防止一次性过度降低坏策略的概率**
