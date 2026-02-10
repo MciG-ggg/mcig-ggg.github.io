@@ -19,7 +19,7 @@ host: docs.ros.org
 
 ## Node
 
-![](./images/ROS2-节点-ros架构.png)
+![](../images/ROS2-节点-ros架构.png)
 
 ```shell
 // ros2 run <工具包名> <可执行文件名>
@@ -33,12 +33,12 @@ ros2 run turtlesim turtle_teleop_key
 ros2 run rqt_graph rqt_graph
 ```
 
-![](./images/ROS2-CLI-rqt-graph.png)
+![](../images/ROS2-CLI-rqt-graph.png)
 
 ## Topic
 
 Topic 基于**发布订阅**模式
-![](./images/ROS2-CLI-Topic.png)
+![](../images/ROS2-CLI-Topic.png)
 
 ### Show Topic List
 
@@ -101,7 +101,7 @@ angular:
 
 ```
 
-![](./images/ROS2-CLI-readtopic.png)
+![](../images/ROS2-CLI-readtopic.png)
 
 ### 查看 Topic Info
 
@@ -159,7 +159,7 @@ Subscribed to [/turtle1/pose]
 
 服务是 ROS 图中节点的另一种通信方式。服务基于 **call-and-response** 模式，而非发布者 - 订阅者模式。虽然主题允许节点订阅数据流并获得持续更新，但服务只有在客户端特别调用时才会提供数据。
 
-![](./images/ROS2-CLI-Service.png)
+![](../images/ROS2-CLI-Service.png)
 
 ```shell
 ros2 service list
@@ -359,7 +359,7 @@ Action 是 ROS 2 中的一种通信类型，旨在执行长期任务。它们由
 
 Action 基于 Topic 和 Service。，但 Action 可以被取消。它们还能提供稳定的反馈，而服务通常只返回一个 response。
 
-![](./images/ROS2-CLI-Action.png)
+![](../images/ROS2-CLI-Action.png)
 
 ### 展示 Action 信息
 
