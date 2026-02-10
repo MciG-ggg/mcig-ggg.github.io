@@ -3,14 +3,13 @@ title: ROS2 CLI
 date: 2026-02-10
 timestamp: 2026-02-10T15:59:27+08:00
 slug: ros2-cli
-description: ROS2-CLI ``cardlink url: https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools.html title: "Beginner: CLI tools — ROS 2 Documentation: Jazzy documentation" host: docs.ros.org ` Node `shell // r...
+description: ROS2 CLI 学习笔记，涵盖 Node、Topic、Service、Parameters、Action、Launch、Bag 等核心概念
 category: note
 tags:
-  - Area/AI/EmbodiedAI/ROS2
+    - Area/AI/EmbodiedAI/ROS2
 ---
 
 # ROS2-CLI
-
 
 ```cardlink
 url: https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools.html
@@ -19,6 +18,7 @@ host: docs.ros.org
 ```
 
 ## Node
+
 ![](./images/ROS2-节点-ros架构.png)
 
 ```shell
@@ -36,9 +36,12 @@ ros2 run rqt_graph rqt_graph
 ![](./images/ROS2-CLI-rqt-graph.png)
 
 ## Topic
+
 Topic 基于**发布订阅**模式
 ![](./images/ROS2-CLI-Topic.png)
+
 ### Show Topic List
+
 ```shell
 // show topic list
 ros2 topic list
@@ -65,21 +68,21 @@ ros2 topic list -t
 
 ```
 
-| 类比                                   | 解释                                       |
-| ------------------------------------ | ---------------------------------------- |
-| **Topic** = 快递单号                     | `/turtle1/cmd_vel`                       |
+| 类比                                     | 解释                                                      |
+| ---------------------------------------- | --------------------------------------------------------- |
+| **Topic** = 快递单号                     | `/turtle1/cmd_vel`                                        |
 | **Topic Type / Message Type** = 包裹规格 | `geometry_msgs/msg/Twist`（规定是 " 速度指令 " 这种包裹） |
-| **Message 数据** = 具体包裹内容              | `{linear: {x: 1.0}, angular: {z: 0.5}}`  |
+| **Message 数据** = 具体包裹内容          | `{linear: {x: 1.0}, angular: {z: 0.5}}`                   |
 
-| 中文       | 英文                 | 缩写        |
-| -------- | ------------------ | --------- |
+| 中文         | 英文               | 缩写      |
+| ------------ | ------------------ | --------- |
 | 消息类型     | Message Type       | `.msg`    |
 | 服务类型     | Service Type       | `.srv`    |
 | 动作类型     | Action Type        | `.action` |
-| **接口类型** | **Interface Type** | 三者统称      |
-
+| **接口类型** | **Interface Type** | 三者统称  |
 
 ### 查看 Topic 发送出来的 Data
+
 ```shell
 // see the topic data
 // At first, this command won’t return any data. That’s because it’s waiting for `/teleop_turtle` to publish something.
@@ -101,6 +104,7 @@ angular:
 ![](./images/ROS2-CLI-readtopic.png)
 
 ### 查看 Topic Info
+
 ```shell
 ros2 topic info /turtle1/cmd_vel (可--verbose)
 Type: geometry_msgs/msg/Twist
@@ -109,6 +113,7 @@ Subscription count: 2
 ```
 
 ### 查看 Message Type 具体定义
+
 ```shell
 ros2 interface show geometry_msgs/msg/Twist
 # This expresses velocity in free space broken into its linear and angular parts.
@@ -123,6 +128,7 @@ ros2 interface show geometry_msgs/msg/Twist
 ```
 
 ### 现在知道了消息结构，可以直接在命令行构造消息发布
+
 ```shell
 ros2 topic pub <topic_name> <msg_type> '<args>'
 
@@ -131,16 +137,17 @@ ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 2.0, y: 0.
 
 // 还可以发布空消息（发布消息类型的默认值，频率为 1 Hz）
 ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist
-// 上面的等价于 ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}" --rate 1 
+// 上面的等价于 ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}" --rate 1
 ```
 
 ### 检查 Topic 发布的速率, 带宽
+
 ```shell
 // 速率
 ros2 topic hz /turtle1/pose
 average rate: 59.354
   min: 0.005s max: 0.027s std dev: 0.00284s window: 58
-  
+
 // 带宽
 ros2 topic bw /turtle1/pose
 Subscribed to [/turtle1/pose]
@@ -153,6 +160,7 @@ Subscribed to [/turtle1/pose]
 服务是 ROS 图中节点的另一种通信方式。服务基于 **call-and-response** 模式，而非发布者 - 订阅者模式。虽然主题允许节点订阅数据流并获得持续更新，但服务只有在客户端特别调用时才会提供数据。
 
 ![](./images/ROS2-CLI-Service.png)
+
 ```shell
 ros2 service list
 ...
@@ -164,18 +172,23 @@ ros2 service list
 /teleop_turtle/set_parameters_atomically
 ...
 ```
+
 你会看到两个节点都有相同的六个服务，且名称中带有 `参数` 。ROS 2 中几乎每个节点都有这些基础设施服务，参数就是基于这些服务构建的。
 
 ### 查看服务类型
+
 ```shell
 // ros2 service type <service_name>
 ros2 service type /clear
 std_srvs/srv/Empty
 ```
+
 说明这个 `/clear` 服务是 `Empty` 类型，即*在发送请求时不发送数据，接收响应时也不接收数据*。
 
 ### 查看服务列表
+
 同理，也可以直接 list 出服务列表，显然 `-t` 可以显示服务类型。
+
 ```shell
 ros2 service list -t
 /clear [std_srvs/srv/Empty]
@@ -190,7 +203,9 @@ ros2 service list -t
 ```
 
 ### 其他命令
+
 和 Topic 大差不差，直接列出
+
 ```shell
 ros2 service info <service_name>
 
@@ -206,6 +221,7 @@ ros2 service call <service_name> <service_type> <arguments>
 ```
 
 ### Service Echo
+
 ```shell
 ros2 service echo <service_name | service_type> <arguments>
 // `ROS2 服务 Echo` 依赖于服务客户端和服务器的服务introspection，而该内省默认是被禁用的。要启用此功能，用户必须在创建服务客户端或服务器后调用 `configure_introspectio`
@@ -263,6 +279,7 @@ ros2 service echo --flow-style /add_two_ints
 ## Parameters
 
 ### 查看节点参数
+
 ```shell
 ros2 param list
 /teleop_turtle:
@@ -285,6 +302,7 @@ ros2 param list
 ```
 
 ### 查看参数类型和值
+
 ```shell
 // ros2 param get <node_name> <parameter_name>
 ros2 param get /turtlesim background_g
@@ -292,10 +310,11 @@ Integer value is: 86
 ```
 
 ### 更改参数类型和值
+
 ```shell
 // ros2 param dump <node_name>
 // 可以把输出重定向到yaml文件里
-ros2 param dump /turtlesim 
+ros2 param dump /turtlesim
 /turtlesim:
   ros__parameters:
     background_b: 255
@@ -312,6 +331,7 @@ ros2 param dump /turtlesim
 ```
 
 ### 节点运行时加载参数文件
+
 ```shell
 // ros2 param load <node_name> <parameter_file>
 ros2 param load /turtlesim turtlesim.yaml
@@ -328,6 +348,7 @@ Set parameter use_sim_time successful
 注意，只读参数无法在运行时修改，所以上面有报错。要使只读参数从文件中加载得来，只能用下面的方法，从启动时就设置好
 
 ### 节点启动时加载参数文件
+
 ```shell
 ros2 run <package_name> <executable_name> --ros-args --params-file <file_name>
 ```
@@ -341,6 +362,7 @@ Action 基于 Topic 和 Service。，但 Action 可以被取消。它们还能�
 ![](./images/ROS2-CLI-Action.png)
 
 ### 展示 Action 信息
+
 ```shell
 ros2 node info /turtlesim
 ···
@@ -348,8 +370,8 @@ ros2 node info /turtlesim
 Action Servers:
 	/turtle1/rotate_absolute: turtlesim/action/RotateAbsolute
 Action Clients:
-  
-ros2 node info /turtle_teleop_key  
+
+ros2 node info /turtle_teleop_key
 ···
 ···
 Action Servers:
@@ -358,7 +380,8 @@ Action Clients:
 ```
 
 ### 展示 Action 列表
-```shell 
+
+```shell
 // ros2 action list
 // -t 显示Action Type
 ros2 action list -t
@@ -366,6 +389,7 @@ ros2 action list -t
 ```
 
 ### 展示 Action 类型
+
 ```shell
 // 也可以直接用下面的方式展示action type
 ros2 action type /turtle1/rotate_absolute
@@ -373,6 +397,7 @@ turtlesim/action/RotateAbsolute
 ```
 
 ### 展示 Action 信息
+
 ```shell
 ros2 action info /turtle1/rotate_absolute
 Action: /turtle1/rotate_absolute
@@ -383,6 +408,7 @@ Action servers: 1
 ```
 
 ### 展示 Action 的结构
+
 ```shell
 ros2 interface show turtlesim/action/RotateAbsolute
 # The desired heading in radians
@@ -404,6 +430,7 @@ ros2 launch turtlesim multisim.launch.py
 ```
 
 launch file 如下：
+
 ```python title:multisim.launch.py
 from launch import LaunchDescription
 import launch_ros.actions
@@ -424,13 +451,12 @@ def generate_launch_description():
 
 `ROS2 Bag` 可以记录发布到 Topic 的消息数据, 以及重新回放 (play)
 
-| 功能     | 命令                 | 用途                     |
-| ------ | ------------------ | ---------------------- |
-| **录制** | `ros2 bag record`  | 保存话题数据到 `.db3` 文件      |
-| **回放** | `ros2 bag play`    | 按原始时间戳发布录制的数据          |
-| **查看** | `ros2 bag info`    | 查看 bag 文件内容摘要          |
+| 功能     | 命令               | 用途                          |
+| -------- | ------------------ | ----------------------------- |
+| **录制** | `ros2 bag record`  | 保存话题数据到 `.db3` 文件    |
+| **回放** | `ros2 bag play`    | 按原始时间戳发布录制的数据    |
+| **查看** | `ros2 bag info`    | 查看 bag 文件内容摘要         |
 | **转换** | `ros2 bag convert` | 格式转换（如 sqlite3 → mcap） |
-
 
 ```shell
 // ros2 bag record <topic_name>
