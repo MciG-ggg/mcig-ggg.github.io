@@ -25,6 +25,7 @@ import anchor from "rehype-autolink-headings";
 import links from "rehype-external-links";
 import katex from "rehype-katex";
 import sectionize from "@hbsnow/rehype-sectionize";
+import rehypeCardlink from "./src/utils/rehype-cardlink";
 
 import spoiler from "./src/utils/remark/spoiler";
 import attr from "./src/utils/remark/attr";
@@ -33,6 +34,7 @@ import wrapper from "./src/utils/remark/table-wrapper";
 import copy from "./src/utils/code-copy";
 import reading from "./src/utils/remark/reading";
 import figure from "./src/utils/remark/figure";
+import cardlink from "./src/utils/remark/cardlink";
 
 import siteConfig from "./site.config";
 import { ZeoSevenFonts } from "./src/fonts/config";
@@ -63,6 +65,7 @@ export default defineConfig({
 			abbr,
 			[table, { colspanWithEmpty: true }],
 			wrapper,
+			cardlink,
 			directive,
 			ruby,
 			[alerts, { legacyTitle: true }],
@@ -83,6 +86,7 @@ export default defineConfig({
 			[anchor, { behavior: "wrap" }],
 			[links, { target: "_blank", rel: ["nofollow", "noopener", "noreferrer"] }],
 			katex,
+			rehypeCardlink,
 			figure,
 			sectionize
 		],

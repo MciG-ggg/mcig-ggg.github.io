@@ -33,3 +33,4 @@ wrangler.toml
 
 # jetbrains setting folder
 .idea/
+.serena/

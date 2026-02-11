@@ -11,6 +11,114 @@
 			width: 100%;
 		}
 
+		/* Card Link Styles */
+		a.card-link {
+			display: grid;
+			grid-template-columns: auto 1fr;
+			text-decoration: none;
+			border: 1px solid var(--shadow-color);
+			border-radius: 0.4em;
+			overflow: hidden;
+			transition:
+				border-color 0.15s ease-in-out,
+				box-shadow 0.15s ease-in-out,
+				transform 0.15s ease-in-out;
+			background-color: var(--background-color);
+			min-height: 6em;
+
+			&:hover {
+				border-color: var(--secondary-color);
+				box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+				transform: translateY(-1px);
+			}
+
+			/* Thumbnail image (optional) - rendered via pseudo-element */
+			&::before {
+				content: "";
+				grid-column: 1;
+				grid-row: 1;
+				width: 9em;
+				min-height: 100%;
+				background-color: var(--block-color);
+				background-size: cover;
+				background-position: center;
+				background-repeat: no-repeat;
+				/* Use CSS variable set via inline style */
+				background-image: var(--card-image, none);
+			}
+
+			/* Hide image section if no image is provided */
+			&:not([data-card-image])::before {
+				display: none;
+			}
+
+			/* Content wrapper */
+			> div {
+				grid-column: 2;
+				grid-row: 1;
+				display: flex;
+				flex-direction: column;
+				gap: 0.3em;
+				padding: 0.85em 1em;
+				min-width: 0;
+			}
+
+			/* Favicon + Host badge */
+			.card-link-meta {
+				display: flex;
+				align-items: center;
+				gap: 0.35em;
+				font-size: 0.7em;
+				color: var(--remark-color);
+				font-family: var(--font-mono);
+				text-transform: lowercase;
+				letter-spacing: 0.01em;
+			}
+
+			.card-link-favicon {
+				width: 1em;
+				height: 1em;
+				flex-shrink: 0;
+				object-fit: contain;
+			}
+
+			/* Title */
+			.card-link-title {
+				font-weight: 600;
+				font-size: 1em;
+				line-height: 1.4;
+				color: var(--primary-color);
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			/* Description */
+			.card-link-description {
+				font-size: 0.9em;
+				line-height: 1.5;
+				color: var(--remark-color);
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		}
+
+		/* Mobile responsive */
+		@media screen and (max-width: 640px) {
+			a.card-link {
+				min-height: 5em;
+
+				&::before {
+					width: 7em;
+				}
+			}
+		}
+
 		* {
 			user-select: text;
 		}
