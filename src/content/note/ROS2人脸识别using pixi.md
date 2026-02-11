@@ -6,6 +6,7 @@ slug: ros2using-pixi
 category: note
 tags:
   - Area/AI/EmbodiedAI/ROS2
+series: ROS2-Learning
 ---
 
 # ROS2 人脸识别 Using Pixi

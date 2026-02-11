@@ -4,6 +4,7 @@ timestamp: 2026-01-01 09:00:00+08:00
 tags:
   - conclusion
 publish: "true"
+series: 总结
 ---
 
 # 2025总结
