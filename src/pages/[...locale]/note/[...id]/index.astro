@@ -71,16 +71,13 @@ const t = i18nit(locale);
 		</header>
 
 		<Sensitive {locale} back="/note" sensitive={note.data.sensitive} client:load>
-			<div class="flex gap-5">
-				<section id="markdown-content" class="markdown"><Content /></section>
+			<div class="flex gap-6 sm:gap-8">
+				<section id="markdown-content" class="markdown flex-1 min-w-0"><Content /></section>
 				{
 					note.data.toc && (
-						<aside class="hidden sm:block sm:shrink-0 sm:w-[200px]">
-							<div class="sticky top-3 flex flex-col gap-1">
-								<h4>{t("note.contents")}</h4>
-								<nav class="overflow-y-auto">
-									<TOC {headings} />
-								</nav>
+						<aside class="hidden md:block shrink-0 w-35">
+							<div class="sticky top-3 flex flex-col gap-2 max-h-[calc(100vh-6rem)]">
+								<TOC {headings} />
 							</div>
 						</aside>
 					)

@@ -7,115 +7,294 @@ interface Props {
 
 const { headings } = Astro.props;
 
-// Extended heading type with additional properties for tree rendering
-// - last: indicates if this heading is the last child in its parent group
-// - lines: array of booleans indicating which vertical connector lines should be drawn
+// Filter out h1 from TOC and only include h2-h4
+const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
+
+// Extended heading type with additional properties
 type Heading = MarkdownHeading & { last?: boolean; lines?: boolean[] };
 
 // Determine which headings are the last in their sibling group
 const stack: Heading[] = [];
-headings.forEach(heading => {
-	// Pop headings from the stack that are at the same or deeper level
+tocHeadings.forEach(heading => {
 	while (stack[stack.length - 1]?.depth >= heading.depth) {
 		const top = stack.pop();
-		// Mark as last if popped due to a shallower heading (not a sibling)
 		if (top && top.depth !== heading.depth) top.last = true;
 	}
-
 	stack.push(heading);
 });
 
-// Mark all remaining headings in the stack as last (they have no following siblings)
 while (stack.length > 0) stack.pop()!.last = true;
 
 // Calculate which vertical connector lines to show for each heading
 const actives: boolean[] = [];
-
-headings.forEach(heading => {
-	// For each depth level above this heading, record whether a vertical line should be drawn
+tocHeadings.forEach(heading => {
 	for (let depth = 2; depth < heading.depth; depth++) {
 		heading.lines ??= [];
 		heading.lines[depth - 2] = actives[depth - 2];
 	}
-
-	// Update the active state for this heading's depth level
 	actives[heading.depth - 2] = !heading.last;
 });
 ---
 
-<ul class="flex flex-col text-base list-none">
-	{
-		headings.map((heading: Heading) => (
-			<li id={`indicator-${heading.slug}`} class="group relative flex items-stretch h-6 [&.indicate>a]:font-bold [&.indicate>a]:text-primary">
-				<div class="flex select-none" aria-hidden="true">
-					{heading.lines?.map(line => (
-						<div class="w-4 relative flex justify-center">{line && <span class="absolute top-0 bottom-0 border-s border-remark" />}</div>
-					))}
+{tocHeadings.length > 0 && (
+	<div class="toc-container">
+		<!-- Reading Progress Bar -->
+		<div class="toc-progress-bar">
+			<div class="toc-progress-fill" id="toc-progress"></div>
+		</div>
 
-					{heading.depth > 1 && (
-						<div class="w-4 relative flex justify-center">
-							<span class:list={["absolute top-0 border-s border-remark", heading.last ? "h-[calc(50%+1px)]" : "h-full"]} />
-							<span class="absolute top-1/2 start-1/2 w-2 border-b border-remark" />
-						</div>
-					)}
-				</div>
+		<nav class="toc-nav" aria-label="Table of Contents">
+			<ul class="toc-list">
+				{tocHeadings.map((heading: Heading) => (
+					<li
+						id={`indicator-${heading.slug}`}
+						class="toc-item group"
+						data-depth={heading.depth}
+					>
+						<a
+							href={`#${heading.slug}`}
+							class="toc-link"
+							title={heading.text}
+						>
+							<span class="toc-indicator"></span>
+							<span class="toc-text">{heading.text}</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</nav>
+	</div>
+)}
 
-				<a href={`#${heading.slug}`} title={heading.text} class="grow min-w-0 inline-flex items-center ps-1 text-weak hover:font-bold hover:text-primary transition-[color,font-weight]">
-					<span class="truncate">{heading.text}</span>
-				</a>
-			</li>
-		))
+<style>
+	.toc-container {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
 	}
-</ul>
+
+	.toc-progress-bar {
+		position: relative;
+		width: 100%;
+		height: 2px;
+		background-color: var(--block-color);
+		border-radius: 1px;
+		overflow: hidden;
+	}
+
+	.toc-progress-fill {
+		height: 100%;
+		width: 0%;
+		background-color: var(--secondary-color);
+		transition: width 0.1s ease-out;
+		border-radius: 1px;
+	}
+
+	.toc-nav {
+		overflow-y: auto;
+		overflow-x: visible;
+		scrollbar-width: thin;
+		scrollbar-color: var(--weak-color) transparent;
+
+		&::-webkit-scrollbar {
+			width: 3px;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background-color: var(--weak-color);
+			border-radius: 3px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background-color: transparent;
+		}
+	}
+
+	.toc-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.toc-item {
+		position: relative;
+		line-height: 1.5;
+	}
+
+	.toc-link {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.25rem 0.4rem;
+		text-decoration: none;
+		color: var(--remark-color);
+		font-size: 0.8rem;
+		transition: all 0.15s ease;
+		border-radius: 0.25rem;
+		position: relative;
+	}
+
+	.toc-item.indicate > .toc-link {
+		color: var(--primary-color);
+		font-weight: 500;
+		background-color: var(--block-color);
+	}
+
+	.toc-item.indicate > .toc-link .toc-indicator {
+		background-color: var(--secondary-color);
+		transform: scale(1);
+	}
+
+	.toc-link:hover {
+		color: var(--primary-color);
+		background-color: var(--block-color);
+	}
+
+	.toc-indicator {
+		flex-shrink: 0;
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
+		background-color: var(--weak-color);
+		transition: all 0.15s ease;
+		transform: scale(0.8);
+	}
+
+	.toc-text {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.toc-item[data-depth="3"] {
+		padding-inline-start: 0.75rem;
+	}
+
+	.toc-item[data-depth="3"] .toc-indicator {
+		width: 3px;
+		height: 3px;
+	}
+
+	.toc-item[data-depth="3"] .toc-link {
+		font-size: 0.75rem;
+		padding: 0.2rem 0.35rem;
+	}
+
+	.toc-item[data-depth="4"] {
+		padding-inline-start: 1.25rem;
+	}
+
+	.toc-item[data-depth="4"] .toc-indicator {
+		width: 2.5px;
+		height: 2.5px;
+	}
+
+	.toc-item[data-depth="4"] .toc-link {
+		font-size: 0.7rem;
+		padding: 0.15rem 0.3rem;
+	}
+</style>
 
 <script>
-	// Global variable to store the IntersectionObserver instance
-	// Used to clean up previous observer when re-initializing
 	let observer: IntersectionObserver | undefined;
+	let progressFill: HTMLElement | undefined;
+	let scrollListener: (() => void) | undefined;
 
-	/**
-	 * Initialize Table of Contents functionality with scroll-based highlighting
-	 * Sets up intersection observer to highlight current section in TOC
-	 */
-	function TOC() {
-		// Create a Map for efficient lookup of TOC indicators by heading slug
-		// Maps heading slug to corresponding TOC list item element
-		const indicators = new Map<string, Element>(
-			document
-				.querySelectorAll("li[id^='indicator-']") // Select all TOC indicator elements
-				.values()
-				.map(indicator => [
-					indicator.id.replace(/^indicator-/, ""), // Extract slug from "indicator-{slug}" format
-					indicator // Store the indicator element
-				])
-		);
+	function updateProgress() {
+		const content = document.getElementById("markdown-content");
+		if (!content || !progressFill) return;
 
-		// Disconnect previous observer to prevent memory leaks
-		observer?.disconnect();
+		const contentHeight = content.scrollHeight;
+		const contentTop = content.offsetTop;
+		const viewportHeight = window.innerHeight;
+		const scrollTop = window.scrollY;
 
-		// Create new IntersectionObserver to detect when headings enter/leave viewport
-		observer = new IntersectionObserver(entries =>
-			entries.forEach(({ target, isIntersecting }) => {
-				// Get heading slug from `aria-labelledby` attribute
-				const slug = target.getAttribute("aria-labelledby");
-				if (!slug) return;
+		let scrolled: number;
+		let scrollable: number;
 
-				// Toggle "indicate" class on corresponding TOC item based on visibility
-				indicators.get(slug)?.classList.toggle("indicate", isIntersecting);
-			})
-		);
+		if (viewportHeight < contentHeight) {
+			scrolled = Math.max(0, scrollTop - contentTop);
+			scrollable = contentHeight - viewportHeight;
+		} else {
+			scrolled = scrollTop;
+			scrollable = Math.max(0, contentHeight + contentTop - viewportHeight);
+		}
 
-		// Find all heading sections in the markdown content and observe them
-		document
-			.querySelector("#markdown-content") // Get main content container
-			?.querySelectorAll("section[data-heading-rank]") // Find all heading sections
-			.forEach(section => observer?.observe(section)); // Start observing each section
+		const progress = scrollable > 0 ? Math.min(1, scrolled / scrollable) : 0;
+		progressFill.style.width = `${progress * 100}%`;
 	}
 
-	// Initialize TOC functionality when page loads
-	TOC();
+	function TOC() {
+		// Cleanup previous observer and listener
+		observer?.disconnect();
+		if (scrollListener) {
+			window.removeEventListener("scroll", scrollListener);
+		}
 
-	// Re-initialize TOC after Astro's view transitions complete
-	// This ensures TOC works correctly with client-side navigation
+		progressFill = document.getElementById("toc-progress");
+
+		const indicators = new Map<string, Element>(
+			document
+				.querySelectorAll(".toc-item")
+				.values()
+				.map((item) => {
+					const link = item.querySelector(".toc-link");
+					const href = link?.getAttribute("href") || "";
+					const slug = href.replace(/^#/, "");
+					return [slug, item];
+				})
+		);
+
+		observer = new IntersectionObserver(
+			(entries) => {
+				const visibleEntries = entries.filter((e) => e.isIntersecting);
+				if (visibleEntries.length === 0) return;
+
+				let closestEntry = visibleEntries[0];
+				let minDistance = Math.abs(visibleEntries[0].boundingClientRect.top);
+
+				for (const entry of visibleEntries) {
+					const distance = Math.abs(entry.boundingClientRect.top);
+					if (distance < minDistance) {
+						minDistance = distance;
+						closestEntry = entry;
+					}
+				}
+
+				indicators.forEach((item) => item.classList.remove("indicate"));
+
+				const slug = closestEntry.target.getAttribute("aria-labelledby");
+				if (slug) {
+					const activeItem = indicators.get(slug);
+					if (activeItem) {
+						activeItem.classList.add("indicate");
+						activeItem.scrollIntoView({ behavior: "smooth", block: "nearest" });
+					}
+				}
+			},
+			{
+				rootMargin: "-10% 0px -70% 0px",
+				threshold: 0,
+			}
+		);
+
+		document
+			.querySelector("#markdown-content")
+			?.querySelectorAll("section[data-heading-rank]")
+			.forEach((section) => observer?.observe(section));
+
+		// Store listener reference for cleanup
+		scrollListener = updateProgress;
+		window.addEventListener("scroll", scrollListener, { passive: true });
+		updateProgress();
+	}
+
+	TOC();
 	document.addEventListener("astro:after-swap", TOC);
 </script>
