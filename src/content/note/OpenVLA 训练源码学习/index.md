@@ -1,7 +1,7 @@
 ---
 title: OpenVLA 训练源码学习
 date: 2026-02-20
-timestamp: 2026-02-20T17:13:25+08:00
+timestamp: 2026-02-20T19:42:22+08:00
 slug: openvla
 category: note
 tags:
@@ -76,10 +76,60 @@ print(Color.RED.value)    # 1   (获取成员的值)
     - `yield` **之后**的代码：相当于 `__exit__`（收尾工作，如释放锁、打印耗时）。
 - **常见场景**：分布式进程同步（Barrier 罚站）、模型模式切换（如 `inference_mode`）、临时文件清理等。
 
-### PretrainConfig 类
-#### 理论流程
+#### 4. draccus库
 
-#### 实际代码
+在机器学习或大型后端项目中，我们经常需要处理复杂的配置。传统的 `argparse` 写起来很冗长，且缺乏类型检查。
+
+简单来说，**Draccus** 是一个用于处理 **Python 配置对象**的库。它由 Lyft 开发，主要用于将类（Dataclasses）与命令行参数、配置文件（YAML/JSON）进行双向转换。
+
+它的核心理念是：**让你的代码定义配置的形式，而不是让解析器定义它。**
+
+例子如下：
+```python 
+import draccus
+from dataclasses import dataclass
+
+@dataclass
+class OptimizerConfig:
+    type: str = "adam"
+    lr: float = 0.001
+
+@dataclass
+class ExperimentConfig:
+    name: str = "default_run"
+    # 嵌套子配置
+    optim: OptimizerConfig = OptimizerConfig()
+
+@draccus.wrap()
+def main(cfg: ExperimentConfig):
+    print(f"实验: {cfg.name}")
+    print(f"优化器类型: {cfg.optim.type}, 学习率: {cfg.optim.lr}")
+
+if __name__ == "__main__":
+    main()
+```
+
+在命令行通过参数指定构建的类的参数：
+```shell
+python script.py --name "my_test" --optim.type "sgd" --optim.lr 0.01
+```
+
+还可以通过指定配置文件路径：
+
+```YAML
+name: "high_res_run"
+optim:
+  type: "adamw"
+  lr: 0.0005
+```
+
+```shell
+python script.py --config_path config.yaml
+```
+
+`
+### PretrainConfig 类
+
 ```python title:scripts/pretrain.py
 @dataclass
 
