@@ -1,8 +1,8 @@
 ---
 title: 锟綀戠殑zellij浣跨敤
 date: 2026-02-22
-timestamp: 2026-02-22T16:44:14+08:00
-slug: zellij
+timestamp: 2026-02-22T16:50:15+08:00
+slug: 鐨剒ellij浣跨敤
 category: jotting
 tags:
   - Tools
