@@ -1,8 +1,8 @@
 ﻿---
-title: ���零开始学习LoRA：MiniMind项目实战指南
+title: 从零开始学习LoRA：MiniMind项目实战指南
 date: 2026-02-22
-timestamp: 2026-02-22T17:04:16+08:00
-slug: 零开始学习loraminimind项目实战指南
+timestamp: 2026-02-22T17:25:51+08:00
+slug: 从零开始学习loraminimind项目实战指南
 category: note
 tags:
   - AI
