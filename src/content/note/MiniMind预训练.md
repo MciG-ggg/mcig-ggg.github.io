@@ -1,8 +1,8 @@
 ---
 title: MiniMind预训练
 date: 2026-02-22
-timestamp: 2026-02-22T16:27:16+08:00
-slug: minimind
+timestamp: 2026-02-22T16:49:52+08:00
+slug: minimind预训练
 category: note
 tags:
   - AI
