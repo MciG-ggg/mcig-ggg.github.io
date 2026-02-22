@@ -1,7 +1,7 @@
 ﻿---
 title: ���的zellij使用
 date: 2026-02-22
-timestamp: 2026-02-22T16:56:17+08:00
+timestamp: 2026-02-22T17:04:29+08:00
 slug: 的zellij使用
 category: jotting
 tags:
