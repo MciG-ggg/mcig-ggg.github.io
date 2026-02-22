@@ -1,8 +1,8 @@
 ﻿---
-title: ���的zellij使用
+title: 我的zellij使用
 date: 2026-02-22
-timestamp: 2026-02-22T17:19:47+08:00
-slug: 的zellij使用
+timestamp: 2026-02-22T17:25:35+08:00
+slug: 我的zellij使用
 category: jotting
 tags:
   - Tools
