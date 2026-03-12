@@ -1,7 +1,7 @@
 ﻿---
 title: 如何构建图像生成器
 date: 2026-03-12
-timestamp: 2026-03-12T17:41:42+08:00
+timestamp: 2026-03-12T18:44:06+08:00
 slug: 如何构建图像生成器
 category: note
 ---
