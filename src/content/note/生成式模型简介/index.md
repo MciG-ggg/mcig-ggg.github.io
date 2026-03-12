@@ -1,7 +1,7 @@
 ﻿---
 title: 生成式模型简介
 date: 2026-03-12
-timestamp: 2026-03-12T16:58:55+08:00
+timestamp: 2026-03-12T17:10:17+08:00
 slug: 生成式模型简介
 category: note
 tags:
@@ -20,7 +20,7 @@ tags:
 > 3. 一个 Dataset 由有限数量的样本 $z_{1}, ..., z_{N} \sim p_{data }$ 组成
 > 4.  条件生成, 即根据一些已有的数据来生成对象， 从 $z \sim p_{data}(\cdot| y)$ 中采样
 
-[Flow and Diffusion Model](/flow-and-diffusion-model)
-[如何构建训练目标](/如何构建训练目标)
-[如何训练生成式模型](/如何训练生成式模型)
-[如何构建图像生成器](/如何构建图像生成器)
+[Flow and Diffusion Model](/note/flow-and-diffusion-model)
+[如何构建训练目标](/note/如何构建训练目标)
+[如何训练生成式模型](/note/如何训练生成式模型)
+[如何构建图像生成器](/note/如何构建图像生成器)
