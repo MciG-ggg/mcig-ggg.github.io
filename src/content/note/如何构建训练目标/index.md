@@ -1,7 +1,7 @@
 ﻿---
 title: 如何构建训练目标
 date: 2026-03-12
-timestamp: 2026-03-12T16:59:11+08:00
+timestamp: 2026-03-12T17:18:27+08:00
 slug: 如何构建训练目标
 category: note
 tags:
@@ -17,7 +17,7 @@ tags:
 
 > [!note] 一些疑问
 > 1. 流是什么
-> 流就是一个群作用，见[Flow and Diffusion Model](/flow-and-diffusion-model)
+> 流就是一个群作用，见[Flow and Diffusion Model](/note/flow-and-diffusion-model)
 >  
 >2. 向量场数学上又是什么东西
 > - **向量场是该群的“无穷小生成元” (Infinitesimal Generator)：**
@@ -39,7 +39,10 @@ $$
 
 > [!summary]
 > 1. 定义分布的“流动”：**连续性方程** (Continuity Equation)
-> 使用**连续性方程**。它描述了密度函数 $p_t$ 的时间导数与向量场 $u_t$ 的散度之间的关系：$$\frac{\partial p_t(x)}{\partial t} = -\nabla \cdot (p_t(x) u_t(x))$$
+> 使用**连续性方程**。它描述了密度函数 $p_t$ 的时间导数与向量场 $u_t$ 的散度之间的关系：
+> $$
+> \frac{\partial p_t(x)}{\partial t} = -\nabla \cdot (p_t(x) u_t(x))
+> $$
 > 2. 构造具体的路径：**条件概率路径** (Conditional Path)
 > 直接求解上面的方程很难，因为 $p_t(x)$ 太复杂了。于是我们祭出之前提到的“诱导”大法：
 > - 分而治之： 我们不直接定义总体的 $p_t(x)$，而是为每一个样本 $z$ 定义一个简单的移动规则 $p_t(x|z)$。
@@ -77,16 +80,19 @@ $$
 
 > [!note] 边缘化Trick
 > 对于每个数据点 $z \in \mathbb{R}^d$，令 $u_t^{\text{target}}(\cdot | z)$ 表示一个**条件向量场**，其定义使得相应的常微分方程（ODE）给出条件概率路径 $p_t(\cdot | z)$，即：
-> 
-> $$X_0 \sim p_{\text{init}}, \quad \frac{d}{dt}X_t = u_t^{\text{target}}(X_t | z) \Rightarrow X_t \sim p_t(\cdot | z) \quad (0 \leq t \leq 1) \tag{18}$$
+> $$
+> X_0 \sim p_{\text{init}}, \quad \frac{d}{dt}X_t = u_t^{\text{target}}(X_t | z) \Rightarrow X_t \sim p_t(\cdot | z) \quad (0 \leq t \leq 1) \tag{18}
+> $$
 > 
 > 然后定义**边缘向量场** $u_t^{\text{target}}(x)$，其由下式给出：
-> 
-> $$u_t^{\text{target}}(x) = \int u_t^{\text{target}}(x|z) \frac{p_t(x|z)p_{\text{data}}(z)}{p_t(x)} dz \tag{19}$$
+> $$
+> u_t^{\text{target}}(x) = \int u_t^{\text{target}}(x|z) \frac{p_t(x|z)p_{\text{data}}(z)}{p_t(x)} dz \tag{19}
+> $$
 > 
 > 该向量场遵循边缘概率路径，即：
-> 
-> $$X_0 \sim p_{\text{init}}, \quad \frac{d}{dt}X_t = u_t^{\text{target}}(X_t) \Rightarrow X_t \sim p_t \quad (0 \leq t \leq 1) \tag{20}$$
+> $$
+> X_0 \sim p_{\text{init}}, \quad \frac{d}{dt}X_t = u_t^{\text{target}}(X_t) \Rightarrow X_t \sim p_t \quad (0 \leq t \leq 1) \tag{20}
+> $$
 > 
 > 特别地，对于该 ODE，$X_1 \sim p_{\text{data}}$，因此我们可以说 “$u_t^{\text{target}}$ 将噪声 $p_{\text{init}}$ 转换为数据 $p_{\text{data}}$”。
 
