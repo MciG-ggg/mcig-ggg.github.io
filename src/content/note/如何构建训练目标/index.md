@@ -77,11 +77,17 @@ $$
 
 > [!note] 边缘化Trick
 > 对于每个数据点 $z \in \mathbb{R}^d$，令 $u_t^{\text{target}}(\cdot | z)$ 表示一个**条件向量场**，其定义使得相应的常微分方程（ODE）给出条件概率路径 $p_t(\cdot | z)$，即：
-> $$X_0 \sim p_{\text{init}}, \quad \frac{d}{dt}X_t = u_t^{\text{target}}(X_t | z) \Rightarrow X_t \sim p_t(\cdot | z) \quad (0 \leq t \leq 1) \tag{18}$$
+> $$
+>X_0 \sim p_{\text{init}}, \quad \frac{d}{dt}X_t = u_t^{\text{target}}(X_t | z) \Rightarrow X_t \sim p_t(\cdot | z) \quad (0 \leq t \leq 1) \text{ (18)}
+>$$
 > 然后定义**边缘向量场** $u_t^{\text{target}}(x)$，其由下式给出：
-> $$u_t^{\text{target}}(x) = \int u_t^{\text{target}}(x|z) \frac{p_t(x|z)p_{\text{data}}(z)}{p_t(x)} dz \tag{19}$$
+> $$
+>u_t^{\text{target}}(x) = \int u_t^{\text{target}}(x|z) \frac{p_t(x|z)p_{\text{data}}(z)}{p_t(x)} dz \text{ (19)}
+>$$
 > 该向量场遵循边缘概率路径，即：
-> $$X_0 \sim p_{\text{init}}, \quad \frac{d}{dt}X_t = u_t^{\text{target}}(X_t) \Rightarrow X_t \sim p_t \quad (0 \leq t \leq 1) \tag{20}$$
+> $$
+>X_0 \sim p_{\text{init}}, \quad \frac{d}{dt}X_t = u_t^{\text{target}}(X_t) \Rightarrow X_t \sim p_t \quad (0 \leq t \leq 1) \text{ (20)}
+>$$
 > 特别地，对于该 ODE，$X_1 \sim p_{\text{data}}$，因此我们可以说 “$u_t^{\text{target}}$ 将噪声 $p_{\text{init}}$ 转换为数据 $p_{\text{data}}$”。
 
 > 在统计学里，**“边缘化”（Marginalization）指的是：把不需要的变量通过求和或积分“抹掉”，从而得到全局的平均状态**
