@@ -9,6 +9,7 @@ tags:
   - ML
   - Generative-Model
   - MIT6S184
+series: Diffusion-and-Flowmatching
 ---
 
 前面我们学习了怎么训练一个 flow matching 或者 diffusion model 来从分布 $p_{data}(x)$ 中采样， 但是要构建图像生成器，我们需要一个技术: **条件生成/引导**， 即如何生成**符合特定条件**(如文本)的图像

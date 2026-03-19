@@ -10,6 +10,7 @@ tags:
   - Generative-Model
   - Course
   - MIT6S184
+series: Diffusion-and-Flowmatching
 ---
 
 ## Flow是什么
