@@ -54,7 +54,7 @@ const title = config.title;
 		if (codeMermaid.length > 0) {
 			for (const code of codeMermaid) {
 				const diagram = code.textContent || "";
-				const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).substr(2, 9)}`, diagram);
+				const { svg } = await mermaid.render(`mermaid-${Math.random().toString(36).slice(2, 11)}`, diagram);
 				const pre = code.parentElement;
 				if (pre?.tagName === "PRE") {
 					pre.innerHTML = svg;
@@ -81,9 +81,9 @@ const title = config.title;
 		// Render all detected mermaid blocks
 		for (const { code, text } of mermaidBlocks) {
 			try {
-				const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+				const id = `mermaid-${Math.random().toString(36).slice(2, 11)}`;
 				const result = await mermaid.render(id, text);
-				const svg = result?.svg || result;
+				const svg = typeof result === "string" ? result : result.svg;
 				const pre = code.closest("pre");
 				const container = pre?.parentElement;
 

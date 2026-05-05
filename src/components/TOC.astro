@@ -237,7 +237,7 @@ tocHeadings.forEach(heading => {
 			window.removeEventListener("scroll", scrollListener);
 		}
 
-		progressFill = document.getElementById("toc-progress");
+		progressFill = document.getElementById("toc-progress") ?? undefined;
 
 		const indicators = new Map<string, Element>(
 			document
