@@ -2,6 +2,7 @@
 	"name": "astro-theme-thought-lite",
 	"type": "module",
 	"private": true,
+	"packageManager": "pnpm@9.15.9",
 	"version": "0.31.4",
 	"description": "A modern Astro theme focused on content creation",
 	"keywords": [
