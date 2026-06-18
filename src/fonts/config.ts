@@ -1,7 +1,7 @@
 import { defineAstroFontProvider } from "astro/config";
 
-export function LocalFonts() {
+export function ZeoSevenFonts() {
 	return defineAstroFontProvider({
-		entrypoint: "src/fonts/local_fonts.mjs"
+		entrypoint: "src/fonts/zeo_seven_fonts.ts"
 	});
 }

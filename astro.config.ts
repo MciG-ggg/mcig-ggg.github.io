@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import yaml from "@rollup/plugin-yaml";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
@@ -37,7 +37,7 @@ import figure from "./src/utils/remark/figure";
 import cardlink from "./src/utils/remark/cardlink";
 
 import siteConfig from "./site.config";
-import { LocalFonts } from "./src/fonts/config";
+import { ZeoSevenFonts } from "./src/fonts/config";
 
 // https://astro.build/config
 export default defineConfig({
@@ -127,28 +127,28 @@ export default defineConfig({
 		fonts: [
 			{
 				name: "Noto Serif",
-				provider: LocalFonts(),
+				provider: fontProviders.google(),
 				weights: [400, 700],
 				fallbacks: ["serif"],
 				cssVariable: "--font-noto-serif"
 			},
 			{
 				name: "Noto Serif SC",
-				provider: LocalFonts(),
+				provider: fontProviders.google(),
 				weights: [400, 700],
 				fallbacks: ["serif"],
 				cssVariable: "--font-noto-serif-sc"
 			},
 			{
 				name: "Noto Serif JP",
-				provider: LocalFonts(),
+				provider: fontProviders.google(),
 				weights: [400, 700],
 				fallbacks: ["serif"],
 				cssVariable: "--font-noto-serif-jp"
 			},
 			{
 				name: "Playwrite MX",
-				provider: LocalFonts(),
+				provider: fontProviders.google(),
 				weights: [100],
 				display: "block",
 				fallbacks: ["serif"],
@@ -156,13 +156,13 @@ export default defineConfig({
 			},
 			{
 				name: "Maple Mono NF CN",
-				provider: LocalFonts(),
+				provider: ZeoSevenFonts(),
 				fallbacks: ["monospace"],
 				cssVariable: "--font-maple-mono-nf-cn"
 			},
 			{
 				name: "The Peak Font Plus",
-				provider: LocalFonts(),
+				provider: ZeoSevenFonts(),
 				fallbacks: ["serif"],
 				cssVariable: "--font-the-peak-font-plus"
 			}
