@@ -4,7 +4,13 @@ import { monolocale } from "$config";
 import Time from "$utils/time";
 import i18nit from "$i18n";
 
-let { locale, notes, jottings, weeks = 20 }: { locale: string; notes: any[]; jottings: any[]; weeks?: number } = $props();
+let {
+	locale,
+	notes,
+	jottings,
+	weeks = 20,
+	showEntries = true
+}: { locale: string; notes: any[]; jottings: any[]; weeks?: number; showEntries?: boolean } = $props();
 
 const days = weeks * 7; // Convert weeks to days for heatmap
 
@@ -52,21 +58,32 @@ jottings.forEach(jotting => {
 			<div class="absolute start-0 bottom-full w-max -translate-x-1/2 rtl:translate-x-1/2 flex flex-col mb-1 rounded-sm px-2 py-2 text-xs text-background bg-primary pop">
 				<time class="font-bold">{Time.date.locale(day.date, locale)}</time>
 				{#if number > 0}
-					{#if day.notes.length > 0}
-						<p class="my-1">{t("home.heatmap.note", { count: day.notes.length })}：</p>
-						<ul class="flex flex-col gap-0.5">
-							{#each day.notes as note}
-								<a href={getRelativeLocaleUrl(locale, `/note/${monolocale ? note.id : note.id.split("/").slice(1).join("/")}`)} aria-label={note.data.title} class="ms-1 link">{note.data.title}</a>
-							{/each}
-						</ul>
-					{/if}
-					{#if day.jottings.length > 0}
-						<p class="my-1">{t("home.heatmap.jotting", { count: day.jottings.length })}：</p>
-						<ul class="flex flex-col gap-0.5">
-							{#each day.jottings as jotting}
-								<a href={getRelativeLocaleUrl(locale, `/jotting/${monolocale ? jotting.id : jotting.id.split("/").slice(1).join("/")}`)} aria-label={jotting.data.title} class="ms-1 link">{jotting.data.title}</a>
-							{/each}
-						</ul>
+					{#if showEntries}
+						{#if day.notes.length > 0}
+							<p class="my-1">{t("home.heatmap.note", { count: day.notes.length })}：</p>
+							<ul class="flex flex-col gap-0.5">
+								{#each day.notes as note}
+									<a href={getRelativeLocaleUrl(locale, `/note/${monolocale ? note.id : note.id.split("/").slice(1).join("/")}`)} aria-label={note.data.title} class="ms-1 link">{note.data.title}</a>
+								{/each}
+							</ul>
+						{/if}
+						{#if day.jottings.length > 0}
+							<p class="my-1">{t("home.heatmap.jotting", { count: day.jottings.length })}：</p>
+							<ul class="flex flex-col gap-0.5">
+								{#each day.jottings as jotting}
+									<a href={getRelativeLocaleUrl(locale, `/jotting/${monolocale ? jotting.id : jotting.id.split("/").slice(1).join("/")}`)} aria-label={jotting.data.title} class="ms-1 link">{jotting.data.title}</a>
+								{/each}
+							</ul>
+						{/if}
+					{:else}
+						<div class="mt-1 flex flex-col gap-0.5">
+							{#if day.notes.length > 0}
+								<p>{t("home.heatmap.note", { count: day.notes.length })}</p>
+							{/if}
+							{#if day.jottings.length > 0}
+								<p>{t("home.heatmap.jotting", { count: day.jottings.length })}</p>
+							{/if}
+						</div>
 					{/if}
 				{:else}
 					<p class="mt-1">{t("home.heatmap.empty")}</p>

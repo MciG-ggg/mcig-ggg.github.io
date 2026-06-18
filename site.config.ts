@@ -2,13 +2,13 @@ import siteConfig from "./src/utils/config";
 
 const config = siteConfig({
 	title: "MciG",
-	prologue: "If you need a website\nthat loads fast and has great SEO, then Astro is for you.",
+	prologue: "Undergraduate learning embodied intelligence, robotics, and generative models.",
 	author: {
 		name: "MciG",
 		email: "mcigggg399026@gmail.com",
 		link: "https://mcig-ggg.github.io"
 	},
-	description: "A modern Astro theme focused on content creation.",
+	description: "MciG-ggg 的个人主页：本科生，关注具身智能、机器人、VLA 与生成式模型。",
 	copyright: {
 		type: "CC BY-NC-ND 4.0",
 		year: "2025"

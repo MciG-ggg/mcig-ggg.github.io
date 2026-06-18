@@ -1,0 +1,52 @@
+name: MciG-ggg
+shortName: MciG
+avatar: https://github.com/MciG-ggg.png
+email: mcigggg399026@gmail.com
+github: https://github.com/MciG-ggg
+homepage: https://mcig-ggg.github.io
+location: Changsha, China
+affiliation: 中南大学 (CSU)
+status: 本科二年级
+headline: 本科生，正在系统学习具身智能、机器人与生成式模型。
+bio: 我来自中南大学，目前关注具身智能方向，正在补齐机器人系统、VLA、生成式模型和强化学习相关基础。这个站点用来沉淀学习路径，也作为一个更正式的个人入口。
+interests:
+  - title: 具身智能
+    detail: 关注模型如何连接感知、决策与真实或仿真的动作环境。
+  - title: Robotics / ROS2
+    detail: 学习机器人软件栈、通信机制、URDF/Xacro 与基础运动学。
+  - title: VLA / OpenVLA
+    detail: 关注视觉-语言-动作模型的训练流程、数据组织和工程实现。
+  - title: Generative Models / LLM
+    detail: 学习从小模型训练、LoRA、DPO/PPO 到扩散模型的基本方法。
+  - title: Reinforcement Learning
+    detail: 从 MDP、Monte Carlo、PPO 等基础概念建立实验和推导能力。
+focus:
+  - 系统整理具身智能与 VLA 的基础路线。
+  - 结合 ROS2、Modern Robotics 与 OpenVLA 补齐机器人侧工程背景。
+  - 通过小模型训练、RL 与生成式模型笔记建立可复现的学习材料。
+education:
+  institution: 中南大学 (CSU)
+  status: 本科在读
+  period: 2024 - Present
+  note: 目前大二，主要投入 AI、机器人与基础工程能力的学习。
+skillGroups:
+  - name: AI / Models
+    items:
+      - LLM basics
+      - MiniMind
+      - LoRA
+      - DPO / PPO
+      - Diffusion models
+  - name: Robotics
+    items:
+      - ROS2
+      - URDF / Xacro
+      - Modern Robotics
+      - OpenVLA
+  - name: Engineering
+    items:
+      - Python
+      - Docker
+      - Git
+      - Linux
+      - Notes / Writing
