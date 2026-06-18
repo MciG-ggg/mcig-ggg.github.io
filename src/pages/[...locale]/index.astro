@@ -2,6 +2,7 @@
 import { getCollection, getEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import config, { monolocale } from "$config";
+import Time from "$utils/time";
 import Base from "$layouts/Base.astro";
 import Heatmap from "$components/Heatmap.svelte";
 import Icon from "$components/Icon.svelte";
@@ -59,6 +60,9 @@ const profile = profileEntry?.data as {
 };
 
 const writingTotal = notes.length + jottings.length;
+const writingItems = [...notes, ...jottings];
+const activeWritingDays = new Set(writingItems.map(item => Time.date(item.data.timestamp))).size;
+const latestWriting = writingItems.sort((a, b) => b.data.timestamp.getTime() - a.data.timestamp.getTime())[0];
 ---
 
 <Base title={t("navigation.home")} {locale} description={profile.headline}>
@@ -170,8 +174,27 @@ const writingTotal = notes.length + jottings.length;
 					<p class="mt-1 text-sm text-secondary">{writingTotal} 则公开记录 · 近期写作频率</p>
 				</div>
 			</div>
-			<div class="overflow-x-auto pb-2">
-				<Heatmap {locale} {notes} {jottings} showEntries={false} />
+			<div class="activity-panel">
+				<div class="activity-stats" aria-label="Writing statistics">
+					<div class="activity-stat">
+						<Icon name="lucide--file-text" />
+						<strong>{writingTotal}</strong>
+						<span>公开记录</span>
+					</div>
+					<div class="activity-stat">
+						<Icon name="lucide--calendar-days" />
+						<strong>{activeWritingDays}</strong>
+						<span>活跃日期</span>
+					</div>
+					<div class="activity-stat">
+						<Icon name="lucide--clock" />
+						<strong>{latestWriting ? Time.date.locale(latestWriting.data.timestamp, locale) : "暂无"}</strong>
+						<span>最近更新</span>
+					</div>
+				</div>
+				<div class="heatmap-scroll">
+					<Heatmap {locale} {notes} {jottings} weeks={52} showEntries={false} />
+				</div>
 			</div>
 		</section>
 	</main>
@@ -183,13 +206,29 @@ const writingTotal = notes.length + jottings.length;
 		--home-blue: #456f83;
 		--home-warm: #8a6f3a;
 		--home-rose: #8a5d63;
+		--home-panel: #f7f7f4;
+		--home-panel-border: #d8d8d2;
+		--home-muted: #4a4a46;
+		--home-subtle: #686862;
 	}
 
 	:global([data-theme="dark"]) .home-shell {
-		--home-green: #7aa899;
-		--home-blue: #83a8ba;
-		--home-warm: #b7a067;
-		--home-rose: #bd8790;
+		--home-green: #8ec7b4;
+		--home-blue: #9bc4d7;
+		--home-warm: #d2bc73;
+		--home-rose: #d59aa4;
+		--home-panel: #181816;
+		--home-panel-border: #4c4c45;
+		--home-muted: #d1d1ca;
+		--home-subtle: #b8b8b0;
+	}
+
+	.home-shell :global(.text-secondary) {
+		color: var(--home-muted);
+	}
+
+	.home-shell :global(.text-remark) {
+		color: var(--home-subtle);
 	}
 
 	.profile-link {
@@ -207,6 +246,10 @@ const writingTotal = notes.length + jottings.length;
 		color: var(--secondary-color);
 	}
 
+	:global([data-theme="dark"]) .profile-link:hover {
+		color: #ffffff;
+	}
+
 	.profile-plate {
 		border-inline-start-color: var(--home-green);
 	}
@@ -221,7 +264,7 @@ const writingTotal = notes.length + jottings.length;
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
-		border-bottom: 1px solid var(--weak-color);
+		border-bottom: 1px solid var(--home-panel-border);
 		padding-bottom: 0.5rem;
 	}
 
@@ -257,7 +300,7 @@ const writingTotal = notes.length + jottings.length;
 	}
 
 	.interest-item {
-		border-inline-start: 1px solid var(--weak-color);
+		border-inline-start: 1px solid var(--home-panel-border);
 		padding-inline-start: 1rem;
 	}
 
@@ -277,7 +320,7 @@ const writingTotal = notes.length + jottings.length;
 		grid-template-columns: 2.5rem minmax(0, 1fr);
 		align-items: start;
 		gap: 0.75rem;
-		border-bottom: 1px dashed var(--weak-color);
+		border-bottom: 1px dashed var(--home-panel-border);
 		padding-bottom: 0.75rem;
 	}
 
@@ -292,7 +335,7 @@ const writingTotal = notes.length + jottings.length;
 	}
 
 	.skill-group {
-		border-top: 1px solid var(--weak-color);
+		border-top: 1px solid var(--home-panel-border);
 		padding-top: 0.75rem;
 	}
 
@@ -317,5 +360,58 @@ const writingTotal = notes.length + jottings.length;
 
 	.writing-section {
 		margin-bottom: 1rem;
+	}
+
+	.activity-panel {
+		display: grid;
+		gap: 1.2rem;
+		border: 1px solid var(--home-panel-border);
+		border-radius: 0.5rem;
+		padding: 1rem;
+		background: var(--home-panel);
+	}
+
+	.activity-stats {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.75rem;
+	}
+
+	.activity-stat {
+		display: flex;
+		min-height: 6rem;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		border: 1px solid var(--home-panel-border);
+		border-radius: 0.45rem;
+		background: var(--background-color);
+		text-align: center;
+	}
+
+	.activity-stat strong {
+		font-size: 1.2rem;
+		line-height: 1.2;
+	}
+
+	.activity-stat span {
+		color: var(--home-muted);
+		font-size: 0.85rem;
+	}
+
+	.heatmap-scroll {
+		overflow-x: auto;
+		padding-bottom: 0.15rem;
+	}
+
+	@media screen and (max-width: 640px) {
+		.activity-stats {
+			grid-template-columns: 1fr;
+		}
+
+		.activity-panel {
+			padding: 0.85rem;
+		}
 	}
 </style>

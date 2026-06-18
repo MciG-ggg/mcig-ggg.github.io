@@ -35,20 +35,20 @@
 - Color: Mostly existing primary/secondary/background tokens with small restrained green/blue/warm accents for section markers.
 - Typography: Existing serif body and mono metadata; avoid oversized hero typography inside compact panels.
 - Spacing/layout rhythm: Two-column desktop hero, single-column mobile, full-width unframed sections.
-- Shape/radius/elevation: Minimal borders and underlines; no nested cards or heavy shadows.
+- Shape/radius/elevation: Minimal borders and underlines; small repeated stat cards are acceptable for the activity section; no nested cards or heavy shadows.
 - Motion: Existing transitions only; no new decorative animations.
 - Imagery/iconography: GitHub avatar and existing Iconify icons; no generated imagery.
 
 ## Components
 - Existing components to reuse: `Base`, `Icon`, `Heatmap`, theme/navigation/footer components.
-- New/changed components: `Heatmap` gets a backward-compatible `showEntries` prop.
-- Variants and states: Home page uses `showEntries={false}` so activity tooltips show counts without post links.
+- New/changed components: `Heatmap` gets a backward-compatible `showEntries` prop and a GitHub-style yearly activity presentation with month labels and a Less/More legend.
+- Variants and states: Home page uses `showEntries={false}` and 52 weeks so activity tooltips show counts without post links.
 - Token/component ownership: Keep local page styling inside the home page unless reused elsewhere.
 
 ## Accessibility
 - Target standard: Practical WCAG AA-minded readability.
 - Keyboard/focus behavior: Links remain normal anchors with visible browser focus.
-- Contrast/readability: Use theme colors and avoid low-opacity text for primary content.
+- Contrast/readability: Use theme colors and avoid low-opacity text for primary content; dark-mode secondary text must remain visibly lighter than borders and inactive heatmap cells.
 - Screen-reader semantics: Use one `h1`, ordered section headings, meaningful avatar alt text.
 - Reduced motion and sensory considerations: No new motion beyond existing theme behavior.
 

@@ -19,13 +19,13 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--primary-color: #dddddb;
-		--secondary-color: #aaaaa8;
-		--remark-color: #a5a5a5;
-		--weak-color: #5d5d5a;
+		--primary-color: #f0f0ec;
+		--secondary-color: #c9c9c3;
+		--remark-color: #b6b6ae;
+		--weak-color: #7a7a72;
 		--background-color: #0e0e0c;
-		--block-color: #1e1e1e;
-		--shadow-color: #323231;
+		--block-color: #1a1a17;
+		--shadow-color: #45453f;
 		--selection-color: #adadacc3;
 	}
 
@@ -37,13 +37,13 @@
 }
 
 [data-theme="dark"] {
-	--primary-color: #dddddb;
-	--secondary-color: #aaaaa8;
-	--remark-color: #a5a5a5;
-	--weak-color: #5d5d5a;
+	--primary-color: #f0f0ec;
+	--secondary-color: #c9c9c3;
+	--remark-color: #b6b6ae;
+	--weak-color: #7a7a72;
 	--background-color: #0e0e0c;
-	--block-color: #1e1e1e;
-	--shadow-color: #323231;
+	--block-color: #1a1a17;
+	--shadow-color: #45453f;
 	--selection-color: #adadacc3;
 }
 
