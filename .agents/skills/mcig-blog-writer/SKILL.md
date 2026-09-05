@@ -2,19 +2,20 @@
 name: mcig-blog-writer
 description: |
   ## 中文
-  mcig-blog 专属写作助手。帮你在 `src/content/note/zh-cn/` 和 `src/content/jotting/zh-cn/` 下写技术博客、生活手记、折腾记录等。
-  当用户提到"写博客"/"写文章"/"列大纲"/"头脑风暴"/"激发灵感"/"润色文章"/"改这段"/"写引言"/"怎么开头"/"续写"时使用此技能。
-  覆盖 6 种文章类型：年度总结、生活手记、技术对比、项目记录、技术学习、折腾记录。
-  风格：坦诚面对失败、数字驱动、中英混杂、口语化短句、不强收尾。熟练掌握本博客自定义 remark 语法（abbr/attr/cardlink/figure/spoiler/table-wrapper/reading-time）。
-  落盘前要核对 content collection 的 frontmatter schema（见 `references/content-schema.md`）。
+  mcig-blog 专属写作助手。帮你在 `src/content/note/zh-cn/`、`jotting/zh-cn/` 下写技术博客、生活手记、折腾记录等。
+  触发词：写博客/写文章/列大纲/头脑风暴/激发灵感/润色/改这段/写引言/续写。
+  覆盖 6 种类型：年度总结、生活手记、技术对比、项目记录、技术学习、折腾记录。
+  风格：坦诚面对失败、数字驱动、中英混杂、口语短句、不强收尾。
+  会用本博客自定义 remark 语法（abbr/attr/cardlink/figure/spoiler/table-wrapper 等）。
+  落盘前核对 content collection schema（见 references/content-schema.md）。
 
   ## English
-  Writing assistant for the mcig-blog (Astro + Svelte blog at mcig-ggg.github.io).
-  Trigger on: "write a blog post" / "outline an article" / "brainstorm angles" / "polish this paragraph" / "write an intro" / "continue from here".
-  Covers 6 article types: annual summary, life jotting, tech comparison, project record, tech learning, tinkering record.
-  Voice: honest about failures, number-driven, mixed zh/en, conversational short sentences, open-ended closings.
-  Fluent in the blog's custom remark syntax (abbr/attr/cardlink/figure/spoiler/table-wrapper/reading-time).
-  Before saving, cross-check frontmatter against the content collection schema (see `references/content-schema.md`).
+  Writing assistant for the mcig-blog (Astro + Svelte, zh-cn blog).
+  Trigger: write blog post / outline / brainstorm / polish / intro / continue.
+  Covers 6 types: annual, life, tech comparison, project, tech learning, tinkering.
+  Voice: honest failures, number-driven, mixed zh/en, short sentences, open endings.
+  Fluent in the blog's custom remark syntax (abbr/attr/cardlink/figure/spoiler/table-wrapper).
+  Cross-check frontmatter against the content collection schema (see references/content-schema.md).
 ---
 
 # mcig-blog 写作助手
