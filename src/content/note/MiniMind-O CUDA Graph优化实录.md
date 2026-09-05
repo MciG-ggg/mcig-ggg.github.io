@@ -11,9 +11,6 @@ series: nanovllm-omni 开发手记
 description: 上一次把 MiniMind-O 从 846ms 压到 320ms 后，剩下的 ~510ms 全是 launch overhead、没有 kernel 工作。CUDA Graph 是唯一杠杆。这篇记录 5 个前置条件怎么一一就位、最终拿到 7.51× 端到端加速，以及为什么另外三个模型族不值得或不需要做同样的事。
 toc: true
 ---
-
-# 把 MiniMind-O 再压 7.5 倍：CUDA Graph 全栈实践 + 跨族可行性判定
-
 ## 上一篇写到哪了
 
 上一篇[《把 MiniMind-O 从 846ms 压到 320ms》](MiniMind-O性能优化实录.md)写到，25 轮自动实验把端到端生成从 846ms 压到 320ms 之后，我已经没什么牌可以出了。最后一轮试 `torch.compile(reduce-overhead)` 直接 crash，block 级 compile 还倒贴了 91ms。我当时的结论是：

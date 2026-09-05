@@ -11,9 +11,6 @@ series: nanovllm-omni 开发手记
 description: 在只允许 monkey-patch、零新依赖、不改上游模型代码的约束下，一个人用 25 轮自动实验把 RTX 3050 上 MiniMind-O 的端到端延迟从 846ms 压到 320ms 的全过程——包括一个潜伏了 22 轮的最大真实 bug。
 toc: true
 ---
-
-# 把 MiniMind-O 从 846ms 压到 320ms：25 轮实验的性能优化实录
-
 ## 缘起：为什么要在 4GB 显卡上抠这几百毫秒
 
 在做 `nanovllm-omni` 的过程中，我在本地一台 **RTX 3050 4GB Laptop** 上跑 MiniMind-O（一个三阶段 omni 模型：thinker → talker → mimi 语音解码）做端到端音频生成。一次完整的 `Omni.generate` 流程是：
