@@ -1,11 +1,11 @@
 ---
-import { getCollection, getEntry } from "astro:content";
+import { render, getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import config, { monolocale } from "$config";
 import Time from "$utils/time";
 import Base from "$layouts/Base.astro";
 import Heatmap from "$components/Heatmap.svelte";
-import Icon from "$components/Icon.svelte";
+import Logo from "$icons/site-logo.svg";
 import i18nit from "$i18n";
 
 export async function getStaticPaths() {
@@ -17,8 +17,26 @@ const { locale = config.i18n.defaultLocale } = Astro.params;
 
 const t = i18nit(locale);
 
+// Get preface content for current locale, sorted by timestamp (latest first)
+const prefaces = (
+	await getCollection("preface", preface => {
+		// Handle single locale setup
+		if (monolocale) return true;
+
+		// Extract language and ID from file path structure
+		const [language, id] = preface.id.split("/");
+		preface.id = id;
+
+		// Filter by current locale
+		return language === locale;
+	})
+).sort((a, b) => b.data.timestamp.getTime() - a.data.timestamp.getTime());
+
 // Get published notes for current locale
 const notes = await getCollection("note", note => {
+	// Assign type property
+	Reflect.set(note, "type", "note");
+
 	// Filter by publication status and locale
 	let published = !note.data.draft;
 	let localed = monolocale || note.id.split("/")[0] === locale;
@@ -39,379 +57,71 @@ const jottings = await getCollection("jotting", jotting => {
 	return !jotting.data.draft && localed;
 });
 
-const localePrefix = monolocale ? "" : `${locale}/`;
-const profileEntry = await getEntry("information", `${localePrefix}profile`);
-const profile = profileEntry?.data as {
-	name: string;
-	shortName: string;
-	avatar: string;
-	email: string;
-	github: string;
-	homepage: string;
-	location: string;
-	affiliation: string;
-	status: string;
-	headline: string;
-	bio: string;
-	interests: { title: string; detail: string }[];
-	focus: string[];
-	education: { institution: string; status: string; period: string; note: string };
-	skillGroups: { name: string; items: string[] }[];
-};
+// Combine contents
+let items: { id: string; type?: string; data: { timestamp: Date; tags?: string[]; [key: string]: any } }[] = [];
 
-const writingTotal = notes.length + jottings.length;
-const writingItems = [...notes, ...jottings];
-const activeWritingDays = new Set(writingItems.map(item => Time.date(item.data.timestamp))).size;
-const latestWriting = writingItems.sort((a, b) => b.data.timestamp.getTime() - a.data.timestamp.getTime())[0];
+// Determine which sections to include
+const sections = config.latest || "*";
+
+// Add contents based on config
+if (sections === "*" || sections.includes("note")) items = items.concat(notes);
+if (sections === "*" || sections.includes("jotting")) items = items.concat(jottings);
+
+// Get the latest content for display
+const latest = items.sort((a, b) => b.data.timestamp.getTime() - a.data.timestamp.getTime())[0];
+
+// Get the latest preface for display
+const preface = prefaces[0];
+// Render preface content if available, otherwise use empty object
+const { Content } = preface ? await render(preface) : ({} as any);
 ---
 
-<Base title={t("navigation.home")} {locale} description={profile.headline}>
-	<main class="home-shell flex flex-col gap-12 grow">
-		<header class="grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_16rem]">
-			<section class="flex flex-col gap-5">
-				<p class="font-mono text-sm text-secondary">{profile.affiliation} / {profile.status}</p>
-				<div class="flex flex-col gap-3">
-					<h1 class="text-4xl sm:text-5xl leading-tight">{profile.name}</h1>
-					<p class="max-w-2xl text-xl leading-relaxed text-secondary">{profile.headline}</p>
-				</div>
-				<p class="max-w-2xl leading-8">{profile.bio}</p>
-				<nav aria-label="Profile links" class="flex flex-wrap gap-3">
-					<a href={`mailto:${profile.email}`} class="profile-link">
-						<Icon name="lucide--mail" />
-						Email
-					</a>
-					<a href={profile.github} target="_blank" rel="noopener noreferrer" class="profile-link">
-						<Icon name="simple-icons--github" />
-						GitHub
-					</a>
-					<a href={getRelativeLocaleUrl(locale, "/about")} class="profile-link">
-						<Icon name="lucide--at-sign" />
-						About
-					</a>
-				</nav>
-			</section>
-
-			<aside class="flex md:justify-end">
-				<div class="profile-plate flex w-full max-w-64 flex-col gap-4 border-s-2 ps-5">
-					<object data={profile.avatar} type="image/png" aria-label={`${profile.name} avatar`} class="h-28 w-28 overflow-hidden rounded-full border border-shadow">
-						<img src="/favicon.svg" alt={`${profile.name} avatar`} data-nozoom class="h-full w-full object-cover" />
-					</object>
-					<div class="flex flex-col gap-1">
-						<strong class="text-xl">{profile.shortName}</strong>
-						<span class="text-sm text-secondary">{profile.location}</span>
-						<a href={profile.homepage} target="_blank" rel="noopener noreferrer" class="link text-sm font-mono text-remark">{profile.homepage.replace("https://", "")}</a>
-					</div>
-				</div>
-			</aside>
+<Base title={t("navigation.home")} {locale}>
+	<main class="flex flex-col gap-5 sm:gap-20 grow">
+		<header class="flex items-center justify-center flex-wrap-reverse grow-[0.6]">
+			{config.prologue && <article class="me-auto font-cursive font-thin text-xl sm:text-2xl leading-loose whitespace-pre-line">{config.prologue}</article>}
+			<Logo width={100} />
 		</header>
 
-		<section aria-labelledby="research-interests" class="home-section">
-			<div class="section-heading">
-				<span class="section-mark research-mark"></span>
-				<h2 id="research-interests">Research Interests</h2>
-			</div>
-			<div class="grid gap-4 sm:grid-cols-2">
-				{profile.interests.map(interest => (
-					<article class="interest-item">
-						<h3>{interest.title}</h3>
-						<p>{interest.detail}</p>
+		{
+			preface && (
+				<section class="flex flex-col">
+					<article class="markdown">
+						<Content />
 					</article>
-				))}
-			</div>
-		</section>
+					<a href={getRelativeLocaleUrl(locale, "/preface")} class="self-end my-2 text-sm text-secondary">
+						—— {Time.date.locale(preface.data.timestamp, locale)}
+					</a>
+				</section>
+			)
+		}
 
-		<section aria-labelledby="current-focus" class="home-section">
-			<div class="section-heading">
-				<span class="section-mark focus-mark"></span>
-				<h2 id="current-focus">Current Focus</h2>
-			</div>
-			<ol class="grid gap-3">
-				{profile.focus.map((item, index) => (
-					<li class="focus-item">
-						<span>{String(index + 1).padStart(2, "0")}</span>
-						<p>{item}</p>
-					</li>
-				))}
-			</ol>
-		</section>
+		{
+			latest && (
+				<footer class="flex items-center justify-center flex-wrap-reverse gap-10">
+					<Heatmap {locale} {notes} {jottings} />
 
-		<section class="grid gap-10 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-			<div aria-labelledby="education" class="home-section">
-				<div class="section-heading">
-					<span class="section-mark education-mark"></span>
-					<h2 id="education">Education</h2>
-				</div>
-				<div class="flex flex-col gap-2 border-s border-weak ps-4">
-					<strong>{profile.education.institution}</strong>
-					<span class="font-mono text-sm text-secondary">{profile.education.period} / {profile.education.status}</span>
-					<p class="leading-7 text-secondary">{profile.education.note}</p>
-				</div>
-			</div>
-
-			<div aria-labelledby="skills-tools" class="home-section">
-				<div class="section-heading">
-					<span class="section-mark skills-mark"></span>
-					<h2 id="skills-tools">Skills / Tools</h2>
-				</div>
-				<div class="grid gap-4 sm:grid-cols-3">
-					{profile.skillGroups.map(group => (
-						<section class="skill-group">
-							<h3>{group.name}</h3>
-							<ul>
-								{group.items.map(item => <li>{item}</li>)}
-							</ul>
-						</section>
-					))}
-				</div>
-			</div>
-		</section>
-
-		<section aria-labelledby="writing-activity" class="home-section writing-section">
-			<div class="section-heading">
-				<span class="section-mark writing-mark"></span>
-				<div>
-					<h2 id="writing-activity">Writing Activity</h2>
-					<p class="mt-1 text-sm text-secondary">{writingTotal} 则公开记录 · 近期写作频率</p>
-				</div>
-			</div>
-			<div class="activity-panel">
-				<div class="activity-stats" aria-label="Writing statistics">
-					<div class="activity-stat">
-						<Icon name="lucide--file-text" />
-						<strong>{writingTotal}</strong>
-						<span>公开记录</span>
-					</div>
-					<div class="activity-stat">
-						<Icon name="lucide--calendar-days" />
-						<strong>{activeWritingDays}</strong>
-						<span>活跃日期</span>
-					</div>
-					<div class="activity-stat">
-						<Icon name="lucide--clock" />
-						<strong>{latestWriting ? Time.date.locale(latestWriting.data.timestamp, locale) : "暂无"}</strong>
-						<span>最近更新</span>
-					</div>
-				</div>
-				<div class="heatmap-scroll">
-					<Heatmap {locale} {notes} {jottings} weeks={52} showEntries={false} />
-				</div>
-			</div>
-		</section>
+					<blockquote class="grow flex flex-col">
+						<h4>{t("home.latest")}</h4>
+						<div class="flex flex-col sm:flex-row justify-between gap-1 mt-1">
+							<a href={getRelativeLocaleUrl(locale, `/${latest.type}/${monolocale ? latest.id : latest.id.split("/").slice(1).join("/")}`)} class="link">
+								{latest.data.series && `${latest.data.series} | `}
+								{latest.data.title}
+							</a>
+							<div class="flex gap-1">
+								{latest.data.tags?.map(tag => (
+									<a href={`${getRelativeLocaleUrl(locale, `/${latest.type}`)}?tag=${encodeURIComponent(tag)}`} class="text-remark text-sm link">
+										#{tag}
+									</a>
+								))}
+							</div>
+						</div>
+						<time datetime={latest.data.timestamp.toISOString()} class="text-remark font-mono text-xs">
+							{Time(latest.data.timestamp)}
+						</time>
+					</blockquote>
+				</footer>
+			)
+		}
 	</main>
 </Base>
-
-<style>
-	.home-shell {
-		--home-green: #4f766b;
-		--home-blue: #456f83;
-		--home-warm: #8a6f3a;
-		--home-rose: #8a5d63;
-		--home-panel: #f7f7f4;
-		--home-panel-border: #d8d8d2;
-		--home-muted: #4a4a46;
-		--home-subtle: #686862;
-	}
-
-	:global([data-theme="dark"]) .home-shell {
-		--home-green: #8ec7b4;
-		--home-blue: #9bc4d7;
-		--home-warm: #d2bc73;
-		--home-rose: #d59aa4;
-		--home-panel: #181816;
-		--home-panel-border: #4c4c45;
-		--home-muted: #d1d1ca;
-		--home-subtle: #b8b8b0;
-	}
-
-	.home-shell :global(.text-secondary) {
-		color: var(--home-muted);
-	}
-
-	.home-shell :global(.text-remark) {
-		color: var(--home-subtle);
-	}
-
-	.profile-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		border-bottom: 2px solid var(--primary-color);
-		padding: 0.25rem;
-		font-family: var(--font-mono);
-		font-size: 0.875rem;
-		transition: color 0.15s ease-in-out;
-	}
-
-	.profile-link:hover {
-		color: var(--secondary-color);
-	}
-
-	:global([data-theme="dark"]) .profile-link:hover {
-		color: #ffffff;
-	}
-
-	.profile-plate {
-		border-inline-start-color: var(--home-green);
-	}
-
-	.home-section {
-		display: flex;
-		flex-direction: column;
-		gap: 1.25rem;
-	}
-
-	.section-heading {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		border-bottom: 1px solid var(--home-panel-border);
-		padding-bottom: 0.5rem;
-	}
-
-	.section-heading h2 {
-		font-size: 1.5rem;
-	}
-
-	.section-mark {
-		width: 0.75rem;
-		height: 0.75rem;
-		flex-shrink: 0;
-		border-radius: 9999px;
-	}
-
-	.research-mark {
-		background: var(--home-green);
-	}
-
-	.focus-mark {
-		background: var(--home-blue);
-	}
-
-	.education-mark {
-		background: var(--home-warm);
-	}
-
-	.skills-mark {
-		background: var(--home-rose);
-	}
-
-	.writing-mark {
-		background: var(--home-green);
-	}
-
-	.interest-item {
-		border-inline-start: 1px solid var(--home-panel-border);
-		padding-inline-start: 1rem;
-	}
-
-	.interest-item h3,
-	.skill-group h3 {
-		margin-bottom: 0.5rem;
-		font-size: 1.125rem;
-	}
-
-	.interest-item p {
-		color: var(--secondary-color);
-		line-height: 1.75rem;
-	}
-
-	.focus-item {
-		display: grid;
-		grid-template-columns: 2.5rem minmax(0, 1fr);
-		align-items: start;
-		gap: 0.75rem;
-		border-bottom: 1px dashed var(--home-panel-border);
-		padding-bottom: 0.75rem;
-	}
-
-	.focus-item span {
-		color: var(--remark-color);
-		font-family: var(--font-mono);
-		font-size: 0.875rem;
-	}
-
-	.focus-item p {
-		line-height: 1.75rem;
-	}
-
-	.skill-group {
-		border-top: 1px solid var(--home-panel-border);
-		padding-top: 0.75rem;
-	}
-
-	.skill-group ul {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		color: var(--secondary-color);
-		font-size: 0.875rem;
-		line-height: 1.5rem;
-	}
-
-	.skill-group li {
-		list-style: none;
-	}
-
-	.skill-group li::before {
-		content: "/";
-		margin-inline-end: 0.4rem;
-		color: var(--home-blue);
-	}
-
-	.writing-section {
-		margin-bottom: 1rem;
-	}
-
-	.activity-panel {
-		display: grid;
-		gap: 1.2rem;
-		border: 1px solid var(--home-panel-border);
-		border-radius: 0.5rem;
-		padding: 1rem;
-		background: var(--home-panel);
-	}
-
-	.activity-stats {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 0.75rem;
-	}
-
-	.activity-stat {
-		display: flex;
-		min-height: 6rem;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0.35rem;
-		border: 1px solid var(--home-panel-border);
-		border-radius: 0.45rem;
-		background: var(--background-color);
-		text-align: center;
-	}
-
-	.activity-stat strong {
-		font-size: 1.2rem;
-		line-height: 1.2;
-	}
-
-	.activity-stat span {
-		color: var(--home-muted);
-		font-size: 0.85rem;
-	}
-
-	.heatmap-scroll {
-		overflow-x: auto;
-		padding-bottom: 0.15rem;
-	}
-
-	@media screen and (max-width: 640px) {
-		.activity-stats {
-			grid-template-columns: 1fr;
-		}
-
-		.activity-panel {
-			padding: 0.85rem;
-		}
-	}
-</style>
