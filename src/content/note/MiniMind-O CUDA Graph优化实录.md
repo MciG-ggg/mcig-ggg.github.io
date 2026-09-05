@@ -147,6 +147,19 @@ Capture 有 RNG 副作用，所以"capture once / replay many"优于每 run 捕�
 
 如果未来想给 SmolVLA 也做 CUDA Graph，要做的第一件事不是 capture——是先把 `enable_fixed_kv_buffer` 那一套基础设施复刻到 lerobot policy 里。这是另一个 session 的事。
 
+## 生态定位：patch-only 是少数派
+
+横向对比一下 2026-09 的主流 ML 推理项目（[调研报告](https://mcig-ggg.github.io)）：
+
+- **sglang** 的 `hf_transformers_patches.py` 也走集中 patch，但同时大量 subclass + AutoModel wrap；
+- **vllm-omni** 的 `vllm_omni/patch.py`（27.9 KB / 10 处）也保留 patch 文件，但模型层走 subclass + 子模块 fork-rewrite（`voxcpm2_talker.py` 139 KB、`siglip2.py` 15 KB 等），还保留 1 处 `nemo_vendored/`；
+- **vLLM 本体 / HF optimum / accelerate / TGI / DeepSpeed-MII** 都走 subclass + adapter，这是事实标准；
+- **TensorRT-LLM / llama.cpp / MLC-LLM**（性能敏感型）走 fork-and-rewrite 到自家 runtime。
+
+nanovllm-omni 真正的差异化**不是「我们是孤例」**——sglang 也类似——而是 **vendor = 0 + fork = 0 + subclass = 0**：本节 + 上一篇博客里的 5 处 monkey-patch 全是 `setattr`，不打 vLLM 那一层间接（vllm-omni 的 patch 大多是给 vLLM 用的，是 cross-cutting 层的版本兼容 wrapper）。
+
+Ollama 在 v0.30 刚反 de-fork 了自家 GGML、直接依赖 llama.cpp——他们花了几年才学到「维护 fork 的长期成本」这个教训，我们项目从一开始就走 patch-only 是站在他们的肩膀上。完整横向对比表在 nanovllm-omni 仓库的 `docs/perf/ncu-generate-kernels-2026-09-01.md` §51.3。
+
 ## 收尾
 
 这个 session 拿了 7.51× 端到端 + 5 个 GPU 闸门全绿（serve-path / cross-prompt / longrun / determinism / Omni() e2e）。但更值钱的副产品是**那 5 个条件**——它把"Cuda Graph 能不能用"从一个"看运气"的玄学问题变成了一个可以 5 条逐一打勾的工程判断。
