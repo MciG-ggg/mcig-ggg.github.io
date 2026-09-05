@@ -13,7 +13,7 @@ toc: true
 ---
 ## 上一篇写到哪了
 
-上一篇[《把 MiniMind-O 从 846ms 压到 320ms》](MiniMind-O性能优化实录.md)写到，25 轮自动实验把端到端生成从 846ms 压到 320ms 之后，我已经没什么牌可以出了。最后一轮试 `torch.compile(reduce-overhead)` 直接 crash，block 级 compile 还倒贴了 91ms。我当时的结论是：
+上一篇[《把 MiniMind-O 从 846ms 压到 320ms》](/note/MiniMind-O%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E5%BD%95)写到，25 轮自动实验把端到端生成从 846ms 压到 320ms 之后，我已经没什么牌可以出了。最后一轮试 `torch.compile(reduce-overhead)` 直接 crash，block 级 compile 还倒贴了 91ms。我当时的结论是：
 
 > "kernel 优化到这一步已经饱和，剩下的几百毫秒可能是 launch overhead，但要把这条线追到底需要 ncu 证据。"
 

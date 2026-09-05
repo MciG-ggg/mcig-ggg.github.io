@@ -9,15 +9,15 @@ tags:
   - Profiler
   - PyTorch
 series: nanovllm-omni 开发手记
-description: torchprofile 告诉我们账面算力优化到位、Kineto 告诉我们 wall-clock 还差 510ms，但"这 510ms 到底是谁在等谁"只有 ncu 能给硬证据。这篇记录在 RTX 3050 上用 Nsight Compute 抓 MiniMind-O decode loop 里 top 4 kernel 的全过程，以及怎么从那一堆百分比里读出"该上 CUDA Graph 了"。
+description: torch.profiler / Kineto 告诉我们 wall-clock 里有大量 launch overhead，但"这 510ms 到底是谁在等谁"只有 ncu 能给硬证据。这篇记录在 RTX 3050 上用 Nsight Compute 抓 MiniMind-O decode loop 里 top 4 kernel 的全过程，以及怎么从那一堆百分比里读出"该上 CUDA Graph 了"。
 toc: true
 ---
 
 ## 上一篇写到哪了
 
-上一篇[《MiniMind-O torchprofile 入门》](MiniMind-O torchprofile 入门.md)把"账面算力"那一层补完了——9 处 monkey-patch 跑下来 MACs 该省的省了，剩下都是 0 MACs 的访存 / launch / control flow 优化。但账面算力和 wall-clock 之间还差一个 kernel 层的取证工具。
+上一篇[《MiniMind-O torch.profiler 入门》](/note/MiniMind-O%20torch.profiler%20%E5%85%A5%E9%97%A8)把 timeline 那一层补完了——它记录了 CPU、CUDA runtime、GPU kernel 和自定义阶段，但只看时间线还不能解释 kernel 的硬件利用率。
 
-torchprofile 答不出 "kernel 在 GPU 里到底有没有空等"。这一步归 **Nsight Compute (ncu)**。
+torch.profiler / Kineto 答不出 "某个 kernel 在 GPU 里到底有没有吃满"。这一步归 **Nsight Compute (ncu)**。
 
 ## ncu 是什么 / 不是什么
 
@@ -31,7 +31,7 @@ ncu 是 NVIDIA 官方的**单个 kernel 微架构分析器**。它在每次 kern
 
 它**不是**：
 
-- **不是 timeline profiler**——你要的是"这次 launch 总共多少 ms"，用 `nsys` 或 `torch.profiler`，不是 ncu
+- **不是 timeline profiler**——你要的是"这次 launch 总共多少 ms"，用 `nsys` 或 `torch.profiler` / Kineto，不是 ncu
 - **不是端到端 profiler**——它一次只能盯一个 kernel，看完整个推理的所有 kernel 会爆数据量
 - **不是优化建议器**——它告诉你数字，怎么改是你自己的判断
 
@@ -173,21 +173,21 @@ ncu 在我们项目里只回答了一个核心问题，但这个问题的答案�
 
 第 1 和第 2 条最致命——没 skip + 没 count = 一次 profile 输出几 GB，编辑器卡死，还得从头跑。我们有过一次 23GB 输出文件的惨案。
 
-## 它和 torchprofile / Kineto 的接力
+## 它和 torch.profiler / Kineto 的接力
 
 把三层工具串起来用就是完整的优化三角：
 
 ```
-torchprofile    账面算力有没有省    (MACs)
-nsys / Kineto   端到端 ms 分布       (timeline)
-ncu             单 kernel 微架构    (SOL / occupancy)
+torch.profiler / Kineto  端到端时间线       (CPU/CUDA/kernel)
+nsys                     系统级 timeline    (API/进程/线程)
+ncu                      单 kernel 微架构   (SOL / occupancy)
 ```
 
 每一层都有自己的"放大镜倍数"，互相不替代：
 
-- torchprofile 看"该不该省"
-- ncu 看"GPU 里发生了什么"
-- nsys 看"时间花在哪儿"
+- torch.profiler / Kineto 看"时间花在哪儿"
+- nsys 看"进程和 CUDA API 怎么排队"
+- ncu 看"单个 kernel 在 GPU 里发生了什么"
 
 我们 nanovllm-omni 仓库的 `docs/perf/ncu-generate-kernels-2026-09-01.md`（74KB, 51 节）就是用这套三角搭起来的，里面 §6-§12 是 ncu 取证部分的源材料。
 
@@ -195,6 +195,6 @@ ncu             单 kernel 微架构    (SOL / occupancy)
 
 ncu 不是一个"优化工具"——它是一个**取证工具**。它的输出不是"哪里慢"或"怎么改"，而是"这个 kernel 在硬件上跑了什么"。这种证据在 launch-bound 这种"看起来都还行但端到端就是慢"的形态下是唯一能让你**不靠猜**地决定下一步动作的工具。
 
-MiniMind-O 这边的故事是：torchprofile 说账面算力优化到位、Kineto 说端到端 wall-clock 还有 320ms，ncu 给出那句"320ms 里 kernel 工作只占 28ms"——**然后 CUDA Graph 才登场**。下一篇[《MiniMind-O CUDA Graph 优化实录》](MiniMind-O CUDA Graph优化实录.md)就是从这个 ncu 结论开始的。
+MiniMind-O 这边的故事是：torch.profiler / Kineto 说端到端 wall-clock 还有 320ms，时间线里堆了约 17000 次 launch；ncu 再给出那句"320ms 里 kernel 工作只占 28ms"——**然后 CUDA Graph 才登场**。下一篇[《MiniMind-O CUDA Graph 优化实录》](/note/MiniMind-O%20CUDA%20Graph%E4%BC%98%E5%8C%96%E5%AE%9E%E5%BD%95)就是从这个 ncu 结论开始的。
 
 下一篇计划写 SmolVLA 的接入——从文本 AR 跨到 VLA 视觉+动作，同样的 5 条逐一打勾 + 4 个障碍一一打掉，但场景完全换一套，到时候再说。
