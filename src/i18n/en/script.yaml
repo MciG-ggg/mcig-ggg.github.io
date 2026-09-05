@@ -1,0 +1,58 @@
+new:
+  article:
+    start: |-
+      ## Start Writing
+
+      Begin your creation here...
+  cancel: Operation cancelled
+  created: File created successfully!
+  creating: Creating file...
+  done: Done! Happy writing!
+  error: An error occurred
+  jotting:
+    description: Short insights, scattered thoughts, or daily observations
+    name: Jotting
+  note:
+    description: Long-form, deep, and well-thought-out pieces
+    name: Note
+  open:
+    error: Failed to open VS Code
+    message: Open this file in VS Code?
+  preface:
+    description: Life updates, site announcements, or creative direction
+    name: Preface
+    start: Begin your creation here...
+  preview: This will be created at {path}
+  step:
+    confirm: Confirm file creation?
+    description:
+      name: Description (optional)
+      placeholder: Brief summary of the content...
+    id:
+      name: Content ID (file name)
+      placeholder: Enter content ID...
+      validate: Content ID can only contain letters, digits, and hyphens, and cannot start or end with a hyphen.
+    language: Choose language
+    options:
+      draft: Mark as draft
+      name: Choose additional options
+      sensitive: Mark as sensitive content
+      toc: Show table of contents
+      top: Pin to top
+    overwrite: File {path} already exists. Overwrite?
+    series:
+      name: Series (optional)
+      placeholder: Leave blank if it does not belong to any series
+    structure:
+      flat: A single Markdown file
+      folder: Folder with an index file (for posts with images)
+      name: Which file structure do you want?
+    tags:
+      name: Tags (comma-separated, optional)
+      placeholder: 'e.g.: Guide, Astro, Tutorial'
+    title:
+      name: Post title
+      placeholder: Enter title...
+      validate: Title cannot be empty
+    type: Choose content type
+  welcome: Create a new post

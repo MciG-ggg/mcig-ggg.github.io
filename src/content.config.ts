@@ -2,12 +2,27 @@ import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
 
 /**
+ * Preserve the full relative path as entry id (e.g. "zh-cn/2025总结/index").
+ * Astro 5's default generateId slugifies each path segment and occasionally
+ * collapses the locale prefix, breaking multi-locale routing. Override it to
+ * keep the locale prefix intact so that `entry.id.split("/")[0]` always returns
+ * the language code in multi-locale mode.
+ */
+function entryId({ entry }: { entry: string }) {
+	return entry.replace(/\.[^.]+$/, "").replace(/\/index$/, "");
+}
+
+/**
  * Note collection configuration
  * Represents main blog articles with comprehensive metadata
  */
 const note = defineCollection({
 	// Load all markdown files from note directory
-	loader: glob({ pattern: ["**/*.md", "!**/_*.md", "!**/_*/*.md"], base: "./src/content/note" }),
+	loader: glob({
+		pattern: ["**/*.md", "!**/_*.md", "!**/_*/*.md"],
+		base: "./src/content/note",
+		generateId: entryId
+	}),
 	schema: z.object({
 		title: z.string(), // Post title (required)
 		timestamp: z.date(), // Publication date (required)
@@ -27,7 +42,11 @@ const note = defineCollection({
  */
 const jotting = defineCollection({
 	// Load all markdown files except those starting with underscore
-	loader: glob({ pattern: ["**/*.md", "!**/_*.md", "!**/_*/*.md"], base: "./src/content/jotting" }),
+	loader: glob({
+		pattern: ["**/*.md", "!**/_*.md", "!**/_*/*.md"],
+		base: "./src/content/jotting",
+		generateId: entryId
+	}),
 	schema: z.object({
 		title: z.string(), // Jotting title (required)
 		timestamp: z.date(), // Publication date (required)
@@ -45,7 +64,7 @@ const jotting = defineCollection({
  */
 const preface = defineCollection({
 	// Load all markdown files
-	loader: glob({ pattern: "**/*.md", base: "./src/content/preface" }),
+	loader: glob({ pattern: "**/*.md", base: "./src/content/preface", generateId: entryId }),
 	schema: z.object({
 		timestamp: z.date() // Creation timestamp
 	})
@@ -57,7 +76,11 @@ const preface = defineCollection({
  */
 const information = defineCollection({
 	// Load both markdown and YAML files for mixed content types
-	loader: glob({ pattern: "**/*.{md,mdx,yaml}", base: "./src/content/information" })
+	loader: glob({
+		pattern: "**/*.{md,mdx,yaml}",
+		base: "./src/content/information",
+		generateId: entryId
+	})
 });
 
 export const collections = { note, jotting, preface, information };
