@@ -77,7 +77,7 @@ prompt → 16 token 逐 token 自回归 → mimi.decode → WAV 编码
 
 从 846ms 到 320ms，总计 **−62.2% wall-clock**。而这个数字里，最大的一笔"真实改进"，不是某个聪明的算子融合，而是一个 bug 的修复。
 
-## 那 13 处 monkey-patch 是怎么缝上去的
+## 那 9 处 monkey-patch 是怎么缝上去的
 
 所有优化都落在 `nanovllm_omni/models/minimind_omni/attention.py` + `bundle.py` + `generation.py`，全部通过**类 / 实例级别的 `forward = bound_method.__get__(self, cls)`** 完成，不碰远程模型一个字节。核心几处：
 
@@ -87,6 +87,7 @@ prompt → 16 token 逐 token 自回归 → mimi.decode → WAV 编码
 | SDPA decode `is_causal=False` | decode 时 Q 长度 1 + 全量 KV past，`is_causal=True` 会让 mask 只 attend 到 K[0]，产出噪音音频 |
 | Fused RMSNorm (`aten._fused_rms_norm`) | 把 `pow+mean+rsqrt+mul×2+float+type_as` 合并成单 kernel（E5，−178ms）|
 | Fused QKV / gate-up 投影 | 3 个独立 matmul → 1 个 `qkv_proj`（E6/E24 的主角）|
+| 修 `qkv_fusion` dedupe bug | 类级 `seen` 去重让 11/12 layer 一直没真融合；改成实例级后 −62ms（E24） |
 | Fused RoPE（去 cat） | 利用 `cos/sin` 在 dim 上的重复性质，绕开 `rotate_half` 的 cat |
 | skip `rp==1.0` repetition penalty | 默认 `rp=1.0` 时 entire unique+divide 是 no-op |
 | model_input 单次 contiguous `copy_` | 9 个 strided write → 1 个 view+`copy_` |
@@ -123,7 +124,7 @@ seen_mlp.add(cls)
 - `torch.compile` 整块 MiniMindBlock.forward → **+91ms regression**：Inductor 的 launch overhead × 16 层 ≈ 700ms 远超收益。
 - 全栈 CUDA Graph capture：理论收益 50–150ms，但需要把 KV cache 静态化 + monkey-patch `model.model.forward` 的 `start_pos` 计算，范围太大、revert 复杂、影响所有下游用户。**未实施**——收益不够 cover 风险。
 
-这些"不做什么"和"做什么"一样重要：在小模型 + 小批量上，`torch.compile` 的固定开销往往吃光收益，而手写 operator fusion 反而稳赚。
+在小模型 + 小批量上，`torch.compile` 的固定开销往往吃光收益，手写 operator fusion 反而稳赚。
 
 ## 最终结果与护拦
 
@@ -148,14 +149,14 @@ VRAM:        493 MB
 - **Public API**：`Omni / AsyncOmni / SamplingParams / OmniRequestOutput` 全部可导入，49 个非 smoke 测试通过
 - **Wide-prompt**：median 422ms（bench prompt 偏短，跨域 prompt 下仍远低于 500ms 目标）
 
-整个项目侧护栏也立住了：不 vendor 模型副本、不引入新依赖、不改 HF 远程模型代码、不破坏公开 API、不改变生成内容（位级）。
+项目侧护栏也都立住了——49 个非 smoke 测试通过、bit-exact 确定性、12/12 cross-prompt 验证。
 
 ## 复盘：这次经历教会我的三件事
 
-1. **先造一把可信的尺子，再谈优化。** GPU 温度能把测量漂移放大一个数量级；在没搞清噪声地板之前，任何 <20ms 的"优化"都可能是自我安慰。中位数 + 多次测量 + 温度监控，是我用真金白银换来的习惯。
+1. **先造一把可信的尺子，再谈优化。** GPU 温度能把测量漂移放大近一倍（1200ms vs 846ms）；在没搞清噪声地板之前，任何 <20ms 的"优化"都可能是自我安慰。中位数 + 多次测量 + 温度监控，是被几次假 regression 教训出来的习惯。
 
 2. **最大的收益往往不是新技巧，而是把已有的技巧真正做对。** 一个 `seen.add(cls)` 还是 `seen.add(self)` 的差别，等于 22 轮实验、11 个 layer、−62ms。别急着学新招，先检查老招有没有真的在整个对象集合上生效。
 
-3. **约束不是敌人，是老师。** "只能 monkey-patch + 只用 torch 内置算子"这条约束，逼着我按算子语义去融合，而不是往项目里塞一个 CUDA kernel 或者复制一份 vendor 模型。最终实现的优化栈**零依赖、零 vendor、位级无副作用**——这比"快"更难，也更值钱。
+3. **约束逼出来的反而更稳。** "只能 monkey-patch + 只用 torch 内置算子"这条约束让我按算子语义去融合，而不是往项目里塞 CUDA kernel 或者复制 vendor 模型。最终的优化栈零依赖、零 vendor、位级无副作用。
 
 完整优化栈与复现命令在 nanovllm-omni 的 `docs/perf/minimind-omni-under-500ms.md`，本地 `python -m nanovllm_omni.optim.bench time` 即可复现。
