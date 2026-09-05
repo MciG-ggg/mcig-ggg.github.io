@@ -119,14 +119,12 @@ torch.cuda.cudart().cudaProfilerStop()
 
 跑完输出（简化版）：
 
-```
-  kernel                  | SOL% | Occupancy% | Memory% | Compute% | Stall
-  ------------------------|------|------------|----------|----------|--------
-  cutlass_h40xx_s1688gemm |  62  |    84      |   91     |   31     | ldst
-  flash_fwd_kernel         |  58  |    77      |   74     |   45     | barrier
-  vectorized_layer_norm   |  44  |    91      |   48     |    8     | short_scoreboard
-  index_copy_kernel        |  31  |    53      |   29     |    2     | wait
-```
+| kernel | SOL% | Occupancy% | Memory% | Compute% | Stall |
+| --- | ---: | ---: | ---: | ---: | --- |
+| cutlass_h40xx_s1688gemm | 62 | 84 | 91 | 31 | ldst |
+| flash_fwd_kernel | 58 | 77 | 74 | 45 | barrier |
+| vectorized_layer_norm | 44 | 91 | 48 | 8 | short_scoreboard |
+| index_copy_kernel | 31 | 53 | 29 | 2 | wait |
 
 注意：`SOL%` 是各项指标的**最大值**，不是平均值。一个 kernel SOL=62% 不代表它有 38% 的余量——它可能某一项是 91%，另一项是 31%，取的是瓶颈那一项。
 

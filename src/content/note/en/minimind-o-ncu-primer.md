@@ -119,14 +119,12 @@ Combined with the `ncu --launch-skip 100 --launch-count 5` above, we can reliabl
 
 Example output (simplified):
 
-```
-  kernel                  | SOL% | Occupancy% | Memory% | Compute% | Stall
-  ------------------------|------|------------|----------|----------|--------
-  cutlass_h40xx_s1688gemm |  62  |    84      |   91     |   31     | ldst
-  flash_fwd_kernel         |  58  |    77      |   74     |   45     | barrier
-  vectorized_layer_norm   |  44  |    91      |   48     |    8     | short_scoreboard
-  index_copy_kernel        |  31  |    53      |   29     |    2     | wait
-```
+| kernel | SOL% | Occupancy% | Memory% | Compute% | Stall |
+| --- | ---: | ---: | ---: | ---: | --- |
+| cutlass_h40xx_s1688gemm | 62 | 84 | 91 | 31 | ldst |
+| flash_fwd_kernel | 58 | 77 | 74 | 45 | barrier |
+| vectorized_layer_norm | 44 | 91 | 48 | 8 | short_scoreboard |
+| index_copy_kernel | 31 | 53 | 29 | 2 | wait |
 
 Note: `SOL%` is the **max** of the individual metrics, not the average. A kernel with SOL=62% doesn't mean it has 38% headroom — it could be 91% on one metric and 31% on another; what's taken is the bottleneck one.
 
