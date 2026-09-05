@@ -792,3 +792,5 @@ $$
 | **参数化**   | 轴角表示、欧拉角、四元数                                                                                                                       | 螺旋轴表示、指数坐标                                                                                     |
 
 [Modern Robotics笔记-Chapter4](./Modern Robotics笔记-Chapter4/)
+
+<!-- 待补：仓库仅有 Chapter2-3 与 Chapter 5 两篇 MR 笔记，Chapter4 笔记存在后再恢复链接 -->

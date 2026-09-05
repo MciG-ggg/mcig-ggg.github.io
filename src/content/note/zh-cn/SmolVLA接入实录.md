@@ -12,8 +12,6 @@ description: 前两篇把 MiniMind-O 端到端从 846ms 压到 42ms，这篇换�
 toc: true
 ---
 
-# 把 SmolVLA 接入 nanovllm-omni：从 LeRobot 的 action chunk 到 Omni().generate(...)
-
 ## 上一篇写到哪了
 
 前两篇[《把 MiniMind-O 从 846ms 压到 320ms》](/note/MiniMind-O%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E5%BD%95)和[《把 MiniMind-O 再压 7.5 倍》](/note/MiniMind-O%20CUDA%20Graph%E4%BC%98%E5%8C%96%E5%AE%9E%E5%BD%95)讲的都是 MiniMind-O 这一族。但仓库里其实注册了 4 个模型族：`minimind_omni` / `smolvlm` / `sd_turbo` / `smolvla`。前三族都能通过 `Omni(...).generate(...)` 走完整栈，就剩 `smolvla`——前文[§51.2 跨族扫描](https://github.com/mcig-ggg/nanovllm-omni/blob/main/docs/perf/ncu-generate-kernels-2026-09-01.md)里把它标成"未来候选"。这一篇就是兑现那个 future candidate。

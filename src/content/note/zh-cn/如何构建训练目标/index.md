@@ -18,7 +18,7 @@ series: Diffusion-and-Flowmatching
 
 > [!note] 一些疑问
 > 1. 流是什么
-> 流就是一个群作用，见[Flow and Diffusion Model](/note/flow-and-diffusion-model)
+> 流就是一个群作用，见[Flow and Diffusion Model](/note/Flow%20and%20Diffusion%20Model)
 >  
 >2. 向量场数学上又是什么东西
 > - **向量场是该群的“无穷小生成元” (Infinitesimal Generator)：**

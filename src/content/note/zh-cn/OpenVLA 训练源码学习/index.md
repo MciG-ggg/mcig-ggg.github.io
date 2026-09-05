@@ -62,7 +62,7 @@ print(Color.RED.name)     # RED (获取成员名称)
 print(Color.RED.value)    # 1   (获取成员的值)
 ```
 
-其中 `RED` 其实是 `Color` 类的一个实例, 详见 [Python Enum里的为什么是instance而不是subclass](/python-enuminstancesubclass), 简单来说就是通过 metaclass,修改继承 `Enum` 类的类 (上面的 `Color` 类) 的初始化过程：
+其中 `RED` 其实是 `Color` 类的一个实例, 详见 [Python Enum里的为什么是instance而不是subclass](#2-enum), 简单来说就是通过 metaclass,修改继承 `Enum` 类的类 (上面的 `Color` 类) 的初始化过程：
 - 先在创建 `Color` 类的时候搜索到有属性 `RED`
 - 然后根据 `RED` 创建一个实例
 - 最后把这个实例赋值给 `RED`
@@ -289,7 +289,7 @@ else:
 - **无需复杂分组**：既然大家都很像，使用标准的 `DistributedSampler` 进行随机打乱（Shuffle）就能获得很好的随机性，且不会产生严重的 Padding 浪费。
 - **分布式同步**：`DistributedSampler` 负责将数据集均匀切分到不同显卡（Rank）上，确保每张卡看到的样本不重复。
 
-[OpenVLA Sampler详解](/openvla-sampler)
+[OpenVLA Sampler详解](#创建sampler)
 
 ##### 创建Dataloader
 ```python

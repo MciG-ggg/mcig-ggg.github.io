@@ -21,7 +21,7 @@ series: Diffusion-and-Flowmatching
 > 3. 一个 Dataset 由有限数量的样本 $z_{1}, ..., z_{N} \sim p_{data }$ 组成
 > 4.  条件生成, 即根据一些已有的数据来生成对象， 从 $z \sim p_{data}(\cdot| y)$ 中采样
 
-[Flow and Diffusion Model](/note/flow-and-diffusion-model)
+[Flow and Diffusion Model](/note/Flow%20and%20Diffusion%20Model)
 [如何构建训练目标](/note/如何构建训练目标)
 [如何训练生成式模型](/note/如何训练生成式模型)
 [如何构建图像生成器](/note/如何构建图像生成器)

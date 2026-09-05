@@ -13,16 +13,6 @@ description: 这次真正用来分析 MiniMind-O 的不是第三方 torchprofile
 toc: true
 ---
 
-## 先把名字说清楚
-
-上一篇[《把 MiniMind-O 从 846ms 压到 320ms》](/note/MiniMind-O性能优化实录)写到，优化之后还剩大量 launch overhead，需要继续取证。这里必须先纠正一个名字：**项目里实际使用的是 PyTorch 内置的 `torch.profiler`，不是第三方 `torchprofile`。**
-
-我之前把两个名字相近的项目混在了一起，导致文章方向写偏了。`torchprofile` 是一个单独的 MACs 统计库；这次仓库里的代码没有导入它。实际代码使用的是：
-
-```python
-from torch.profiler import ProfilerActivity, profile, record_function
-```
-
 ## torch.profiler 和 Kineto 是什么关系
 
 `torch.profiler` 是 PyTorch 提供的 Python API。它负责配置采集范围、活动类型、schedule 和输出方式；在 CUDA 场景下，底层采集引擎主要是 **Kineto**。
