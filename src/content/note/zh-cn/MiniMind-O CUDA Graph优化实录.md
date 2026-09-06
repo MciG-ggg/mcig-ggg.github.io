@@ -1,6 +1,6 @@
 ---
 title: 把 MiniMind-O 再压 7.5 倍：CUDA Graph 全栈实践 + 跨族可行性判定
-timestamp: 2026-09-03T22:10:00+08:00
+timestamp: 2026-09-06T21:30:00+08:00
 tags:
   - AI
   - LLM
@@ -172,4 +172,91 @@ Ollama 在 v0.30 刚反 de-fork 了自家 GGML、直接依赖 llama.cpp——他
 
 完整证据链在 `nanovllm-omni` 仓库的 `docs/perf/ncu-generate-kernels-2026-09-01.md`（74KB, 51 节），§51 是为这篇博客写的跨族可行性扫描源材料。要看每一步的 GPU 探针：`tools/bench_*.py` 一共 24 个，每一个对应一个判断点。
 
-下一篇计划写 SmolVLA 的接入——同样是 5 条逐一打勾 + 4 个障碍一一打掉，但场景从 AR 文本+音频换成 VLA 视觉+动作，到时候再说。
+下一篇计划写 SmolVLA 的接入——同样是 5 条逐一打勾 + 4 个障碍一一打掉,但场景从 AR 文本+音频换成 VLA 视觉+动作,到时候再说。
+
+## 后续:talker 也接上 CUDA Graph(2026-09-06)
+
+上一篇收尾的时候留了个尾巴:stage 0(joint model forward)那张大图拿到 7.51× 之后,stage 1 的 talker wrapper 还在 eager 跑。当时的论断是"5 个条件全过的是 minimind_omni 这一族",但仔细一看——stage 1 的 `_drive_talker_generation` 也满足"每步 shape 固定 + control flow 稳定"那几条,只是没人把图给它捕获过。这一轮做掉。
+
+### 动机:stage 1 还剩 4.8s 没压
+
+stage 0 那张图接好之后,end-to-end 从 846ms 压到 320ms。但 `talker.talker_mtp` 的调用路径全程 eager——每一步是 preprocess → forward → sample → talker_mtp 四段拼接,加起来仍然 **232 次 `cudaLaunchKernel`/step**。Talker decode 一跑就是 ~192 步,所以每 request 大约 **44 000 次 launch,纯 dispatch overhead**。这是按上一篇那张"Kineto 报几万次 launch + 上百次 sync"的形态直接外推出来的。
+
+### 先取证,再动手:RTX 3050 上跑 profile 脚本
+
+`tools/profile_talker_gpu.py` 用真权重 + 真 tokenizer 在 3050 上跑,数据如下:
+
+| 阶段 | median ms/step | `cudaLaunchKernel` events/step |
+|---|---|---|
+| Stage 0 eager decode step (joint model, `[1,1]`) | 50–60 | **461** |
+| Stage 1 `_drive_talker_generation`(8 decode steps) | 25 | **232** |
+| Per-request 外推(192 步全跑 stage 1 eager) | — | ≈ **4.8s**,占 generate 总时间 ~86% |
+
+(图是 graphed 后的 stage 0 单步对比、stage 1 是 eager 基线;脚本里两个阶段都跑了 graph 尝试,具体数字看 stdout。)
+
+### 接线:加一个 flag,把图塞进 decode loop
+
+改动面非常薄:
+
+- `nanovllm_omni/config/registry.py:206` 加 `DeployConfig.use_talker_cuda_graph: bool = True`,`:377` 加 yaml 解析路径。
+- `nanovllm_omni/models/minimind_omni/talker.py`:`_drive_talker_generation` 接 `mtp_runner=None`,decode loop 里改成 dispatch——有 `mtp_runner.decode` 就走 graph,否则走 `talker.talker_mtp`(`talker.py:880` 起的 docstring 写了 trade-off);`_talker_stage` 缓存 `TalkerMtpCudaGraph` 实例(`talker.py:1018` 和 `:1046`),同一个 `Omni` 实例不重复包。
+- `nanovllm_omni/deploy/minimind_omni.yaml:8-12` 加 `use_talker_cuda_graph: true`,注释里写明"engage 之后强制 greedy,sampling 路径走 eager fallback"。
+- 测试:`tests/test_full_pipeline.py` 加 3 个 case——flag 解析、e2e 跑通、dispatch 行为(传入 `do_sample=True` 时 graph 仍会落到 eager,因为 graph 抓不住随机性)。
+
+**Trade-off 写在代码里**:graph 强制 `do_sample=False`。CUDA Graph 捕获期间 host 端的 RNG state 会被折进图,replay 时同一个 seed 取到的随机数序列是固定的,跟"每个 step 重新采样"的语义不一致。修法是把 `multinomial` 移到 graph 外,但 talker_mtp 内部的 sample 跟主干 forward 深度耦合,挪出来要拆 forward 接口。所以直接强制 greedy——MiniMind-O 默认 `temperature=0.2, top_k=50`,在已经 sharpen 的分布上 greedy vs sampling 一致性非常高,trade-off 可接受。yaml 注释里写明了"set to false to keep eager + sampling"。
+
+### 踩坑:CUDA Graph 抓不住 default stream
+
+写完接线代码第一次跑,graph **静默** fall back 到 eager:每步一个 `UserWarning: CUDA graphs must be captured on a non-default stream`,单步节省 1-2%。让我以为"接上了",实际 graph 没被真的 capture——`TalkerMtpCudaGraph.decode` 在 `do_sample=False` 时是 try-catch 一把,fall back 到 `self._invoke(...)` 之后,代码路径根本不会进 `_capture`。
+
+`nanovllm_omni/optim/talker_cuda_graph.py:188` 的 `_capture` 一开始是:
+
+```python
+graph = torch.cuda.CUDAGraph()
+current_stream = torch.cuda.current_stream(device=device)
+...
+with torch.cuda.graph(graph, stream=current_stream), torch.inference_mode():
+    output = self._invoke(...)
+```
+
+`current_stream` 在上游 `_drive_talker_generation` 调进来时**就是 default stream**(`torch.cuda.current_stream()` 不带 device 参数时的默认值)。PyTorch 的 contract:`torch.cuda.graph(graph, stream=...)` 当传入的是 default stream 时**直接报错**,而不是自动 fallback。
+
+**为什么 joint model 那张图没这问题**:`optim/cuda_graph.py` 用的是 `torch.cuda.graph(graph)`(无 `stream=` 参数)——PyTorch 自己开 internal capture stream,然后 join 回调用方。这条路径在 default stream / side stream 上都能跑。talker 这边我当时照葫芦画瓢多传了一个 `stream=current_stream`,正好踩到 default-stream 那个边界 case。
+
+修复就是把 `stream=current_stream` 删掉(`optim/talker_cuda_graph.py:204-206` 注释写明了原因):
+
+```python
+# No ``stream=`` arg: PyTorch allocates an internal capture stream and
+# joins back, which works whether the caller is on the default stream
+# or a side stream. Passing ``stream=current_stream`` would fail when
+# current_stream IS the default stream.
+with torch.cuda.graph(graph), torch.inference_mode():
+    output = self._invoke(...)
+```
+
+修完之后 warning 不再出现,`TalkerMtpCudaGraph.decode` 真进 `_capture`,e2e 从 1-2% 跳到 3-4%。**修一行,杠杆变了 2-3 倍**——这个故事跟上一篇"condition 4 用编译期改写绕过 host-read"是同一类:**CUDA Graph 工程里 90% 的优化来自"理解 capture 的硬约束",不是"想办法把 kernel 跑得更快"。**
+
+### e2e 数据:RTX 3050,真权重,三个长度都跑
+
+`tools/profile_talker_graph_e2e.py` 端到端跑 `Omni.generate`,3 个不同 `max_tokens` 对比:
+
+| 配置 | eager median | graphed median | 节省 |
+|---|---|---|---|
+| `max_tokens=4` | 354.3 ms | 301.4 ms | **14.9%** |
+| `max_tokens=16` | 333.4 ms | 341.0 ms | **-2.3%**(stage 0 主导) |
+| `max_tokens=512`(真实 yaml) | 6590.5 ms | 6338.4 ms | **3.8%**(252 ms) |
+
+老实交代:**节省幅度比 CPU 外推出来的 80% 小得多。** 三个原因:
+
+1. **stage 0(joint model forward)本身就要跑 ~30 AR steps**,这一步早就 graphed 了、每步 3.49 ms,本身就是 wall time 的大头。在 `max_tokens=512` 这条真实路径上,stage 0 占大约 100 ms × 30 = 3s,stage 1 的 4.8s 理论上限实际跑下来大约 3.5–4s,占比 ~50% 而不是 CPU 模型给的 86%——因为 GPU 是真在算东西,不是只在 launch。
+2. **CUDA Graph 只能消除 launch overhead,不能消除 kernel 工作时间**。stage 1 里 talker_mtp 那部分是真的 GEMM,RMSNorm、softmax、MatMul,这些不管 graph 不 graph 都要算。graph 只把 232 次 launch 压成 1 次 replay,但 kernel 内部的 `cudaLaunchKernel` 是被图吸收的、replay 时是 GPU 内部调度,所以节省的只是 host 排队时间。
+3. **`max_tokens=16` 这条短 prompt,stage 1 步数本来就少(graph 跟 stage 0 那边 7.51× 的差距得靠"步数多"才能摊平 capture 成本)**,节省被 stage 0 主导稀释,甚至 graph 倒贴 7ms(capture + first-replay 的固定开销)。
+
+但 graph 接通了、代码路径 clean、trade-off 在 yaml 注释里写明白,future 调整(更长 talker 序列、更激进的 stage 1 参数、`temperature` 拉到 1.0 重新支持 sampling)的杠杆都在那。这是把上一篇留的尾巴收掉,不是给现有数字再加一个数量级。
+
+### 测试 + commit
+
+- `pytest -m "not smoke"`:**367 passed**(+3 新 test,`test_full_pipeline.py` 里的 flag 解析、e2e 跑通、dispatch 行为)。
+- `tools/profile_talker_gpu.py` 和 `tools/profile_talker_graph_e2e.py` 两个 profile 脚本留在 `tools/`——后人想给别的族做类似的事,可以拿这两个脚本当起点(profile + e2e 对比)。
+
+下一篇写 SmolVLA 接入——同 5 条逐一打勾 + 4 个障碍一一打掉,但场景换 VLA 视觉+动作,届时 stage 1 的 talker_cuda_graph 那一套也许能复用到 SmolVLA 的 action chunk 队列里,到时候再说。
