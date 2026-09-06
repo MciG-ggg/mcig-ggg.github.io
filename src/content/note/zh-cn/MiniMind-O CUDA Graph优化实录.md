@@ -156,7 +156,7 @@ Capture 有 RNG 副作用，所以"capture once / replay many"优于每 run 捕�
 - **vLLM 本体 / HF optimum / accelerate / TGI / DeepSpeed-MII** 都走 subclass + adapter，这是事实标准；
 - **TensorRT-LLM / llama.cpp / MLC-LLM**（性能敏感型）走 fork-and-rewrite 到自家 runtime。
 
-nanovllm-omni 真正的差异化**不是「我们是孤例」**——sglang 也类似——而是 **vendor = 0 + fork = 0 + subclass = 0**：本节 + 上一篇博客里的 5 处 monkey-patch 全是 `setattr`，不打 vLLM 那一层间接（vllm-omni 的 patch 大多是给 vLLM 用的，是 cross-cutting 层的版本兼容 wrapper）。
+nanovllm-omni 真正的差异化**是 vendor = 0 + fork = 0 + subclass = 0**——「我们是孤例」可算不上，sglang 也类似：本节 + 上一篇博客里的 5 处 monkey-patch 全是 `setattr`，不打 vLLM 那一层间接（vllm-omni 的 patch 大多是给 vLLM 用的，是 cross-cutting 层的版本兼容 wrapper）。
 
 Ollama 在 v0.30 刚反 de-fork 了自家 GGML、直接依赖 llama.cpp——他们花了几年才学到「维护 fork 的长期成本」这个教训，我们项目从一开始就走 patch-only 是站在他们的肩膀上。完整横向对比表在 nanovllm-omni 仓库的 `docs/perf/ncu-generate-kernels-2026-09-01.md` §51.3。
 

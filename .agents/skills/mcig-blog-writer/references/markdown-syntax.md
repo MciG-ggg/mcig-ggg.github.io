@@ -2,7 +2,7 @@
 
 本博客通过 `src/utils/remark/` 下的 remark 插件提供以下扩展语法。
 
-**重要**：参考 skill（grt-blog-writer）的 `::: gallery / callout / timeline / chat-history / year-card / link-card` 在**本博客不支持**。不要照搬。
+**重要**：参考 skill（grt-blog-writer）的 `::: gallery / callout / timeline / chat-history / year-card / link-card` 在**本博客不渲染样式**——`remark-directive` 能解析成裸 `<div class="...">`，但没有任何 handler 注册、CSS 也没配，等于不可用。不要照搬。
 
 ---
 
@@ -43,6 +43,16 @@
 - `#id` — 设置 id
 - `.class` — 添加 class（可多个）
 - `key=value` / `key="value with spaces"` — 任意 HTML 属性
+
+**注意**：`{.class}` 里的 class（如 `.red`、`.highlight`、`.responsive`）**未在全局 CSS 预定义**，照抄示例不会有任何视觉效果。需要在该文章 markdown 里用 `<style>` 块自行定义后才生效：
+
+```markdown
+<style>
+  .red { color: red; font-weight: bold; }
+</style>
+
+**加粗文本**{.red}
+```
 
 ---
 
@@ -153,7 +163,7 @@ image: https://example.com/og.png
 
 **插件**：`remark-github-blockquote-alert`（`astro.config.ts` 里 `[alerts, { legacyTitle: true }]`）
 
-**语法**：引用块首行写 `[!TYPE]`，支持 `NOTE` / `TIP` / `WARNING` / `CAUTION` / `IMPORTANT`。**本博客实际只用了 `NOTE`**（在 5 篇已发布文章中出现 17 次）。
+**语法**：引用块首行写 `[!TYPE]`，5 种全支持且各有强调色：`NOTE` / `TIP` / `IMPORTANT` / `WARNING` / `CAUTION`（CSS 为每种都配了 `.markdown-alert-{...}` 颜色，内容里 5 种都在用）。
 
 ```markdown
 > [!NOTE] 这里是一条注意
@@ -164,9 +174,20 @@ image: https://example.com/og.png
 
 > [!WARNING]
 > 小心这里的坑。
+
+> [!IMPORTANT]
+> 必须知道的关键信息。
+
+> [!CAUTION]
+> 高风险警告。
 ```
 
-**典型用法**：给关键段落带色块的提示（在技术文章里当 callout 用）。`legacyTitle` 模式下 `[!TYPE] 标题字` 会把「标题字」当标题块显示。
+**典型用法**：给关键段落带色块的提示（在技术文章里当 callout 用）。`legacyTitle: true` 已开启，`[!TYPE] 标题字` 会把「标题字」当标题块显示：
+
+```markdown
+> [!NOTE/自定义标题]
+> 用斜杠写自定义标题。
+```
 
 ---
 
@@ -189,6 +210,77 @@ $$\mathcal{L}_{\text{FM}}(\theta) = \mathbb{E}_{t \sim \text{Unif}, x \sim p_t} 
 ```
 
 **典型用法**：ML / RL / 机器人类技术文章的公式推导。渲染基于 KaTeX。
+
+---
+
+## 10. Ruby 注音（ふりがな / 拼音）
+
+**插件**：`remark-ruby-directive`
+
+**语法**：`:ruby[文本(注音)]`，注音渲染成汉字上方的 `<ruby><rt>` 小字：
+
+```markdown
+日文：:ruby[振り仮名（ふ がな）]
+中文：:ruby[拼音(pīn yīn)]
+```
+
+**典型用法**：中英混杂博客给中文专有名词标拼音、给日文标假名。
+
+---
+
+## 11. 高亮 / 标记（mark）
+
+**插件**：`remark-flexible-markers`
+
+**语法**：`==text==` 包裹，渲染成 `<mark>`（CSS 配了波浪下划线高亮）：
+
+```markdown
+==这段是重点==，其余是普通文本。
+```
+
+---
+
+## 12. Emoji 短代码（gemoji）
+
+**插件**：`remark-gemoji`
+
+**语法**：`:shortcode:` 直接转成 emoji：
+
+```markdown
+:wink: :cry: :laughing: :yum:
+```
+
+速查表：<https://github.com/ikatyang/emoji-cheat-sheet>
+
+---
+
+## 13. 表格合并单元格（扩展表格）
+
+**插件**：`remark-extended-table`（`astro.config.ts` 里 `{ colspanWithEmpty: true }` 已开启）
+
+标准表格基础上支持合并单元格：
+
+- `>` 该格向右合并（colspan）
+- `^` 该格向上合并（rowspan）
+- `||` 空尾格向左合并
+
+```markdown
+| 左对齐 | 居中 | 右对齐 | 居中 |
+|:-------|:----:|-------:|:----:|
+| 普通单元格 | 合并单元格 || 合并列 |
+| 普通单元格 | 2×2 单元格 ||  ^   |
+| 普通单元格 |    ^   || 普通单元格 |
+```
+
+---
+
+## 14. 行内脚注
+
+除了 `[^1]` 引用式脚注（在文末定义），还支持行内脚注（内容直接写在 `^[...]` 里，不用单独定义）：
+
+```markdown
+这里是正文^[行内直接写的脚注内容]。
+```
 
 ---
 
@@ -218,3 +310,9 @@ $$\mathcal{L}_{\text{FM}}(\theta) = \mathbb{E}_{t \sim \text{Unif}, x \sim p_t} 
 | 数学公式 | `$...$` 或 `$$...$$` |
 | 剧透 | `!!隐藏内容!!` |
 | 表格 | 标准 markdown，**不用**手动包 div |
+| 注音/拼音 | `:ruby[拼音(pīn yīn)]`（第 10 节） |
+| 高亮 | `==这段是重点==`（第 11 节） |
+| Emoji | `:wink:`（第 12 节） |
+| 表格合并单元格 | `>` / `^` / `\|\|`（第 13 节） |
+| 行内脚注 | `^[脚注内容]`（第 14 节） |
+| 告警 5 种类型 | `> [!TIP]` `> [!IMPORTANT]` `> [!WARNING]` `> [!CAUTION]` 及自定义标题（第 8 节） |

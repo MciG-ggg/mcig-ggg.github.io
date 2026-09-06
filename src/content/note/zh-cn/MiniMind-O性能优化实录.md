@@ -16,12 +16,12 @@ toc: true
 在做 `nanovllm-omni` 的过程中，我在本地一台 **RTX 3050 4GB Laptop** 上跑 MiniMind-O（一个三阶段 omni 模型：thinker → talker → mimi 语音解码）做端到端音频生成。一次完整的 `Omni.generate` 流程是：
 
 ```
-prompt → 16 token 逐 token 自回归 → mimi.decode → WAV 编码
+prompt → 最多 16 个 audio step 自回归 → mimi.decode → WAV 编码
 ```
 
 最初这条链路要 **928ms** 上下，对于一个语音对话 demo 来说体感明显卡顿。我给项目定了一个目标：把端到端 wall-clock 压到 **≤ 500ms**。
 
-但真正的约束不是目标，而是边界。三条硬规则：
+但真正的约束在边界，不在目标。三条硬规则：
 
 - 不引入任何**新依赖**（只能用 torch 内置算子）
 - 不复制、不修改**上游模型代码**（HF 远程模型，`AutoModelForCausalLM(trust_remote_code=True)` 加载）
@@ -38,6 +38,8 @@ prompt → 16 token 逐 token 自回归 → mimi.decode → WAV 编码
 - 6 个 prompt × 5 runs × `max_tokens=16`
 - 取 **median**（不被个别偶发尖峰带偏）
 - 每次改动前后跑 20+ 次连续测量建立置信区间
+- 把它定位成 fast regression gate，记录实际 frame 数和可读 WAV，不把 30 个样本当成可靠的 p95/p99
+- 长度矩阵另外跑 `8,16,32,64,120`，用来抓 EOS、decode 和显存问题
 
 一个非常反直觉的发现是 **GPU 温度对测量结果的影响是毁灭性的**：
 
@@ -47,6 +49,27 @@ prompt → 16 token 逐 token 自回归 → mimi.decode → WAV 编码
 同一次改动，冷态热态测出来能差好几倍。这让我养成了"跑 bench 前先确认温度/频率"的习惯——不然你优化了个寂寞，还以为是 regression。
 
 教训写成一个原则：**任何 < 20ms 的改动在 7ms 的噪声地板里都不可信**。后面 E13、E22 这类"听起来有道理但收益在噪声内"的改动，全部果断 discard。
+
+### 重新跑一遍：原来的尺子还缺一半
+
+这次把 benchmark 本身补了一轮。改动很小：`RunResult` 现在记录请求的 `max_tokens`，CSV 能区分不同长度；`run_one` 会用 stdlib `wave` 检查空 WAV、错误采样率、错误声道、空 PCM 和全静音；CLI 多了一个 `matrix` 子命令。
+
+```bash
+python -m nanovllm_omni.optim.bench matrix \\
+  --lengths 8,16,32,64,120 --runs 3 --warmup 2
+```
+
+在 RTX 3050 上重新跑的结果有点刺眼：
+
+| 路径 | 配置 | rows | median total | 实际 frames |
+|---|---:|---:|---:|---:|
+| eager | 6 prompts × 5 × 16 | 30 | **628.14 ms** | 9 |
+| CUDA Graph | 6 prompts × 5 × 16 | 30 | **197.91 ms** | 16 |
+| CUDA Graph length matrix | 3 prompts × 5 lengths × 3 | 45 | **103.62–134.53 ms/档** | 8 |
+
+最后一行才是值得继续追的地方：`max_tokens=120` 并没有得到 120 个 frame，五个长度档位的实际输出都停在 8 frame。短 gate 测到了 Graph replay 的固定步数，长度矩阵则把“上限”和“真实 EOS 行为”区分开了。
+
+这也解释了为什么 benchmark 不能只看 wall-clock。eager 路径这次是 628ms 左右，Graph 路径约 198ms；旧文里的 320ms 来自另一套执行路径和当时的基线环境，不能和这次结果直接横比。温度、clock、是否启用 Graph、实际 frame 数，都得跟着 CSV 一起记。
 
 ## 25 轮实验的全景
 
@@ -75,7 +98,7 @@ prompt → 16 token 逐 token 自回归 → mimi.decode → WAV 编码
 
 > `*`：E6 标称 −44.7% 其实是被同一批合并进 baseline 的 RMSNorm / RoPE 改动贡献的。**QKV 融合的真实收益直到 E24 才显现**——因为在那之前它一直是坏的。
 
-从 846ms 到 320ms，总计 **−62.2% wall-clock**。而这个数字里，最大的一笔"真实改进"，不是某个聪明的算子融合，而是一个 bug 的修复。
+从 846ms 到 320ms，总计 **−62.2% wall-clock**。而这个数字里，最大的一笔"真实改进"其实是个 bug 的修复，跟聪明的算子融合没关系。
 
 ## 那 9 处 monkey-patch 是怎么缝上去的
 
@@ -128,34 +151,39 @@ seen_mlp.add(cls)
 
 ## 最终结果与护拦
 
-在 `11c3c13` 上锁定的最终状态：
+历史基线在 `11c3c13` 上是 320ms 左右。这次在同一类 RTX 3050 环境重新跑出两条结果：
 
 ```text
-benchmark (6 prompt × 5 runs × max_tokens=16):
-  median:    320 ms
-  mean:      323 ms
-  stdev:     11.6 ms
-  min:       305 ms
-  max:       343 ms
-  <500ms:    20/20 (100%)
-  
-VRAM:        493 MB
+6 prompts × 5 runs × max_tokens=16
+  eager median: 628.14 ms
+  graph median: 197.91 ms
+  eager frames median: 9
+  graph frames median: 16
+  WAV validation: 30/30 passed on both paths
+
+length matrix: 3 prompts × 5 lengths × 3 runs
+  8   frames budget -> median 134.53 ms, actual frames 8
+  16  frames budget -> median 106.87 ms, actual frames 8
+  32  frames budget -> median 103.62 ms, actual frames 8
+  64  frames budget -> median 109.76 ms, actual frames 8
+  120 frames budget -> median 111.32 ms, actual frames 8
 ```
 
-并且验证充分：
+并且验证了三件事：
 
-- **Determinism**：5× 同一 (prompt, seed=42) → 同一 WAV MD5，**bit-exact**
-- **Cross-prompt**：12/12 异质 prompt 完整生成 8 frames，无截断
-- **Public API**：`Omni / AsyncOmni / SamplingParams / OmniRequestOutput` 全部可导入，49 个非 smoke 测试通过
-- **Wide-prompt**：median 422ms（bench prompt 偏短，跨域 prompt 下仍远低于 500ms 目标）
+- **Determinism**：6/6 prompt 的同 seed WAV MD5 一致，§5.4 PASS
+- **Long-run stability**：20 次混合调用 control frames 全一致，VRAM tail-10 增长 68.2MB，PASS
+- **Audio artifact**：每条有效结果都能通过 24kHz、mono、PCM16、非空 WAV 检查
 
-项目侧护栏也都立住了——49 个非 smoke 测试通过、bit-exact 确定性、12/12 cross-prompt 验证。
+但长度矩阵也留下了一个明确问题：CUDA Graph 下 `max_tokens=120` 仍然只返回 8 frame。这个结果足以说明短 benchmark 的覆盖边界，暂时不能把 16-step Graph 的速度数字写成“长音频性能”。
+
+项目侧护栏继续保留——公开 API、非 smoke 测试和原来的 bit-exact determinism 都不改。下一步要查的是 EOS 和 audio delay schedule，不急着再造一个更复杂的 benchmark。
 
 ## 复盘：这次经历教会我的三件事
 
 1. **先造一把可信的尺子，再谈优化。** GPU 温度能把测量漂移放大近一倍（1200ms vs 846ms）；在没搞清噪声地板之前，任何 <20ms 的"优化"都可能是自我安慰。中位数 + 多次测量 + 温度监控，是被几次假 regression 教训出来的习惯。
 
-2. **最大的收益往往不是新技巧，而是把已有的技巧真正做对。** 一个 `seen.add(cls)` 还是 `seen.add(self)` 的差别，等于 22 轮实验、11 个 layer、−62ms。别急着学新招，先检查老招有没有真的在整个对象集合上生效。
+2. **最大的收益往往来自把已有的技巧真正做对——新技巧反而在其次。** 一个 `seen.add(cls)` 还是 `seen.add(self)` 的差别，等于 22 轮实验、11 个 layer、−62ms。别急着学新招，先检查老招有没有真的在整个对象集合上生效。
 
 3. **约束逼出来的反而更稳。** "只能 monkey-patch + 只用 torch 内置算子"这条约束让我按算子语义去融合，而不是往项目里塞 CUDA kernel 或者复制 vendor 模型。最终的优化栈零依赖、零 vendor、位级无副作用。
 

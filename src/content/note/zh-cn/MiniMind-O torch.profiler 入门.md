@@ -9,7 +9,7 @@ tags:
   - PyTorch
   - Profiler
 series: nanovllm-omni 开发手记
-description: 这次真正用来分析 MiniMind-O 的不是第三方 torchprofile，而是 PyTorch 自带的 torch.profiler。它通过 Kineto 记录 CPU、CUDA kernel 和自定义阶段，最后导出一份可以在 Perfetto 里打开的 Chrome trace。
+description: 这次真正用来分析 MiniMind-O 的，是 PyTorch 自带的 torch.profiler；第三方 torchprofile 没派上用场。它通过 Kineto 记录 CPU、CUDA kernel 和自定义阶段，最后导出一份可以在 Perfetto 里打开的 Chrome trace。
 toc: true
 ---
 
@@ -114,7 +114,7 @@ https://ui.perfetto.dev
 2. **CUDA API track**：host 什么时候发起 kernel，什么时候在同步。
 3. **GPU kernel track**：kernel 的开始时间、持续时间和相互之间的空洞。
 
-我们在 MiniMind-O 上看到的不是一个“某个 kernel 慢”的故事，而是一条很长的细碎时间线：单次生成约 **17000 次 `cudaLaunchKernel`**、**344 次 `cudaStreamSynchronize`**，cutlass GEMM 累计约 **28ms**。端到端约 320ms，绝大多数时间不是 GEMM 在计算，而是 host 在排队、GPU 在等下一个 launch。
+我们在 MiniMind-O 上看到的是一条很长的细碎时间线，没有什么“某个 kernel 慢”的单点故事：单次生成约 **17000 次 `cudaLaunchKernel`**、**344 次 `cudaStreamSynchronize`**，cutlass GEMM 累计约 **28ms**。端到端约 320ms，绝大多数时间都耗在 host 排队、GPU 等下一个 launch 上——GEMM 真正在算的时间很少。
 
 这就是 `torch.profiler` 最有价值的地方：它把“感觉有 launch overhead”变成了一张可以定位到阶段、runtime API 和 kernel 的时间线。
 

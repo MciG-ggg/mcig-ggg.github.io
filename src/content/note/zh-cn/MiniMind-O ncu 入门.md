@@ -191,7 +191,7 @@ ncu                      单 kernel 微架构   (SOL / occupancy)
 
 ## 收尾
 
-ncu 不是一个"优化工具"——它是一个**取证工具**。它的输出不是"哪里慢"或"怎么改"，而是"这个 kernel 在硬件上跑了什么"。这种证据在 launch-bound 这种"看起来都还行但端到端就是慢"的形态下是唯一能让你**不靠猜**地决定下一步动作的工具。
+ncu 是一个**取证工具**：它只回答"这个 kernel 在硬件上跑了什么"，不回答"哪里慢"或"怎么改"。这种证据在 launch-bound 这种"看起来都还行但端到端就是慢"的形态下是唯一能让你**不靠猜**地决定下一步动作的工具。
 
 MiniMind-O 这边的故事是：torch.profiler / Kineto 说端到端 wall-clock 还有 320ms，时间线里堆了约 17000 次 launch；ncu 再给出那句"320ms 里 kernel 工作只占 28ms"——**然后 CUDA Graph 才登场**。下一篇[《MiniMind-O CUDA Graph 优化实录》](/note/MiniMind-O%20CUDA%20Graph%E4%BC%98%E5%8C%96%E5%AE%9E%E5%BD%95)就是从这个 ncu 结论开始的。
 
