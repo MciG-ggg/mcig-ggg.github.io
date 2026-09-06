@@ -188,3 +188,41 @@ length matrix: 3 prompts × 5 lengths × 3 runs
 3. **约束逼出来的反而更稳。** "只能 monkey-patch + 只用 torch 内置算子"这条约束让我按算子语义去融合，而不是往项目里塞 CUDA kernel 或者复制 vendor 模型。最终的优化栈零依赖、零 vendor、位级无副作用。
 
 完整优化栈与复现命令在 nanovllm-omni 的 `docs/perf/minimind-omni-under-500ms.md`，本地 `python -m nanovllm_omni.optim.bench time` 即可复现。
+
+## 后续：当 talker 真的被装上之后
+
+这篇实录写于 2026-08，当时剖析的"端到端"其实只到 **thinker 单段**：`prompt → 16 token 自回归 → mimi.decode`。9 月我把 vllm-omni PR #3796 对应的 talker/code2wav 从 identity 占位升级成了真正的**三阶段管线**（thinker → talker → MTP → code2wav），回头看，这里有一个必须修正的口径：
+
+- **旧文里的 320ms 只到 thinker 单段。** 那是 thinker 单段解码（`bench time` 默认路径）的数字。三阶段全落地后，我加了 `bench time --pipeline full` 来量真正的端到端。
+- **collapsed 路径退役。** 单 thinker 一把梭的管线删掉了（`8f6d522`），`pipeline_kind` 默认 `full`，三个阶段真跑。
+- **真正的 full E2E 实测（RTX 3050 4GB，真权重，torch 2.14）：**
+
+```text
+6 prompts × 20 runs × max_tokens=16（--pipeline full）
+  medium_01 -> 747 ms（p95 844）
+  medium_02 -> 767 ms（p95 850）
+  short_01  -> 645 ms（p95 709）
+  short_02  -> 628 ms（p95 661）
+  short_03  -> 634 ms（p95 669）
+  system_01 -> 1038 ms（p95 1109）
+  VRAM peak: ~1881 MiB
+```
+
+所以诚实的结论是：**MiniMind-O 真正的端到端在 RTX 3050 上是 0.63–1.04 秒**（中位）。320ms 只是其中一个阶段——这个数字以前被引用成"端到端"，是口径错误，现在 README 和博客都以 full E2E 为准。
+
+三阶段里真正吃时间的是 talker 和 MTP（多 token 预测那些延迟 codebook），thinker 的 CUDA Graph 快路径仍然是单段最快的部分，但构成不了全量。4GB 显存上 full 峰值约 1881 MiB，勉强在预算内。
+
+新增的复现：
+
+```bash
+python -m nanovllm_omni.optim.bench time --pipeline full --max-tokens 16 --runs 20 --warmup 1
+```
+
+数据原始 CSV 在 `docs/perf/full-e2e-rtx3050.csv`，验证细节在 `docs/perf/tk005-rtx3050.md`。
+
+（这节的上一句"下一步要查 EOS 和 audio delay schedule"——结果 EOS 确实在 TICKET-05 里做了：post-EOS padding 状态机 + talker watchdog，见 `5da15f7`。撞墙记录里"全栈 CUDA Graph 未实施"的判断也值得重新审视：talker MTP 已经单独吃到 CUDA Graph 路径，`ac49cf9`。）
+
+一步一步的 commit 顺序在 nanovllm-omni 的 `git log perf/cuda-graph-default-on`，从 `972224c`（talker 骨架）一直追到 `e91ca41`（--pipeline full bench）。
+
+full 跑通的代价是显存：1881 MiB 峰值在 4GB 卡上已经贴着天花板，下一步想让 talker 也吃上 CUDA Graph 的整段 capture，或者把 MTP 的延迟 codebook 量化掉，都得先给显存腾地方。先这样。
+

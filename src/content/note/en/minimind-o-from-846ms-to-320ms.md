@@ -160,3 +160,40 @@ Project-side guardrails are all standing too — 49 non-smoke tests passing, bit
 3. **Constraints forced, more robust.** "Monkey-patch only + built-in torch ops only" pushed me to fuse by operator semantics instead of stuffing CUDA kernels or copying vendor models into the project. The final optimization stack has zero dependencies, zero vendor code, bit-level side-effect free.
 
 The full optimization stack and repro commands live in nanovllm-omni's `docs/perf/minimind-omni-under-500ms.md`; run `python -m nanovllm_omni.optim.bench time` locally to reproduce.
+
+## Follow-up: when the talker actually got wired in
+
+This report was written in August 2026, when the "end-to-end" it dissected actually went only as far as the **thinker stage**: `prompt → 16-token autoregression → mimi.decode`. In September I upgraded the talker/code2wav from their identity placeholders to a real **three-stage** pipeline (thinker → talker → MTP → code2wav) — the nanovllm-omni take on vllm-omni PR #3796. Looking back, one number needs a correction:
+
+- **The 320ms in the old post only reached the thinker stage.** It is thinker-stage decode only (the default `bench time` path). Once all three stages landed, I added `bench time --pipeline full` to measure real end-to-end.
+- **The collapsed path is retired.** The single-thinker shortcut was removed (`8f6d522`); `pipeline_kind` defaults to `full` and all three stages really run.
+- **Actual full-E2E on RTX 3050 4GB (real weights, torch 2.14):**
+
+```text
+6 prompts × 20 runs × max_tokens=16 (--pipeline full)
+  medium_01 -> 747 ms (p95 844)
+  medium_02 -> 767 ms (p95 850)
+  short_01  -> 645 ms (p95 709)
+  short_02  -> 628 ms (p95 661)
+  short_03  -> 634 ms (p95 669)
+  system_01 -> 1038 ms (p95 1109)
+  VRAM peak: ~1881 MiB
+```
+
+So the honest headline is: **real end-to-end MiniMind-O on RTX 3050 is 0.63–1.04 s** (median). 320ms is just one stage — it used to be quoted as "end-to-end," which was a reporting error; README and blog now use the full-E2E figure.
+
+The time in the three-stage path is dominated by the talker and MTP (the delayed codebooks from multi-token prediction); the thinker CUDA-Graph fast path is still the fastest single stage, but it is not the whole pipeline. On 4GB VRAM, full peaks around 1881 MiB — tight but within budget.
+
+New repro:
+
+```bash
+python -m nanovllm_omni.optim.bench time --pipeline full --max-tokens 16 --runs 20 --warmup 1
+```
+
+Raw CSV: `docs/perf/full-e2e-rtx3050.csv`; validation detail: `docs/perf/tk005-rtx3050.md`.
+
+(The previous paragraph ended with "next: EOS and audio delay schedule" — and that EOS work did happen in TICKET-05: a post-EOS padding state machine + talker watchdog, see `5da15f7`. The wall-hitting log's "full-stack CUDA Graph: not implemented" call is also worth revisiting — the talker MTP now has its own CUDA-Graph path, `ac49cf9`.)
+
+Step-by-step commits live in nanovllm-omni's `git log perf/cuda-graph-default-on`, from `972224c` (talker skeleton) through `e91ca41` (--pipeline full bench).
+
+The price of getting full working is memory: 1881 MiB peak already edges against the ceiling on a 4GB card. Making the talker capture a full CUDA-Graph span, or quantizing MTP's delayed codebooks, will have to free up VRAM first. That's it for now.
