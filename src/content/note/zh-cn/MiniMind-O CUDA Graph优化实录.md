@@ -180,7 +180,7 @@ Ollama 在 v0.30 刚反 de-fork 了自家 GGML、直接依赖 llama.cpp——他
 
 ### 动机:stage 1 还剩 4.8s 没压
 
-stage 0 那张图接好之后,end-to-end 从 846ms 压到 320ms。但 `talker.talker_mtp` 的调用路径全程 eager——每一步是 preprocess → forward → sample → talker_mtp 四段拼接,加起来仍然 **232 次 `cudaLaunchKernel`/step**。Talker decode 一跑就是 ~192 步,所以每 request 大约 **44 000 次 launch,纯 dispatch overhead**。这是按上一篇那张"Kineto 报几万次 launch + 上百次 sync"的形态直接外推出来的。
+stage 0 那张图接好之后,end-to-end 从 846ms 压到 320ms。但 `talker.talker_mtp` 的调用路径全程 eager——每一步是 preprocess → forward → sample → talker_mtp 四段拼接,加起来仍然 **232 次 `cudaLaunchKernel`/step**。Talker decode 最多跑 192 步(watchdog 上限),所以每 request 最坏情况大约 **44 000 次 launch,纯 dispatch overhead**。提一句:**这是按 watchdog 上限外推的最坏情况**,后面 e2e 会看到真实路径跑不满——音频内容到 `audio_stop` 就提前停了。
 
 ### 先取证,再动手:RTX 3050 上跑 profile 脚本
 
@@ -190,9 +190,9 @@ stage 0 那张图接好之后,end-to-end 从 846ms 压到 320ms。但 `talker.ta
 |---|---|---|
 | Stage 0 eager decode step (joint model, `[1,1]`) | 50–60 | **461** |
 | Stage 1 `_drive_talker_generation`(8 decode steps) | 25 | **232** |
-| Per-request 外推(192 步全跑 stage 1 eager) | — | ≈ **4.8s**,占 generate 总时间 ~86% |
+| Per-request 外推(192 步 watchdog 上限全跑 eager) | — | ≈ **4.8s**,理论上限 |
 
-(图是 graphed 后的 stage 0 单步对比、stage 1 是 eager 基线;脚本里两个阶段都跑了 graph 尝试,具体数字看 stdout。)
+(图是 graphed 后的 stage 0 单步对比、stage 1 是 eager 基线;脚本里两个阶段都跑了 graph 尝试,具体数字看 stdout。下文 e2e 会把「理论上限」打回原形。)
 
 ### 接线:加一个 flag,把图塞进 decode loop
 
@@ -236,27 +236,36 @@ with torch.cuda.graph(graph), torch.inference_mode():
 
 修完之后 warning 不再出现,`TalkerMtpCudaGraph.decode` 真进 `_capture`,e2e 从 1-2% 跳到 3-4%。**修一行,杠杆变了 2-3 倍**——这个故事跟上一篇"condition 4 用编译期改写绕过 host-read"是同一类:**CUDA Graph 工程里 90% 的优化来自"理解 capture 的硬约束",不是"想办法把 kernel 跑得更快"。**
 
-### e2e 数据:RTX 3050,真权重,三个长度都跑
+### 先泼一盆冷水:第一次测出的数字是错的
 
-`tools/profile_talker_graph_e2e.py` 端到端跑 `Omni.generate`,3 个不同 `max_tokens` 对比:
+第一次跑 `tools/profile_talker_graph_e2e.py`,报了一组漂亮的数字:`max_tokens=4` 省 14.9%、`max_tokens=512` 省 3.8%。commit 和上一版草稿都引用了。
 
-| 配置 | eager median | graphed median | 节省 |
+事后 review 发现方法论错了:eager 那臂是 sampling(`do_sample=True`),graph 那臂被强制 greedy(`do_sample=False`)。两臂行为不一样,省下来的时间有一部分根本是「sampling 改 greedy」带来的,不全是 graph 的 dispatch 收益。graph 抓不住 multinomial 只能 greedy,这条注释里早就写了;但 eager 臂没同等地设 greedy,一对比就把两件事混在一起了。
+
+修法:给默认 sampling params 也加 `do_sample: false`,两臂都 greedy,只比 graph dispatch 本身。重跑:
+
+| 配置 | eager greedy | graphed greedy | 节省 |
 |---|---|---|---|
-| `max_tokens=4` | 354.3 ms | 301.4 ms | **14.9%** |
-| `max_tokens=16` | 333.4 ms | 341.0 ms | **-2.3%**(stage 0 主导) |
-| `max_tokens=512`(真实 yaml) | 6590.5 ms | 6338.4 ms | **3.8%**(252 ms) |
+| `max_tokens=4` | 256.0 ms | 243.2 ms | **+5.0%(12.8 ms)** |
+| `max_tokens=512`(真实 yaml) | 5885.2 ms | 5833.5 ms | **+0.9%(51.8 ms)** |
 
-老实交代:**节省幅度比 CPU 外推出来的 80% 小得多。** 三个原因:
+数字缩水一大截。上一版那个 14.9% 里,大部分是采样在慢——eager 从 sampling 换 greedy 本身就省了接近 100ms;graph 真正贡献的是那 12.8 ms。老实讲,这个量级的收益,跟 stage 0 那张图的 7.51× 完全不是一个量级。
 
-1. **stage 0(joint model forward)本身就要跑 ~30 AR steps**,这一步早就 graphed 了、每步 3.49 ms,本身就是 wall time 的大头。在 `max_tokens=512` 这条真实路径上,stage 0 占大约 100 ms × 30 = 3s,stage 1 的 4.8s 理论上限实际跑下来大约 3.5–4s,占比 ~50% 而不是 CPU 模型给的 86%——因为 GPU 是真在算东西,不是只在 launch。
-2. **CUDA Graph 只能消除 launch overhead,不能消除 kernel 工作时间**。stage 1 里 talker_mtp 那部分是真的 GEMM,RMSNorm、softmax、MatMul,这些不管 graph 不 graph 都要算。graph 只把 232 次 launch 压成 1 次 replay,但 kernel 内部的 `cudaLaunchKernel` 是被图吸收的、replay 时是 GPU 内部调度,所以节省的只是 host 排队时间。
-3. **`max_tokens=16` 这条短 prompt,stage 1 步数本来就少(graph 跟 stage 0 那边 7.51× 的差距得靠"步数多"才能摊平 capture 成本)**,节省被 stage 0 主导稀释,甚至 graph 倒贴 7ms(capture + first-replay 的固定开销)。
+为什么这么小,原因跟上一版分析一致,但数字诚实多了:
 
-但 graph 接通了、代码路径 clean、trade-off 在 yaml 注释里写明白,future 调整(更长 talker 序列、更激进的 stage 1 参数、`temperature` 拉到 1.0 重新支持 sampling)的杠杆都在那。这是把上一篇留的尾巴收掉,不是给现有数字再加一个数量级。
+1. **stage 0 主导 wall time**。`max_tokens=512` 这条路上 5.8s 的大头是 stage 0,joint model forward 早 graphed 了、真在做 30 个 AR step 的 GEMM。graph 只优化 stage 1 尾巴的 dispatch,杠杆有限。
+2. **graph 只消 launch,不消 GEMM**。talker_mtp 里的 RMSNorm、softmax、MatMul 是真要算的。graph 把 232 次 launch 压成 1 次 replay,但 kernel 工作时间省不掉,节省的只有 host 排队。
+
+所以这一节的诚实结论:**talker_cuda_graph 接通了、代码路径 clean、trade-off 在 yaml 注释里写明白,但纯 graph dispatch 收益在典型 config 下只有 1% 左右**。它是把上一篇留的「stage 1 还在 eager」的尾巴收掉,收尾的意义大于提速的意义。真要榨 stage 1,杠杆不在 graph 上——在「stage 0 能不能再短」或者「talker 能不能少跑几步」上。
+
+### 顺手:attention.py 挪回 optim/
+
+这轮 review 顺手发现 `attention.py` 放错地方了——5 个 monkey-patch(`enable_sdpa_decode` / `enable_fused_projections` / `enable_fused_rmsnorm` / `enable_fused_rope` / opt-in `enable_fixed_kv_buffer`)跟 `cuda_graph.py`、`talker_cuda_graph.py` 本来就是一个家族:都是「patch 掉模型行为来加速」。归位到 `nanovllm_omni/optim/attention.py`,`git mv` 保了历史,10 处 import 一起改。
 
 ### 测试 + commit
 
-- `pytest -m "not smoke"`:**367 passed**(+3 新 test,`test_full_pipeline.py` 里的 flag 解析、e2e 跑通、dispatch 行为)。
-- `tools/profile_talker_gpu.py` 和 `tools/profile_talker_graph_e2e.py` 两个 profile 脚本留在 `tools/`——后人想给别的族做类似的事,可以拿这两个脚本当起点(profile + e2e 对比)。
+- `pytest -m "not smoke"`:**364 passed**。接线时加了 graph dispatch 分支的 CPU 测试(decode loop 真走 `mtp_decode(...)` 那条路),顺手删了 4 个只读 `profile_cuda_graph.py` 源码的 contract 测试——那个脚本退役了,test 的 subject 也没了。
+- `tools/` 清理:删了 3 个被取代的 GPU probe(`profile_cuda_graph.py` / `bench_defect5_3cycle.py` / `profile_talker_mtp_only.py`),`profile_talker_mtp_only` 并进了 `profile_talker_vs_thinker`。
+- 三个 review subagent(optim/ / tools/ / holistic)并行审了一遍,`_patched_forward` 补了「必须恰两处替换」的防御、replay 加了失败重置、`_capture` 的 stream 注释修正了。
 
 下一篇写 SmolVLA 接入——同 5 条逐一打勾 + 4 个障碍一一打掉,但场景换 VLA 视觉+动作,届时 stage 1 的 talker_cuda_graph 那一套也许能复用到 SmolVLA 的 action chunk 队列里,到时候再说。
