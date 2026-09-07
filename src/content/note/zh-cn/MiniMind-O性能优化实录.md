@@ -13,7 +13,9 @@ toc: true
 ---
 ## 缘起：为什么要在 4GB 显卡上抠这几百毫秒
 
-在做 `nanovllm-omni` 的过程中，我在本地一台 **RTX 3050 4GB Laptop** 上跑 MiniMind-O（一个三阶段 omni 模型：thinker → talker → mimi 语音解码）做端到端音频生成。一次完整的 `Omni.generate` 流程是：
+`nanovllm-omni` 是一个用 monkey-patch 把多种异构模型（**MiniMind-O / SmolVLM / SD-Turbo / SmolVLA**）缝到同一套 `Omni(...)` runtime 上的实验性推理引擎，本系列手记按模型拆开写。这篇挑其中一个跑得最频、瓶颈也最有意思的 case —— **MiniMind-O**（三阶段 omni：thinker → talker → mimi 语音解码）——来讲为什么「只允许打补丁」的优化反而最难；其他三个模型各自的接入实录见系列里的对应文章，不在本文展开。
+
+我在本地一台 **RTX 3050 4GB Laptop** 上跑这个 case 做端到端音频生成。一次完整的 `Omni.generate` 流程是：
 
 ```
 prompt → 最多 16 个 audio step 自回归 → mimi.decode → WAV 编码
