@@ -202,12 +202,18 @@ tocHeadings.forEach(heading => {
 </style>
 
 <script>
-	let observer: IntersectionObserver | undefined;
-	let progressFill: HTMLElement | undefined;
-	let scrollListener: (() => void) | undefined;
+	// swup runs this script again on every navigation, and it can run a cached
+	// page's copy after the new page's copy. Register the listeners once for
+	// the whole session and let later runs replace the implementations.
+	const registry = (window.__tocRegistry ??= {
+		run: () => {},
+		updateProgress: () => {},
+		bound: false
+	});
 
 	function updateProgress() {
 		const content = document.getElementById("markdown-content");
+		const progressFill = document.getElementById("toc-progress");
 		if (!content || !progressFill) return;
 
 		const contentHeight = content.scrollHeight;
@@ -231,14 +237,6 @@ tocHeadings.forEach(heading => {
 	}
 
 	function TOC() {
-		// Cleanup previous observer and listener
-		observer?.disconnect();
-		if (scrollListener) {
-			window.removeEventListener("scroll", scrollListener);
-		}
-
-		progressFill = document.getElementById("toc-progress") ?? undefined;
-
 		const indicators = new Map<string, Element>(
 			document
 				.querySelectorAll(".toc-item")
@@ -251,7 +249,7 @@ tocHeadings.forEach(heading => {
 				})
 		);
 
-		observer = new IntersectionObserver(
+		const observer = new IntersectionObserver(
 			(entries) => {
 				const visibleEntries = entries.filter((e) => e.isIntersecting);
 				if (visibleEntries.length === 0) return;
@@ -287,14 +285,19 @@ tocHeadings.forEach(heading => {
 		document
 			.querySelector("#markdown-content")
 			?.querySelectorAll("section[data-heading-rank]")
-			.forEach((section) => observer?.observe(section));
+			.forEach((section) => observer.observe(section));
 
-		// Store listener reference for cleanup
-		scrollListener = updateProgress;
-		window.addEventListener("scroll", scrollListener, { passive: true });
-		updateProgress();
+		registry.updateProgress();
+	}
+
+	registry.run = TOC;
+	registry.updateProgress = updateProgress;
+
+	if (!registry.bound) {
+		registry.bound = true;
+		window.addEventListener("scroll", () => registry.updateProgress(), { passive: true });
+		document.addEventListener("astro:after-swap", () => registry.run());
 	}
 
 	TOC();
-	document.addEventListener("astro:after-swap", TOC);
 </script>

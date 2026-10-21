@@ -95,7 +95,9 @@ onMount(() => {
 });
 </script>
 
-<main class="flex flex-col-reverse sm:flex-row gap-10 grow">
+<!-- A div, not a main: the page template already renders a main, and swup
+     replaces the first main it finds. A second one makes that ambiguous. -->
+<div class="flex flex-col-reverse sm:flex-row gap-10 grow">
 	<article class="flex flex-col gap-4 grow">
 		{#each list as note (note.id)}
 			<section animate:flip={{ duration: 150 }} class="flex flex-col">
@@ -159,7 +161,7 @@ onMount(() => {
 			</p>
 		</section>
 	</aside>
-</main>
+</div>
 
 <style>
 	article {

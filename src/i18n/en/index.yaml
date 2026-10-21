@@ -38,6 +38,11 @@ note:
   top: Back to top
 read:
   words: '{words} words'
+actions:
+  copyLink: Copy link
+  copyMarkdown: Copy Markdown source
+  copied: Copied
+  share: Share
 sensitive:
   back: Back to list
   continue: I understand, continue reading

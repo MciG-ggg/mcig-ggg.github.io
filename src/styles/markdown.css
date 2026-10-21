@@ -229,8 +229,8 @@
 		}
 
 		blockquote {
-			border-inline-start: 4px solid var(--shadow-color);
-			padding-inline-start: 1em;
+			border-inline-start: 2px solid var(--secondary-color);
+			padding-inline-start: 1.5em;
 
 			p {
 				margin: 0;
@@ -333,8 +333,8 @@
 
 		table {
 			border-collapse: collapse;
-			border-top: 3px solid var(--primary-color);
-			border-bottom: 3px solid var(--primary-color);
+			border-top: 1px solid var(--shadow-color);
+			border-bottom: 1px solid var(--shadow-color);
 			text-align: center;
 
 			th,
@@ -343,11 +343,11 @@
 			}
 
 			th[colspan] {
-				border-bottom: 2px solid var(--primary-color);
+				border-bottom: 1px solid var(--shadow-color);
 			}
 
 			thead tr:last-child {
-				border-bottom: 2px solid var(--primary-color);
+				border-bottom: 1px solid var(--shadow-color);
 			}
 		}
 

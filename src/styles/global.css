@@ -4,47 +4,57 @@
 	prefixes: lucide, simple-icons, fa6-brands;
 }
 
+/*
+ * One palette, two themes. `light-dark()` picks per element `color-scheme`,
+ * so `:root` follows the OS and `[data-theme]` overrides it. This replaces the
+ * three duplicated blocks (`:root`, `@media dark`, `[data-theme=dark]`) that
+ * let a system-dark preference override an explicit light choice.
+ */
 :root {
-	--primary-color: #2a2a28;
-	--secondary-color: #50504d;
-	--remark-color: #757575;
-	--weak-color: #9f9f9c;
-	--background-color: #fffffd;
-	--block-color: #eeeeee;
-	--shadow-color: #cdcdcc;
-	--selection-color: #adadacc3;
+	color-scheme: light dark;
+
+	--primary-color: light-dark(#2a2a28, #f2f2f0);
+	--secondary-color: light-dark(#50504d, #b4b4b0);
+	--remark-color: light-dark(#757575, #8f8f8c);
+	--weak-color: light-dark(#9f9f9c, #6b6b68);
+	--background-color: light-dark(#fffffd, #0e0e0c);
+	--block-color: light-dark(#eeeeee, #1e1e1e);
+	--shadow-color: light-dark(#cdcdcc, #333331);
+	--selection-color: light-dark(#adadacc3, #3566f04d);
+
+	/* ChatGPT accent */
+	--accent-color: light-dark(#3566f0, #4b83f5);
+	--accent-soft: light-dark(#3566f01f, #3566f033);
+
+	/* Surface alpha ladder: 05/08/10/12/16/20/25 */
+	--surface-05: light-dark(#0000000d, #ffffff0d);
+	--surface-08: light-dark(#00000014, #ffffff14);
+	--surface-10: light-dark(#0000001a, #ffffff1a);
+	--surface-12: light-dark(#0000001f, #ffffff1f);
+	--surface-16: light-dark(#00000029, #ffffff29);
+	--surface-20: light-dark(#00000033, #ffffff33);
+	--surface-25: light-dark(#00000040, #ffffff40);
+
+	/* Radius ladder: 2/4/6/8/10/12/16/20/24 */
+	--radius-2: 0.125rem;
+	--radius-4: 0.25rem;
+	--radius-6: 0.375rem;
+	--radius-8: 0.5rem;
+	--radius-10: 0.625rem;
+	--radius-12: 0.75rem;
+	--radius-16: 1rem;
+	--radius-20: 1.25rem;
+	--radius-24: 1.5rem;
 
 	--swup-fade-theme-duration: 0.15s;
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--primary-color: #dddddb;
-		--secondary-color: #aaaaa8;
-		--remark-color: #a5a5a5;
-		--weak-color: #5d5d5a;
-		--background-color: #0e0e0c;
-		--block-color: #1e1e1e;
-		--shadow-color: #323231;
-		--selection-color: #adadacc3;
-	}
-
-	.astro-code,
-	.astro-code span {
-		color: var(--shiki-dark) !important;
-		background-color: var(--shiki-dark-bg) !important;
-	}
+[data-theme="light"] {
+	color-scheme: light;
 }
 
 [data-theme="dark"] {
-	--primary-color: #dddddb;
-	--secondary-color: #aaaaa8;
-	--remark-color: #a5a5a5;
-	--weak-color: #5d5d5a;
-	--background-color: #0e0e0c;
-	--block-color: #1e1e1e;
-	--shadow-color: #323231;
-	--selection-color: #adadacc3;
+	color-scheme: dark;
 }
 
 /* Language-specific fonts */
@@ -54,12 +64,6 @@
 
 :lang(ja) {
 	--font-serif: var(--font-noto-serif-jp);
-}
-
-[data-theme="dark"] .astro-code,
-[data-theme="dark"] .astro-code span {
-	color: var(--shiki-dark) !important;
-	background-color: var(--shiki-dark-bg) !important;
 }
 
 @layer base {
@@ -184,6 +188,19 @@
 		fill: currentColor;
 	}
 
+	/*
+	 * Chart geometry must not inherit the text fill. Modules that draw SVG
+	 * set `fill="none"` on the container and fill shapes explicitly.
+	 */
+	svg[data-chart] {
+		fill: none;
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--accent-color);
+		outline-offset: 2px;
+	}
+
 	hr {
 		border: none;
 	}
@@ -280,6 +297,8 @@ input[type="checkbox"].switch {
 	--color-block: var(--block-color);
 	--color-shadow: var(--shadow-color);
 	--color-selection: var(--selection-color);
+	--color-accent: var(--accent-color);
+	--color-accent-soft: var(--accent-soft);
 
 	--font-serif: var(--font-noto-serif);
 	--font-mono: var(--font-maple-mono-nf-cn);
@@ -345,6 +364,18 @@ input[type="checkbox"].switch {
 
 	.pop {
 		@apply opacity-0 invisible z-1 transition-[opacity,visibility] group-hover/pop:opacity-100 group-hover/pop:visible;
+	}
+
+	/* ChatGPT-style metadata chip */
+	.chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.125rem 0.5rem;
+		border: 1px solid var(--surface-10);
+		border-radius: var(--radius-8);
+		background-color: var(--surface-05);
+		white-space: nowrap;
 	}
 }
 

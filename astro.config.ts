@@ -7,6 +7,7 @@ import svelte from "@astrojs/svelte";
 import tailwindcss from "@tailwindcss/vite";
 import swup from "@swup/astro";
 import githubLight from "shiki/themes/github-light.mjs";
+import darkPlus from "shiki/themes/dark-plus.mjs";
 
 import GFM from "remark-gfm";
 import ins from "remark-ins";
@@ -99,8 +100,16 @@ export default defineConfig({
 						"#fff": "var(--block-color)"
 					}
 				},
-				dark: "dark-plus"
+				dark: {
+					...darkPlus,
+					colorReplacements: {
+						"#1e1e1e": "var(--block-color)"
+					}
+				}
 			},
+			// Emit `light-dark()` instead of one hard-coded theme plus `--shiki-dark`.
+			// The page sets `color-scheme`, so the code block follows the theme.
+			defaultColor: "light-dark()",
 			transformers: [
 				copy({
 					duration: 1500

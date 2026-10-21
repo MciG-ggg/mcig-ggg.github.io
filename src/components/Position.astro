@@ -44,6 +44,11 @@ const t = i18nit(locale);
 </figure>
 
 <script>
+	// swup runs this script again on every navigation, and it can run a cached
+	// page's copy after the new page's copy. Register the listener once for the
+	// whole session and let later runs replace the implementation.
+	const registry = (window.__positionRegistry ??= { updateProgress: () => {}, bound: false });
+
 	function updateProgress() {
 		const content = document.getElementById("markdown-content");
 		if (content) {
@@ -85,6 +90,12 @@ const t = i18nit(locale);
 		}
 	}
 
-	window.addEventListener("scroll", updateProgress);
+	registry.updateProgress = updateProgress;
+
+	if (!registry.bound) {
+		registry.bound = true;
+		window.addEventListener("scroll", () => registry.updateProgress(), { passive: true });
+	}
+
 	updateProgress();
 </script>

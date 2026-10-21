@@ -5,15 +5,16 @@ import Icon from "$components/Icon.svelte";
 let { dark = $bindable(false) } = $props();
 
 /**
- * Apply theme to DOM and persist to localStorage
+ * Apply theme to the DOM. Does not persist: persistence records an explicit
+ * user choice, and the system preference must not count as one.
  * @param on whether to enable dark mode
  */
 function turnDark(on: boolean) {
 	let theme = (dark = on) ? "dark" : "light";
 	// Update CSS custom properties via data attribute
 	document.documentElement.dataset.theme = theme;
-	// Persist user preference across sessions
-	localStorage.setItem("theme", theme);
+	// Let theme-aware widgets (mermaid, charts) redraw themselves
+	document.dispatchEvent(new CustomEvent("theme:change", { detail: theme }));
 }
 
 /**
@@ -21,7 +22,11 @@ function turnDark(on: boolean) {
  * @param event Mouse event for click coordinates
  */
 function triggerDark(event: MouseEvent) {
-	const trigger = () => turnDark(!dark);
+	// A click is an explicit choice, so persist it.
+	const trigger = () => {
+		turnDark(!dark);
+		localStorage.setItem("theme", dark ? "dark" : "light");
+	};
 
 	let transition: ViewTransition;
 	if (!(transition = document.startViewTransition?.(trigger))) return trigger(); // Compatibility check
@@ -56,8 +61,11 @@ onMount(() => {
 
 	// Use stored preference or fallback to system preference
 	turnDark(theme ? theme === "dark" : mode.matches);
-	// Listen for system theme changes and apply automatically
-	mode.addEventListener("change", ({ matches }) => turnDark(matches));
+	// Follow the system only while the user has made no explicit choice.
+	// An explicit choice in localStorage wins over later system changes.
+	mode.addEventListener("change", ({ matches }) => {
+		if (!localStorage.getItem("theme")) turnDark(matches);
+	});
 });
 </script>
 

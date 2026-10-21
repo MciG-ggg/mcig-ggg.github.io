@@ -6,6 +6,7 @@ import Base from "$layouts/Base.astro";
 import TOC from "$components/TOC.astro";
 import Position from "$components/Position.astro";
 import Icon from "$components/Icon.svelte";
+import ArticleActions from "$components/ArticleActions.astro";
 import Sensitive from "$components/Sensitive.svelte";
 import i18nit from "$i18n";
 
@@ -45,12 +46,18 @@ const t = i18nit(locale);
 <Base title={note.data.title} {locale} description={note.data.description} article={{ timestamp: note.data.timestamp, section: note.data.series, tags: note.data.tags }}>
 	<main class="flex flex-col gap-6">
 		<header class="flex flex-col gap-4">
-			<h1>{note.data.title}</h1>
-			<div class="flex flex-col gap-3 sm:flex-row *:flex *:items-center *:gap-1 *:text-[0.875rem] *:text-secondary">
-				<time datetime={note.data.timestamp.toISOString()}><Icon name="lucide--calendar" />{Time(note.data.timestamp)}</time>
+			<div class="flex items-start justify-between gap-4">
+				<h1>{note.data.title}</h1>
+				<ArticleActions {locale} body={note.body} />
+			</div>
+			<div class="flex flex-wrap items-center gap-1.5 text-[0.75rem] text-remark">
+				<span class="chip">
+					<Icon name="lucide--calendar" />
+					<time datetime={note.data.timestamp.toISOString()}>{Time(note.data.timestamp)}</time>
+				</span>
 				{
 					note.data.series && (
-						<span>
+						<span class="chip">
 							<Icon name="lucide--layers" />
 							{note.data.series}
 						</span>
@@ -58,13 +65,16 @@ const t = i18nit(locale);
 				}
 				{
 					!!note.data.tags?.length && (
-						<span>
+						<span class="chip">
 							<Icon name="lucide--hash" />
 							{note.data.tags?.join("; ")}
 						</span>
 					)
 				}
-				<span><Icon name="lucide--pilcrow" />{t("read.words", { words: frontmatter.words })}</span>
+				<span class="chip">
+					<Icon name="lucide--pilcrow" />
+					{t("read.words", { words: frontmatter.words })}
+				</span>
 			</div>
 			<hr class="border-b border-weak" />
 		</header>
