@@ -6,7 +6,7 @@ tags: [vllm, rl, kernel, consistency]
 description: RL 后训练里推理引擎和训练引擎算出的 logprob 不一样，RL-Kernel 用一套数值契约把两边对齐，在 CUDA 和 ROCm 上跑完 200 步 mismatch 全部为零。
 source_url: https://www.bilibili.com/video/BV1Ech96cEzW/
 toc: true
-draft: true
+draft: false
 ---
 
 ```cardlink
