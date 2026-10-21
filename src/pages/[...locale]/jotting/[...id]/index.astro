@@ -5,6 +5,7 @@ import Time from "$utils/time";
 import Base from "$layouts/Base.astro";
 import Position from "$components/Position.astro";
 import Icon from "$components/Icon.svelte";
+import ArticleActions from "$components/ArticleActions.astro";
 import Sensitive from "$components/Sensitive.svelte";
 import i18nit from "$i18n";
 
@@ -42,18 +43,27 @@ const t = i18nit(locale);
 <Base title={jotting.data.title} {locale} description={jotting.data.description} article={{ timestamp: jotting.data.timestamp, tags: jotting.data.tags }}>
 	<main class="flex flex-col gap-6">
 		<header class="flex flex-col gap-4">
-			<h1>{jotting.data.title}</h1>
-			<div class="flex flex-col gap-3 sm:flex-row *:flex *:items-center *:gap-1 *:text-[0.875rem] *:text-secondary">
-				<time datetime={jotting.data.timestamp.toISOString()}><Icon name="lucide--calendar" />{Time(jotting.data.timestamp)}</time>
+			<div class="flex items-start justify-between gap-4">
+				<h1>{jotting.data.title}</h1>
+				<ArticleActions {locale} body={jotting.body} />
+			</div>
+			<div class="flex flex-wrap items-center gap-1.5 text-[0.75rem] text-remark">
+				<span class="chip">
+					<Icon name="lucide--calendar" />
+					<time datetime={jotting.data.timestamp.toISOString()}>{Time(jotting.data.timestamp)}</time>
+				</span>
 				{
 					!!jotting.data.tags?.length && (
-						<span>
+						<span class="chip">
 							<Icon name="lucide--hash" />
 							{jotting.data.tags?.join("; ")}
 						</span>
 					)
 				}
-				<span><Icon name="lucide--pilcrow" />{t("read.words", { words: frontmatter.words })}</span>
+				<span class="chip">
+					<Icon name="lucide--pilcrow" />
+					{t("read.words", { words: frontmatter.words })}
+				</span>
 			</div>
 			<hr class="border-b border-weak" />
 		</header>

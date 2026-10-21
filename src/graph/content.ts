@@ -11,7 +11,7 @@ const notoFonts: Record<string, string> = {
 };
 
 /*
-<div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "3rem", width: "100%", height: "100%", background: "#fffffd" }}>
+<div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "3rem", width: "100%", height: "100%", background: "#ffffff" }}>
 	<div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flexGrow: 1 }}>
 		<span style={{ alignSelf: "flex-start", borderLeft: "0.5rem solid black", padding: "0.25rem 1rem 0.75rem", fontSize: "1.5rem" }}>
 			{contentType}
@@ -23,7 +23,7 @@ const notoFonts: Record<string, string> = {
 			)}
 		</span>
 		<span style={{ fontSize: "4rem" }}>{title}</span>
-		<div style={{ display: "flex", gap: "1rem", alignItems: "center", fontSize: "1.25rem", color: "#555555" }}>
+		<div style={{ display: "flex", gap: "1rem", alignItems: "center", fontSize: "1.25rem", color: "#5d5d5d" }}>
 			<time>{time}</time>
 			{!!tags?.length && [
 				<span key="separator" style={{ height: "100%", borderLeft: "0.125rem solid" }} />,
@@ -77,7 +77,7 @@ export default async ({
 					padding: "3rem",
 					width: "100%",
 					height: "100%",
-					background: "#fffffd"
+					background: "#ffffff"
 				},
 				children: [
 					{
@@ -136,7 +136,7 @@ export default async ({
 											gap: "1rem",
 											alignItems: "center",
 											fontSize: "1.25rem",
-											color: "#555555"
+											color: "#5d5d5d"
 										},
 										children: [
 											{

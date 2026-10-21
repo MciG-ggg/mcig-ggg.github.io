@@ -38,6 +38,11 @@ note:
   top: 回到顶部
 read:
   words: '{words} 字'
+actions:
+  copyLink: 复制链接
+  copyMarkdown: 复制 Markdown 原文
+  copied: 已复制
+  share: 分享
 sensitive:
   back: 返回列表
   continue: 我已知晓，继续阅读

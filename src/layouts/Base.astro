@@ -101,8 +101,16 @@ const title = config.title;
 	// Set the `title` attribute of all `<time>` elements to localized date-time strings
 	const localizeTimes = () => document.querySelectorAll("time").forEach(time => time.dateTime && (time.title = Time.locale(time.dateTime, navigator.language, Time.userTimezone)));
 
-	// Add zoom effect to images within markdown content
-	window.zoom = () => zoom(".markdown img:not([data-nozoom])", { background: "#00000044" });
+	// Add zoom effect to images within markdown content.
+	// Every zoom() call creates a new instance, and each instance registers
+	// document-level listeners that are never removed. Create the instance
+	// once, then attach the images of the current page after each navigation.
+	// attach skips images it already handles, so no detach is needed.
+	window.zoom = () => {
+		const zoomInstance = window.__mediumZoom ?? (window.__mediumZoom = zoom());
+		zoomInstance.attach(".markdown img:not([data-nozoom])");
+		zoomInstance.update({ background: "#00000044" });
+	};
 
 	// Page initialization function
 	function initialize() {
@@ -114,16 +122,19 @@ const title = config.title;
 	// Execute initialization on first load
 	initialize();
 
-	// Listen for Swup page load event and re-initialize on page transitions
-	document.addEventListener("swup:enable", () => {
-		window.swup?.hooks.on("page:load", initialize);
-	});
+	// swup re-inserts this script on every navigation, so it runs again and
+	// again. Register the listeners once and let later runs replace the
+	// implementation instead of adding another listener.
+	const registry = (window.__baseRegistry ??= { init: initialize, bound: false });
+	registry.init = initialize;
 
-	// Also listen for astro:page-load as fallback
-	document.addEventListener("astro:page-load", initialize);
+	if (!registry.bound) {
+		registry.bound = true;
 
-	// Listen for Swup content replaced event (when new page content is loaded)
-	document.addEventListener("swup:content:replaced", initialize);
+		// swup dispatches astro:page-load on every navigation. The other
+		// events this script used to listen for do not fire in swup 4.
+		document.addEventListener("astro:page-load", () => registry.init());
+	}
 </script>
 
 <App {locale} {title} {subtitle} {description} {article} author={config.author.name}>

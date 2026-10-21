@@ -1,0 +1,157 @@
+---
+import Icon from "$components/Icon.svelte";
+import i18nit from "$i18n";
+
+export interface Props {
+	locale: string;
+	/** Raw markdown source. Empty means "copy as markdown" is unavailable. */
+	body?: string;
+}
+
+const { locale, body = "" } = Astro.props;
+
+const t = i18nit(locale);
+---
+
+<div class="article-actions" data-article-actions data-copied={t("actions.copied")}>
+	<button
+		type="button"
+		class="article-action"
+		data-action="link"
+		aria-label={t("actions.copyLink")}
+		title={t("actions.copyLink")}
+	>
+		<Icon name="lucide--link" size={16} />
+	</button>
+
+	{
+		body && (
+			<button
+				type="button"
+				class="article-action"
+				data-action="markdown"
+				aria-label={t("actions.copyMarkdown")}
+				title={t("actions.copyMarkdown")}
+			>
+				<Icon name="lucide--file-text" size={16} />
+			</button>
+		)
+	}
+
+	<button
+		type="button"
+		class="article-action"
+		data-action="share"
+		aria-label={t("actions.share")}
+		title={t("actions.share")}
+	>
+		<Icon name="lucide--share-2" size={16} />
+	</button>
+
+	{body && <template data-markdown-source>{body}</template>}
+</div>
+
+<script>
+	// swup runs this script again on every navigation. Register the delegated
+	// listener once for the whole session.
+	const registry = (window.__articleActionsRegistry ??= { bound: false });
+
+	if (!registry.bound) {
+		registry.bound = true;
+
+		document.addEventListener("click", async (event) => {
+			const button = (event.target as Element | null)?.closest<HTMLElement>("[data-article-actions] [data-action]");
+			if (!button) return;
+
+			const root = button.closest<HTMLElement>("[data-article-actions]")!;
+			const action = button.dataset.action;
+
+			const write = async (text: string) => {
+				await navigator.clipboard.writeText(text);
+				button.dataset.label = root.dataset.copied ?? "";
+				button.classList.add("article-action-done");
+				window.setTimeout(() => {
+					button.classList.remove("article-action-done");
+					delete button.dataset.label;
+				}, 1500);
+			};
+
+			if (action === "link") {
+				await write(location.href);
+			} else if (action === "markdown") {
+				const source = root.querySelector<HTMLTemplateElement>("[data-markdown-source]");
+				await write(source?.content.textContent ?? "");
+			} else if (action === "share") {
+				if (navigator.share) {
+					await navigator.share({ title: document.title, url: location.href });
+				} else {
+					await write(location.href);
+				}
+			}
+		});
+	}
+</script>
+
+<style>
+	.article-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	.article-action {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.75rem;
+		height: 1.75rem;
+		border: 1px solid transparent;
+		border-radius: var(--radius-6);
+		color: var(--remark-color);
+		opacity: 0;
+		transition:
+			opacity 0.15s ease-in-out,
+			color 0.15s ease-in-out,
+			background-color 0.15s ease-in-out,
+			border-color 0.15s ease-in-out;
+	}
+
+	.article-actions:hover .article-action,
+	.article-action:focus-visible {
+		opacity: 1;
+	}
+
+	.article-action:hover {
+		color: var(--primary-color);
+		background-color: var(--surface-08);
+		border-color: var(--surface-10);
+	}
+
+	.article-action-done {
+		color: var(--accent-color);
+	}
+
+	.article-action-done::after {
+		content: attr(data-label);
+		position: absolute;
+		bottom: calc(100% + 0.25rem);
+		start: 50%;
+		translate: -50% 0;
+		padding: 0.125rem 0.375rem;
+		border-radius: var(--radius-4);
+		background-color: var(--primary-color);
+		color: var(--background-color);
+		font-size: 0.6875rem;
+		line-height: 1.4;
+		white-space: nowrap;
+		pointer-events: none;
+	}
+
+	/* Touch devices have no hover, so the actions stay visible. */
+	@media (hover: none) {
+		.article-action {
+			opacity: 1;
+		}
+	}
+</style>

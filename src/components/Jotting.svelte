@@ -72,7 +72,9 @@ onMount(() => {
 });
 </script>
 
-<main class="flex flex-col-reverse sm:flex-row gap-10 grow">
+<!-- A div, not a main: the page template already renders a main, and swup
+     replaces the first main it finds. A second one makes that ambiguous. -->
+<div class="flex flex-col-reverse sm:flex-row gap-10 grow">
 	<article class="flex flex-col grow">
 		<header class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-5">
 			{#each list as jotting (jotting.id)}
@@ -121,7 +123,7 @@ onMount(() => {
 			</p>
 		</section>
 	</aside>
-</main>
+</div>
 
 <style>
 	article {
