@@ -20,6 +20,7 @@ import footnote from "remark-footnotes-extra";
 import { remarkExtendedTable as table, extendedTableHandlers as tableHandler } from "remark-extended-table";
 import directive from "remark-directive";
 import ruby from "remark-ruby-directive";
+import directiveTextGuard from "./src/utils/remark/directive-text-guard";
 import alerts from "remark-github-blockquote-alert";
 import { rehypeHeadingIds as ids } from "@astrojs/markdown-remark";
 import anchor from "rehype-autolink-headings";
@@ -69,6 +70,7 @@ export default defineConfig({
 			cardlink,
 			directive,
 			ruby,
+			directiveTextGuard,
 			[alerts, { legacyTitle: true }],
 			reading
 		],

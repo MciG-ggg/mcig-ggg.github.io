@@ -16,7 +16,7 @@ home:
     empty: No words
     lecture: Lecture
   jotting: '{count} jottings'
-    note: '{count} notes'
+  note: '{count} notes'
   latest: Latest
   prefaces: Prefaces
 jotting:
