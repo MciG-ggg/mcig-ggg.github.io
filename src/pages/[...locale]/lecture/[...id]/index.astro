@@ -1,0 +1,99 @@
+---
+import { getCollection, render } from "astro:content";
+import config, { monolocale } from "$config";
+import Time from "$utils/time";
+import Base from "$layouts/Base.astro";
+import TOC from "$components/TOC.astro";
+import Position from "$components/Position.astro";
+import Icon from "$components/Icon.svelte";
+import ArticleActions from "$components/ArticleActions.astro";
+import Sensitive from "$components/Sensitive.svelte";
+import i18nit from "$i18n";
+
+export async function getStaticPaths() {
+	// Get all lectures excluding drafts
+	const lectures = await getCollection("lecture", lecture => !lecture.data.draft);
+
+	return lectures.map(lecture => {
+		let locale: string | undefined;
+		let id: string;
+
+		if (monolocale) {
+			locale = undefined;
+			id = lecture.id;
+		} else {
+			// Extract language and lecture ID from file path structure
+			const [language, ...ids] = lecture.id.split("/");
+
+			locale = config.i18n.defaultLocale === language ? undefined : language;
+			id = ids.join("/");
+		}
+
+		// Generate path params with optional locale (omit for default locale)
+		return { params: { locale, id }, props: { lecture } };
+	});
+}
+
+const { locale = config.i18n.defaultLocale } = Astro.params;
+const { lecture } = Astro.props;
+
+// Render markdown content and extract headings for TOC
+const { Content, headings, remarkPluginFrontmatter: frontmatter } = await render(lecture);
+
+const t = i18nit(locale);
+---
+
+<Base title={lecture.data.title} {locale} description={lecture.data.description} article={{ timestamp: lecture.data.timestamp, section: lecture.data.series, tags: lecture.data.tags }}>
+	<main class="flex flex-col gap-6">
+		<header class="flex flex-col gap-4">
+			<div class="flex items-start justify-between gap-4">
+				<h1>{lecture.data.title}</h1>
+				<ArticleActions {locale} body={lecture.body} />
+			</div>
+			<div class="flex flex-wrap items-center gap-1.5 text-[0.75rem] text-remark">
+				<span class="chip">
+					<Icon name="lucide--calendar" />
+					<time datetime={lecture.data.timestamp.toISOString()}>{Time(lecture.data.timestamp)}</time>
+				</span>
+				{
+					lecture.data.series && (
+						<span class="chip">
+							<Icon name="lucide--layers" />
+							{lecture.data.series}
+						</span>
+					)
+				}
+				{
+					!!lecture.data.tags?.length && (
+						<span class="chip">
+							<Icon name="lucide--hash" />
+							{lecture.data.tags?.join("; ")}
+						</span>
+					)
+				}
+				<span class="chip">
+					<Icon name="lucide--pilcrow" />
+					{t("read.words", { words: frontmatter.words })}
+				</span>
+			</div>
+			<hr class="border-b border-weak" />
+		</header>
+
+		<Sensitive {locale} back="/lecture" sensitive={lecture.data.sensitive} client:load>
+			<div class="flex gap-6 sm:gap-8">
+				<section id="markdown-content" class="markdown flex-1 min-w-0"><Content /></section>
+				{
+					lecture.data.toc && (
+						<aside class="hidden md:block shrink-0 w-35">
+							<div class="sticky top-3 flex flex-col gap-2 max-h-[calc(100vh-6rem)]">
+								<TOC {headings} />
+							</div>
+						</aside>
+					)
+				}
+			</div>
+		</Sensitive>
+
+		<Position {locale} />
+	</main>
+</Base>

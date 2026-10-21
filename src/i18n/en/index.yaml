@@ -14,7 +14,8 @@ feed:
 home:
   heatmap:
     empty: No words
-    jotting: '{count} jottings'
+    lecture: Lecture
+  jotting: '{count} jottings'
     note: '{count} notes'
   latest: Latest
   prefaces: Prefaces
@@ -25,6 +26,7 @@ language: English
 navigation:
   about: About
   home: Home
+  lecture: Lecture
   jotting: Jottings
   note: Notes
   policy: Policy

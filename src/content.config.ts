@@ -37,6 +37,31 @@ const note = defineCollection({
 });
 
 /**
+ * Lecture collection configuration
+ * Notes generated from video lectures and course material
+ */
+const lecture = defineCollection({
+	// Load all markdown files except those starting with underscore
+	loader: glob({
+		pattern: ["**/*.md", "!**/_*.md", "!**/_*/*.md"],
+		base: "./src/content/lecture",
+		generateId: entryId
+	}),
+	schema: z.object({
+		title: z.string(), // Post title (required)
+		timestamp: z.date(), // Publication date (required)
+		series: z.string().optional(), // Series name for grouped posts
+		tags: z.array(z.string()).optional(), // Array of topic tags
+		description: z.string().optional(), // Post description/excerpt
+		source_url: z.string().optional(), // URL of the source video or material
+		sensitive: z.boolean().default(false), // Marks content as sensitive
+		toc: z.boolean().default(true), // Whether to show table of contents
+		top: z.number().int().nonnegative().default(0), // Top priority for sorting (higher is more important)
+		draft: z.boolean().default(false) // Draft status (excludes from public listing)
+	})
+});
+
+/**
  * Jotting collection configuration
  * Represents shorter posts, quick thoughts, or micro-blog entries
  */
@@ -83,4 +108,4 @@ const information = defineCollection({
 	})
 });
 
-export const collections = { note, jotting, preface, information };
+export const collections = { note, lecture, jotting, preface, information };

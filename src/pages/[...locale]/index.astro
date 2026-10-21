@@ -45,6 +45,18 @@ const notes = await getCollection("note", note => {
 	return published && localed;
 });
 
+// Get published lectures for current locale
+const lectures = await getCollection("lecture", lecture => {
+	// Assign type property
+	Reflect.set(lecture, "type", "lecture");
+
+	// Check monolocale setup or extract language to match locale
+	let localed = monolocale || lecture.id.split("/")[0] === locale;
+
+	// Filter published lectures by current locale
+	return !lecture.data.draft && localed;
+});
+
 // Get published jottings for current locale
 const jottings = await getCollection("jotting", jotting => {
 	// Assign type property
@@ -65,6 +77,7 @@ const sections = config.latest || "*";
 
 // Add contents based on config
 if (sections === "*" || sections.includes("note")) items = items.concat(notes);
+if (sections === "*" || sections.includes("lecture")) items = items.concat(lectures);
 if (sections === "*" || sections.includes("jotting")) items = items.concat(jottings);
 
 // Get the latest content for display

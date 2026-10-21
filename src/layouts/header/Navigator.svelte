@@ -16,6 +16,7 @@ const homeRoute = getRelativeLocaleUrl(locale);
 const routes: { path: string; extra?: string[]; icon: `${string}--${string}`; label: string }[] = [
 	{ label: t("navigation.home"), path: homeRoute, extra: [getRelativeLocaleUrl(locale, "/preface")], icon: "lucide--tent" },
 	{ label: t("navigation.note"), path: getRelativeLocaleUrl(locale, "/note"), icon: "lucide--list" },
+	{ label: t("navigation.lecture"), path: getRelativeLocaleUrl(locale, "/lecture"), icon: "lucide--graduation-cap" },
 	{ label: t("navigation.jotting"), path: getRelativeLocaleUrl(locale, "/jotting"), icon: "lucide--feather" },
 	{ label: t("navigation.about"), path: getRelativeLocaleUrl(locale, "/about"), icon: "lucide--at-sign" }
 ];
@@ -65,7 +66,7 @@ onMount(() => {
 <button onclick={() => (menu = false)} class:pointer-events-none={!menu} class:bg-transparent={!menu} class="fixed top-0 start-0 w-screen h-screen pointer-events-auto bg-[#aaaaaa88] transition-[background-color] sm:hidden"></button>
 
 <nav bind:this={navigator} class:translate-x-full={!menu} class:rtl:-translate-x-full={!menu} class="fixed top-0 end-0 flex flex-col justify-between items-start gap-5 p-5 bg-background h-full sm:contents overflow-hidden transition-transform">
-	<header class="grid gap-5 text-secondary grid-rows-[repeat(5,1fr)] sm:grid-rows-none sm:grid-cols-[repeat(4,1fr)]">
+	<header class="grid gap-5 text-secondary grid-rows-[repeat(5,1fr)] sm:grid-rows-none sm:grid-cols-[repeat(5,1fr)]">
 		<button onclick={() => (menu = false)} class="sm:hidden"><Icon name="lucide--x" /></button>
 
 		{#each routes as item}
