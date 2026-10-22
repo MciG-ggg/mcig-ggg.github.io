@@ -20,25 +20,39 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v5
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Restore the Astro font cache
+      - name: Restore the Astro cache
+        id: astro-cache
         uses: actions/cache/restore@v4
         with:
-          path: node_modules/.astro/fonts
-          key: astro-fonts-${{ runner.os }}
+          path: node_modules/.astro
+          key: astro-cache-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            astro-cache-${{ runner.os }}-
       - name: Clear the Astro content store
         # The content store holds one entry per collection item. A cached entry
         # from a previous commit keeps its old id, so a renamed or moved file
-        # collides with the new one and the older entry wins.
+        # collides with the new one and the older entry wins. The font files in
+        # the same directory stay, so the build does not need the font service.
         run: rm -rf node_modules/.astro/data-store.json .astro
       - name: Build the site
         run: pnpm build
-      - name: Save the Astro font cache
+      - name: Save the Astro cache
+        if: steps.astro-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
-          path: node_modules/.astro/fonts
-          key: astro-fonts-${{ runner.os }}
+          path: node_modules/.astro
+          key: astro-cache-${{ runner.os }}-${{ github.sha }}
       - name: Upload the Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
