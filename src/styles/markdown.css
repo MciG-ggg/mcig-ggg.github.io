@@ -299,6 +299,20 @@
 			}
 		}
 
+		/* A rendered mermaid diagram. The code block keeps its container so the
+		   copy button stays. */
+		pre.mermaid-figure {
+			display: flex;
+			justify-content: center;
+			padding: 1em;
+			overflow-x: auto;
+
+			svg {
+				max-width: 100%;
+				height: auto;
+			}
+		}
+
 		ruby rt {
 			font-size: 0.6em;
 		}
