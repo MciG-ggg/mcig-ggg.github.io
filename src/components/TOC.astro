@@ -72,6 +72,10 @@ tocHeadings.forEach(heading => {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
+		/* Let the container shrink so the nav pane scrolls instead of
+		   stretching the sticky wrapper past the viewport. */
+		flex: 1;
+		min-height: 0;
 	}
 
 	.toc-progress-bar {
@@ -92,6 +96,10 @@ tocHeadings.forEach(heading => {
 	}
 
 	.toc-nav {
+		/* Flex children keep their content height unless min-height is 0.
+		   Without it the pane grows past the aside and the list never scrolls. */
+		flex: 1;
+		min-height: 0;
 		overflow-y: auto;
 		overflow-x: visible;
 		scrollbar-width: thin;
@@ -208,6 +216,7 @@ tocHeadings.forEach(heading => {
 	const registry = (window.__tocRegistry ??= {
 		run: () => {},
 		updateProgress: () => {},
+		highlight: () => {},
 		bound: false
 	});
 
@@ -237,7 +246,7 @@ tocHeadings.forEach(heading => {
 	}
 
 	function TOC() {
-		const indicators = new Map<string, Element>(
+		const indicators = new Map<string, HTMLElement>(
 			document
 				.querySelectorAll(".toc-item")
 				.values()
@@ -245,57 +254,98 @@ tocHeadings.forEach(heading => {
 					const link = item.querySelector(".toc-link");
 					const href = link?.getAttribute("href") || "";
 					const slug = href.replace(/^#/, "");
-					return [slug, item];
+					return [slug, item as HTMLElement];
 				})
 		);
 
-		const observer = new IntersectionObserver(
-			(entries) => {
-				const visibleEntries = entries.filter((e) => e.isIntersecting);
-				if (visibleEntries.length === 0) return;
+		// The headings in document order, paired with their indicator element.
+		const sections = Array.from(
+			document.querySelectorAll("#markdown-content section[data-heading-rank]")
+		).map((section) => ({
+			section,
+			item: indicators.get(section.getAttribute("aria-labelledby") ?? "")
+		}));
 
-				let closestEntry = visibleEntries[0];
-				let minDistance = Math.abs(visibleEntries[0].boundingClientRect.top);
+		/*
+		 * Pick the heading the reader is currently under, then scroll only the
+		 * table of contents pane to show it.
+		 *
+		 * Two things this avoids. A scroll listener that picks the last heading
+		 * above the fold never fires at the bottom of the page, because no
+		 * heading is above the fold there. And scrollIntoView on the item
+		 * scrolls every scrollable ancestor, including the page, so the page
+		 * jumps when the current heading changes.
+		 */
+		function currentSection() {
+			const line = window.innerHeight * 0.25;
+			let active = sections[0];
 
-				for (const entry of visibleEntries) {
-					const distance = Math.abs(entry.boundingClientRect.top);
-					if (distance < minDistance) {
-						minDistance = distance;
-						closestEntry = entry;
-					}
+			for (const entry of sections) {
+				if (entry.section.getBoundingClientRect().top <= line) {
+					active = entry;
+				} else {
+					break;
 				}
-
-				indicators.forEach((item) => item.classList.remove("indicate"));
-
-				const slug = closestEntry.target.getAttribute("aria-labelledby");
-				if (slug) {
-					const activeItem = indicators.get(slug);
-					if (activeItem) {
-						activeItem.classList.add("indicate");
-						activeItem.scrollIntoView({ behavior: "smooth", block: "nearest" });
-					}
-				}
-			},
-			{
-				rootMargin: "-10% 0px -70% 0px",
-				threshold: 0,
 			}
-		);
 
-		document
-			.querySelector("#markdown-content")
-			?.querySelectorAll("section[data-heading-rank]")
-			.forEach((section) => observer.observe(section));
+			// At the bottom of the page, take the last heading.
+			if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) {
+				active = sections[sections.length - 1];
+			}
 
-		registry.updateProgress();
+			return active;
+		}
+
+		function highlight() {
+			const active = currentSection();
+			if (!active?.item) return;
+
+			indicators.forEach((item) => item.classList.remove("indicate"));
+			active.item.classList.add("indicate");
+
+			// Scroll the pane only. Never the page.
+			const pane = active.item.closest(".toc-nav");
+			if (!pane) return;
+
+			const itemTop = active.item.offsetTop;
+			const itemBottom = itemTop + active.item.offsetHeight;
+			const paneTop = pane.scrollTop;
+			const paneBottom = paneTop + pane.clientHeight;
+
+			if (itemTop < paneTop) {
+				pane.scrollTop = itemTop;
+			} else if (itemBottom > paneBottom) {
+				pane.scrollTop = itemBottom - pane.clientHeight;
+			}
+		}
+
+		registry.highlight = highlight;
+		registry.updateProgress = updateProgress;
+
+		highlight();
+		updateProgress();
 	}
 
 	registry.run = TOC;
 	registry.updateProgress = updateProgress;
+	registry.highlight = () => {};
 
 	if (!registry.bound) {
 		registry.bound = true;
-		window.addEventListener("scroll", () => registry.updateProgress(), { passive: true });
+		let ticking = false;
+		window.addEventListener(
+			"scroll",
+			() => {
+				if (ticking) return;
+				ticking = true;
+				window.requestAnimationFrame(() => {
+					ticking = false;
+					registry.highlight();
+					registry.updateProgress();
+				});
+			},
+			{ passive: true }
+		);
 		document.addEventListener("astro:after-swap", () => registry.run());
 	}
 

@@ -9,8 +9,19 @@ toc: true
 draft: false
 ---
 
+- 第 1 章 计算智能与进化算法导论 — 优化问题的三要素、适应度地形、EA 通用框架与贯穿术语
+- 第 2 章 遗传算法 (GA) — 编码与解码、轮盘赌选择、交叉与变异、模式定理、实数编码
+- 第 3 章 进化策略 (ES) 与进化规划 (EP) — (1+1)-ES、加号与逗号选择、步长自适应、CMA-ES、1/5 成功法则
+- 第 4 章 差分进化 (DE) — 差分变异、二项式与指数交叉、贪婪选择、CoDE 与 QOX/OXDE
+- 第 5 章 粒子群优化 (PSO) — 速度与位置更新、惯性权重、gbest/lbest 拓扑、OL-PSO
+- 第 6 章 计算智能术语体系 — 探索与开发、全局与局部、多样性与收敛性等六个对子
+- 第 7 章 算法比较方法 — 基准函数、FES 预算、成功率与收敛速度、Wilcoxon 秩和检验
+- 第 8 章 多目标进化算法 — 帕累托支配、非支配排序、拥挤度距离、NSGA-II、MOEA/D、IGD 与 HV
+- 第 9 章 五大算法横向对照与工程选型 — 四大机制对照、符号清算、一题四解与实战选型
 
-## 优化问题需要说清三件事
+## 第 1 章 计算智能与进化算法导论
+
+### 优化问题需要说清三件事
 
 给一条工业生产线调一组工艺参数——温度、压力、流量——让“单位能耗”尽量低。这在数学上就是一个优化问题:选 $x$,让 $f(x)$ 最小 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=5)。
 
@@ -34,7 +45,7 @@ $$
 
 打分时还要多认一个量:**适应度 (fitness)**,记作 $\mathrm{fit}(x)$。它和目标函数的方向可能相反——$f$ 越小越好,$\mathrm{fit}$ 越大越好。原题是最小化问题时,必须先写清楚 $f$ 怎么转成 $\mathrm{fit}$(最简单是取 $\mathrm{fit}=-f$),不能把两者混为一谈。
 
-## 适应度地形:局部最优与全局最优
+### 适应度地形:局部最优与全局最优
 
 把函数值当海拔画出来,目标函数就有了地形。
 
@@ -56,7 +67,7 @@ $$
 
 梯度法在多峰地形上必然失效,一句话就能说清:梯度只给出当前位置的下坡方向,一旦滑进某个谷底,谷底处梯度为零或极小,再也走不出去;而这个谷底有多深,取决于当初从哪个坡上滚下来。
 
-## 多点并行与随机概率转变准则
+### 多点并行与随机概率转变准则
 
 ![从多个方向同时搜索可覆盖多个山谷;传统优化方法(左下)只探到搜索空间的一角,进化算法(右下)能把种群散布到整个空间](images/fig_003.png)
 
@@ -74,7 +85,7 @@ $$
 
 多点并行 + 随机概率转变,这两条加在一起就构成了进化算法的灵魂。
 
-## 进化算法这一族
+### 进化算法这一族
 
 **计算智能 (computational intelligence)** 是人工智能的一个分支,它不靠“逻辑推理”,而靠“学着找答案、随机试、自己适应”。这门课研究的核心对象是其中一支——**进化算法**:留一群解、让它们“选优、交配、随机小改”、一代代改进 [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=3)。
 
@@ -84,7 +95,7 @@ $$
 
 两个容易混的词:**进化计算 (evolutionary computation)** 是“进化算法”这个研究领域的总称(学术圈子、期刊、会议),不是某个具体算法;**范例 (paradigm)** 是某个家族里最具代表性的款式——GA 是一个范例,PSO 是另一个,共 6 大范例 [p. 9](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=9)。
 
-## EA 通用框架:六步闭环
+### EA 通用框架:六步闭环
 
 ![进化算法的通用框架:群体经选择得到父代集,父代集经交叉与变异产生新解,新解再由替换送回群体,构成闭环](images/fig_001.png)
 
@@ -108,7 +119,7 @@ $$
 
 **「父代集」是后面四章唯一的分岔口**:它才是选择算子真正产出的东西,不是种群换个名字。
 
-## 贯穿全书的术语
+### 贯穿全书的术语
 
 **探索 (exploration)**:去没去过的地方试试——可能找到更深的谷,也可能白跑一趟。**开发 (exploitation)**:在已知不错的点附近细挖——能把解算得更精确,但可能永远困在这一个谷里。
 
@@ -147,7 +158,7 @@ $$
 | 维度灾难 (curse of dimensionality) | 变量个数 $D$ 增加时,搜索空间的“体积”按指数增长,固定数量的采样点越来越稀疏,根本覆盖不住整个空间。2 维 100 个点能覆盖住,20 维 $10^{20}$ 个点根本试不完。这是“穷举不行”的定量理由。 |
 | 鲁棒性 (robustness) | 算法“换个问题、换组参数也还能用”的耐折腾程度。进化算法只靠 $f$ 值不靠梯度,所以被认为鲁棒性好 [p. 12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=12)。 |
 
-## 八类复杂优化问题
+### 八类复杂优化问题
 
 这门课要解决的不是“普通”优化问题,而是**在结构上特别难**的那一类。课程主线把它们分成八类 [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=10)。
 
@@ -168,9 +179,9 @@ $$
 
 传统方法在哪一步失效,逐类一句话:多模态——单点出发只能找到最近的局部最优,找不全;约束——可行域占比极小,大量时间浪费在不可行解上;多目标——答案要的是解集而不是单点,标准做法不直接适用;非线性方程系统——从一点出发只能找一组解,一次跑不全;混合整数——梯度法无法处理“只在离散点上走”的约束。
 
-## 阶梯例题
+### 阶梯例题
 
-### 例 1.1 优化问题的标准形式与术语匹配
+#### 例 1.1 优化问题的标准形式与术语匹配
 
 **题干**:某工厂的两个工艺参数 $x_1$、$x_2$ 分别被允许在 $[0,10]$ 与 $[-5,5]$ 范围内取值,目标是把“单位能耗” $f(x_1,x_2)$ 降到最低。请写出这个优化问题的标准形式,并指出:(a) 决策变量及维数 $D$;(b) 目标函数;(c) 搜索空间 $S$。若 $f(3,1)=2$、$f(5,2)=4$,哪个解更好?
 
@@ -184,7 +195,7 @@ $$
 
 $f(3,1)=2 < f(5,2)=4$,按“最小化”约定,$x=(3,1)$ 比 $x=(5,2)$ 更好 [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=11)。
 
-### 例 1.2 单峰 vs 多峰——为什么传统方法对多峰失效
+#### 例 1.2 单峰 vs 多峰——为什么传统方法对多峰失效
 
 **题干**:给定两个目标函数
 
@@ -203,7 +214,7 @@ $$
 
 (b) $f_B'(x)=4x^3-6x=2x(2x^2-3)=0$ 得 $x=0$ 与 $x=\pm\sqrt{3/2}\approx\pm 1.2247$。$f_B(0)=1$,$f_B(\pm 1.2247)=-1.25$。地形是“两个谷 $x=\pm 1.2247$、中间一个小土包 $x=0$”。从 $x=0$ 出发:看 $x=-0.1$、$f=0.99$ 比 $f(0)=1$ 略小,走过去;一步一步,会向 $x=-1.2247$ 那个谷滑过去,最终停在 $x=-1.2247$、$f=-1.25$。**但是**,对称的那个谷 $x=+1.2247$ 处 $f$ 也是 $-1.25$,所以从 $x=0$ 出发既可能停在左、也可能停在右(取决于先看到哪边)。如果初始点就在 $x=0$ 附近,它**永远发现不了另一个对称的谷底是不是比这个深**——这是单点爬山在多峰地形上的典型失败。这个例子恰好两个谷一样深;若深度不同,则一定停在较浅的那个 [p. 2](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
 
-### 例 1.3 把“探索 vs 开发”翻译成算法决策
+#### 例 1.3 把“探索 vs 开发”翻译成算法决策
 
 **题干**:某 EA 跑了几十代之后收敛曲线已基本水平,但停在了一个很差的局部最优上(离已知的全局最优还差很远)。在不修改算法框架的前提下,你可以调高或调低以下三个旋钮,各调一次:(i) 变异强度;(ii) 种群规模 $N$;(iii) 选择的“严格度”(如轮盘赌里让强者更突出、弱者更被压制)。请说明**每个旋钮**该怎么调,并用“探索 vs 开发”解释**为什么这么调**。
 
@@ -215,7 +226,7 @@ $$
 
 共通逻辑:三个旋钮都朝“更偏探索 = 更不容易早熟”的方向调,但“调大还是调小”的具体方向不同。这就是“凡是问某参数调大或调小会怎样,答案几乎都能这样开头”这条在算法参数上的具体体现。
 
-## 易错点
+### 易错点
 
 > [!WARNING]
 > **陷阱 1:把“目标函数”和“适应度”当成同一个东西**
@@ -229,11 +240,13 @@ $$
 > **陷阱 3:以为进化算法“保证找到全局最优”**
 > 错。进化算法**只在概率意义上**给出强搜索,不提供最优性保证。给定有限代数 $G_{\max}$ 与有限种群 $N$,搜索范围天然有限——多峰地形上“离最优还差很远但曲线已经平了”是常态。它的价值在于**对函数几乎不做假设、不需要梯度、在合理时间内给出足够好的解**,不在于“保证最优” [p. 2](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
 
-## 一个不可导、只能取整的优化问题
+## 第 2 章 遗传算法 (GA)
+
+### 一个不可导、只能取整的优化问题
 
 化工过程里某些反应速率、机器学习里某些 loss 项,写成代码就拿不出导数;变量又只允许取整数值(比如生产多少台设备)。目标函数 $f(x)$ 长得像"火山口被挖了几个坑"而且**不可导**:梯度法没法用(没有导数),爬山法只能爬到最近的那个山谷,穷举法又因为组合爆炸根本试不完 [Chapter 2_ Introduction to GAs.pptx · p.1](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=1)。
 
-## 直觉与术语:把候选解当成一条二进制串
+### 直觉与术语:把候选解当成一条二进制串
 
 1970 年代 Holland 教授从"物竞天择,适者生存"的生物学隐喻借来思路:不靠单个点往梯度方向走,而是**同时放一群候选解**,让它们按"好的多生、差的淘汰 + 子代之间互相交换信息 + 小概率随机翻一翻"三个动作一代代改进。这就是**遗传算法**(genetic algorithm, GA)——进化算法家族里最经典、最直白的一员:二进制串当个体、轮盘赌当选择、位翻转当变异 [Chapter 2_ Introduction to GAs.pptx · p.4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=4)。
 
@@ -264,7 +277,7 @@ $$
 
 本章还会用到搜索空间的两个常用符号——$L_j, U_j$ 表示第 $j$ 维的下界与上界;当变量只有一个时,直接写 $L_x, U_x$ [Chapter 2_ Introduction to GAs.pptx · p.9](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=9)。
 
-## 编码与解码:连续问题必须先量化
+### 编码与解码:连续问题必须先量化
 
 把区间 $[L_x, U_x]$ 用 $L$ 位二进制串切成 $2^L$ 个等距格点。串 $b_{L-1}b_{L-2}\cdots b_0$ 对应的实数为
 
@@ -289,9 +302,9 @@ $$
 
 串长 $L$ 一旦定下来,搜索就被卡死在 $2^L$ 个格点上;不管目标函数曲线多光滑,GA 都只能逼近到 $\Delta$ 这个量级。要精度更高只能加大 $L$,但 $L$ 加大会让搜索空间 $2^L$ 爆炸——这就是 GA 处理**连续高维问题**的硬伤,也是后来改用实数编码的动机 [Chapter 2_ Introduction to GAs.pptx · p.9](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=9)。
 
-## 选择:轮盘赌
+### 选择:轮盘赌
 
-### 概率公式的三步
+#### 概率公式的三步
 
 **第一步**:算每个个体的选择概率
 
@@ -319,7 +332,7 @@ $$
 
 三步的顺序别记混:**用 $\mathrm{fit}$ 占比定义扇形面积 → 面积比给出概率 $p_i$ → 累积成一个 $U(0,1)$ 随机数的区间,一次抽完**。
 
-### PPT 算例:3 个体的概率表
+#### PPT 算例:3 个体的概率表
 
 PPT 给出的算例使用目标函数 $\mathrm{maximize}\; f(x) = -x^2 + 10\cos(2\pi x) + 30$,$x\in[-5, 5]$ [Chapter 2_ Introduction to GAs.pptx · p.7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=7)。
 
@@ -327,9 +340,9 @@ PPT 给出的算例使用目标函数 $\mathrm{maximize}\; f(x) = -x^2 + 10\cos(
 
 表里 $f(x_i)$ 与 $\mathrm{fit}(x_i)$ 分成两列:目标函数 $f(x)$ 默认**越小越好**,适应度 $\mathrm{fit}(x)$ 默认**越大越好**。无约束单目标最大化时两者相等,做了适应度缩放之后就不同;算 $p_i$ 只能用 $\mathrm{fit}$ [Chapter 2_ Introduction to GAs.pptx · p.7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=7)。
 
-## 交叉与变异
+### 交叉与变异
 
-### 交叉算子
+#### 交叉算子
 
 **单点交叉**(one-point crossover,PPT 唯一展开的形式):随机选两个父代 $A, B$;在 $\{1,2,\dots, L-1\}$ 中均匀选一个交叉点 $k$;保留 $A, B$ 前 $k$ 位,交换后 $L-k$ 位,得到两个子代 $A', B'$ [Chapter 2_ Introduction to GAs.pptx · p.8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=8)。
 
@@ -339,7 +352,7 @@ $p_c$ 是"对"这一层的概率:每次抽样出两条父代后,先掷一次 $U(
 
 ![单点交叉与位翻转变异的位级示意:交叉先随机选一个交叉点,再交换其右侧整段(左);变异以概率 $p_m$ 逐位进行,把 1 翻成 0 或反之(右)](images/fig_011.png)
 
-### 位翻转变异与期望变位数
+#### 位翻转变异与期望变位数
 
 对一条 $L$ 位二进制串,每一位独立以概率 $p_m$ 翻转;设 $X$ 为这条串被翻转的位数,则
 
@@ -359,9 +372,9 @@ $$
 
 **数量级直觉**:典型 $p_m \approx 1/L$ 时,$\mathbb{E}[X] = 1$——即"平均一条串翻 1 位" [Chapter 2_ Introduction to GAs.pptx · p.8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=8)。
 
-## 完整手算一代 GA
+### 完整手算一代 GA
 
-### 4 位二进制:每一步都能手算
+#### 4 位二进制:每一步都能手算
 
 为了把整条流水线**不跳步**走完,这里用一个 4 位二进制、每一步数值都能手算的最小例子。选择、交叉、变异三步用的都是 PPT 给出的算子。
 
@@ -428,7 +441,7 @@ $$
 
 **这一代发生了什么**:第一对交叉造出了比初始种群更好的 $1101$($f=169 > 144$),说明"把两条好串的片段拼起来"确实能探到新区域;第二对交叉因为末位相同而保持 $0011$ 与 $0101$ 不变;同一代里变异把 $1000$ 直接打成 $0000$。GA 的改善是**统计意义上的**——多代平均下来才看得出来,机制见下面的模式定理 [Chapter 2_ Introduction to GAs.pptx · p.12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=12)。
 
-### PPT 主例:10 个体 → 8 个父代 → 10 个子代
+#### PPT 主例:10 个体 → 8 个父代 → 10 个子代
 
 PPT 的主例用 10 位二进制和同一个目标函数 $\max\ f(x) = -x^2 + 10\cos(2\pi x) + 30$,$x\in[-5,5]$,走完 10 → 8 → 10 的完整流程 [Chapter 2_ Introduction to GAs.pptx · p.10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=10)。
 
@@ -459,13 +472,13 @@ PPT 的主例用 10 位二进制和同一个目标函数 $\max\ f(x) = -x^2 + 10
 
 这组表是整套流程的证据链:选前最高 $30.7196$,选 + 交叉 + 变异后到 $37.2576$,证明"一代 GA 确实能把好解变多"。
 
-## 收敛曲线
+### 收敛曲线
 
 ![收敛曲线:纵轴为每代最高适应度,横轴为进化代数。前几代迅速爬升,第 20 代以后基本平稳,最终停在最优值 40,这就是收敛的含义](images/fig_016.png)
 
 从曲线读两件事:(1) 算法在**哪一代**基本不再进步(本例约第 20 代)——这决定了"何时停";(2) 最终稳定在哪——这反映了**是否找全局最优**(本例稳定在 40,与目标函数在 $[-5,5]$ 上的最大值吻合) [Chapter 2_ Introduction to GAs.pptx · p.13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=13)。
 
-## 模式定理:GA 为什么能把好片段组合起来
+### 模式定理:GA 为什么能把好片段组合起来
 
 **问题**:GA "凭什么能变好"?为什么一代代下来最好解越来越优?1970 年代 Holland 给出了一个解释,叫**模式定理** [Chapter 2_ Introduction to GAs.pptx · p.14](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=14)。
 
@@ -515,7 +528,7 @@ $$
 
 交叉之后这个模式至少存活三分之一,变异之后几乎原样保留。
 
-## 实数编码 GA 与单形交叉
+### 实数编码 GA 与单形交叉
 
 二进制 GA 在连续高维问题上被串长卡住。一种补救办法是**实数编码**——不编码成串,直接把每个变量当一个实数;此时"交叉"不能再做"位交换",得换成几何操作 [Chapter 2_ Introduction to GAs.pptx · p.19](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=19)。
 
@@ -527,9 +540,9 @@ $$
 
 把二进制串换成实数向量后,原来的"把某位 0 翻成 1"就不再有自然含义;变异必须改成实数上的扰动(常用"加一个高斯小量")。不要把"位翻转"硬塞到实数编码里 [Chapter 2_ Introduction to GAs.pptx · p.18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=18)。
 
-## 阶梯例题
+### 阶梯例题
 
-### 例 2.1 照着算一份轮盘赌区间
+#### 例 2.1 照着算一份轮盘赌区间
 
 **题干**:种群规模 $N=4$,适应度分别为 $\{2, 4, 4, 6\}$。算选择概率与累积概率,并把 $U(0,1)$ 随机数 $r=0.45$ 分配到具体个体 [Chapter 2_ Introduction to GAs.pptx · p.6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=6)。
 
@@ -545,7 +558,7 @@ $$
 
 $r = 0.45$ 落入 $[q_2, q_3) = [0.375, 0.625)$,所以选中**第 3 个个体**(适应度 4) [Chapter 2_ Introduction to GAs.pptx · p.6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=6)。
 
-### 例 2.2 改用锦标赛选择复算一次
+#### 例 2.2 改用锦标赛选择复算一次
 
 **题干**:同上 $\mathrm{fit} = \{2, 4, 4, 6\}$,改成**锦标赛选择**(tournament size $k=2$):每次随机抽 2 个个体比一场,大的留下 [Chapter 2_ Introduction to GAs.pptx · p.6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=6)。
 
@@ -553,7 +566,7 @@ $r = 0.45$ 落入 $[q_2, q_3) = [0.375, 0.625)$,所以选中**第 3 个个体**(
 
 与轮盘赌结论一致(都是 $A_4$ 被多复制),**实现更简单、且能抵抗"超级个体"**,因此工程上锦标赛选择用得更多。PPT 原文写作"联赛选择 / Tournament selection" [Chapter 2_ Introduction to GAs.pptx · p.6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=6)。
 
-### 例 2.3 跑两代看趋势
+#### 例 2.3 跑两代看趋势
 
 **题干**:继续 4 位二进制例。设 $N = 4$、$p_c = 1$、$p_m = 0.125$,并**开启精英保留**。第 0 代如上;假设变异 + 交叉后第 1 代为
 
@@ -567,7 +580,7 @@ $$
 
 这就是**探索与开发**的取舍:调大 $p_m$ 更偏探索(种群不容易早熟,但收敛更慢),调小更偏开发(收敛快,却容易困在浅谷里)。$p_m$ 太小开发不够、太大又破坏精英 [Chapter 2_ Introduction to GAs.pptx · p.12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=12)。
 
-## 易错点
+### 易错点
 
 > [!WARNING]
 > **$p_c$ 与 $p_m$ 的量级**:$p_c$ 统计的是"这一对父代换不换",通常取 $0.6$–$0.9$,意思是绝大多数父代都会交叉。$p_m$ 统计的是"每一位翻不翻",通常取 $1/L$ 附近($L=10$ 时 $p_m\approx 0.05$,$L=100$ 时 $p_m\approx 0.01$),平均一条串翻不到一位。搞混这两个量级,要么让 GA 退化为纯随机搜索($p_m$ 太大),要么让变异形同虚设($p_m$ 太小,易早熟收敛) [Chapter 2_ Introduction to GAs.pptx · p.8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=8)。
@@ -578,7 +591,9 @@ $$
 > [!WARNING]
 > **$\Delta$ 与 $L$ 的因果关系**:$L$ 是自变量(由精度反推),$\Delta$ 是因变量($L$ 决定精度数值)。把因果颠倒成"用 $\Delta$ 反推 $L$"虽然数值上能用对数公式反解,但**因果关系**和**计算顺序**是两件事 [Chapter 2_ Introduction to GAs.pptx · p.9](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=9)。
 
-## GA 的两个硬伤
+## 第 3 章 进化策略 (ES) 与进化规划 (EP)
+
+### GA 的两个硬伤
 
 第 2 章的遗传算法 (GA) 在连续优化问题上有两个硬伤。
 
@@ -590,7 +605,7 @@ $$
 
 **ES/EP 的解法:直接在实数空间做,不让步长固定。** 进化策略 (ES) 在 1963 年由 Rechenberg 和 Schwefel 提出,进化规划 (EP) 在 1966 年由 Fogel 提出。它们的共同特点是:① 个体**直接**是一个实数向量 $x$,不需要编码;② 变异是"加一个小量",不是"翻一位";③ **步长 $\delta$ 本身也参与进化**,表现好的个体其步长会被遗传下去,步长自动变大变小,不需要人调。[p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=13)
 
-## (1+1)-ES:一个父亲,一个孩子,选好的留下
+### (1+1)-ES:一个父亲,一个孩子,选好的留下
 
 **进化策略 (Evolution Strategy, ES)** 是 1963 年由 Rechenberg 和 Schwefel 提出的一类算法。它不用 0/1 串,而是把每个个体表示为一个实数向量 $x=(x_1,\ldots,x_D)$。[p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
@@ -600,7 +615,7 @@ $$
 
 最小例子:$\min f(x)=x^2$,当前 $x=2$、$f(2)=4$。抽 $N(0,1)=0.4$、步长 $\delta=0.5$,得 $x' = 2 + 0.5\times 0.4 = 2.2$,$f(2.2)=4.84$,比 4 还大,不接受,保留 $x=2$。再抽 $N(0,1)=-1.8$、$\delta=0.5$,得 $x'=2+0.5\times(-1.8)=1.1$,$f(1.1)=1.21<4$,接受,$x\leftarrow 1.1$。[p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
 
-### 一步怎么走:五步伪代码
+#### 一步怎么走:五步伪代码
 
 $(1{+}1)$-ES 是 ES 家族最简的版本,由 slide 5 的 $(\mu,\lambda)$ 框架退化到 $\mu=1,\lambda=1$ 得到。[p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=5)
 
@@ -615,7 +630,7 @@ $(1{+}1)$-ES 是 ES 家族最简的版本,由 slide 5 的 $(\mu,\lambda)$ 框架
 
 $N_j(0,1)$ 决定"挪向哪边"(正或负),$\delta'_j$ 决定"挪多远"。第 4 步的"加号"= **父代可以参与竞争**;这里 $\mu=1$,候选池就是 $x$ 与 $x'$ 两个,谁好留谁。$\delta$ 跟着 $x$ 走这件事是 ES 与 GA 最大的不同:GA 的变异率 $p_m$ 是固定超参数,ES 的 $\delta$ 是**个体的一部分**。[p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=5) [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
 
-## (μ+λ) 与 (μ,λ):候选池里有没有父代
+### (μ+λ) 与 (μ,λ):候选池里有没有父代
 
 ES 里有两个常用版本,第一步都是"复制 $\mu$ 个父代、变异出 $\lambda$ 个子代",差别在最后一步"选谁进入下一代":
 
@@ -626,7 +641,7 @@ ES 里有两个常用版本,第一步都是"复制 $\mu$ 个父代、变异出 $
 
 ![$(\mu,\lambda)$-ES 与 $(\mu+\lambda)$-ES 的候选池对比:$(\mu,\lambda)$-ES 只从 $\lambda$ 个子代中选出 $\mu$ 个作为下一代父代;$(\mu+\lambda)$-ES 把 $\mu$ 个父代与 $\lambda$ 个子代放在一起竞争](images/fig_020.png)
 
-### 公式定义与一维最小例子
+#### 公式定义与一维最小例子
 
 记 $\mu$ 个父代为 $\{x_1,\ldots,x_\mu\}$,每代生成 $\lambda$ 个子代 $\{x'_1,\ldots,x'_\lambda\}$,适应度越小越好(假设最小化)。下一代 $\mu$ 个父代的构造方式:
 
@@ -647,7 +662,7 @@ ES 里有两个常用版本,第一步都是"复制 $\mu$ 个父代、变异出 $
 
 本例中两策略结果**完全相同**——因为本代父代恰好都差于两个最好的子代,加号策略保留父代的"权利"没有改变结果。另外 $x'_3=-0.75$ 看着比父代好,却输给了 $x'_2=0.3$,所以没进下一代;这正是"按 $f$ 排序取前 $\mu$ 个"的含义。差别要到多峰、长期运行时才会显著。[p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
-### 为什么逗号策略在多峰问题里更好
+#### 为什么逗号策略在多峰问题里更好
 
 **多峰问题**指目标函数 $f$ 在搜索空间内有多个局部最优。
 
@@ -657,7 +672,7 @@ ES 里有两个常用版本,第一步都是"复制 $\mu$ 个父代、变异出 $
 
 **一句话结论:多峰 / 崎岖地形用逗号 $(\mu,\lambda)$——它允许父代被淘汰、允许暂时退化,因此能逃出局部最优;单峰地形或要求每代都不退化时用加号 $(\mu{+}\lambda)$——它保留精英,收敛更快,但更容易早熟。** 这与第 1 章的"探索 vs 开发"是同一条线:调大一个参数 = 更偏探索 = 更不易早熟、但收敛更慢;调小一个参数 = 更偏开发。逗号更偏探索,加号更偏开发。[p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
-## 步长的三级自适应:圆 → 椭圆 → 旋转椭圆
+### 步长的三级自适应:圆 → 椭圆 → 旋转椭圆
 
 ES 最值得讲的一条主线:用同一个公式改三处,变异区域从圆升级到椭圆、再升级到旋转椭圆。
 
@@ -669,7 +684,7 @@ $$x'_{i,j}=x_{i,j}+\delta_{i,j}\cdot N_j(0,1)$$
 
 这里的 $\delta$ 是 ES 的**步长参数**,只出现在算法里;$\sigma$ 是**高斯分布的标准差**,只出现在 PDF 公式里。两个符号形状相近,角色不同,不要混用。本章的 $\delta$ 是逐维向量 $\delta_i=(\delta_{i,1},\ldots,\delta_{i,D})$,$D=1$ 时它就是一个实数。[p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
 
-### 第一级:圆
+#### 第一级:圆
 
 所有维用同一个步长,即 $\delta_{i,j}=\delta$ 对所有 $j$ 相同,变异后的解以 $x_i$ 为中心、类似均匀散布在半径 $\delta$ 的圆内:
 
@@ -679,7 +694,7 @@ $$x'_i=x_i+\delta\cdot\exp(\tau N(0,1))\cdot N_j(0,1),\quad \tau=(\sqrt{D})^{-1}
 
 ![所有维度共用同一步长时的变异:后代落在以父代 $x_i$ 为中心、半径由 $\delta$ 决定的圆内;框内给出步长自适应算例,当 $\delta=0.5$、$N(0,1)=0.2$、$\tau=0.3$、$D=10$ 时新步长为 0.53](images/fig_022.png)
 
-### 第二级:椭圆
+#### 第二级:椭圆
 
 每个维用各自不同的 $\delta_{i,j}$,变异区域变成以 $x_i$ 为中心、长短轴由各维 $\delta_{i,j}$ 决定的椭圆:
 
@@ -689,7 +704,7 @@ $$\delta'_{i,j}=\delta_{i,j}\exp(\tau' N(0,1)+\tau N_j(0,1)),\quad \tau'=(2D)^{-
 
 ![各维度用不同步长时的变异:后代不再落在圆内,而是落在长短轴由各维步长 $\delta_{i,j}$ 决定的椭圆内](images/fig_023.png)
 
-### 第三级:旋转椭圆
+#### 第三级:旋转椭圆
 
 再引入**旋转角 $\alpha_{k,l}$**($D(D-1)/2$ 个,每个角度自己也跟着进化),通过旋转矩阵 $R(\alpha)$ 把变异方向耦合起来,变异区域变成"斜着躺的椭圆":
 
@@ -699,7 +714,7 @@ $$\zeta=\left(\prod_{k=1}^{D-1}\prod_{l=k+1}^{D}R(\alpha'_{k,l})\right)\boldsymb
 
 ![再引入旋转角 $\alpha$ 后的变异:通过旋转矩阵 $R(\alpha)$ 把各维相关的方向耦合起来,后代落在旋转椭圆内,这是协方差矩阵思想的雏形](images/fig_024.png)
 
-## CMA-ES:把圆、椭圆、旋转椭圆统一成一个矩阵
+### CMA-ES:把圆、椭圆、旋转椭圆统一成一个矩阵
 
 上面三级递进每一级都加新东西(全局学习率、旋转角)。当目标函数的"谷底"是任意形状(斜着躺、扭着弯),只靠这三个量能表达的形状还是不够多。
 
@@ -715,7 +730,7 @@ $$x_k^{(g+1)}\sim m^{(g)}+\sigma^{(g)}\cdot\mathcal{N}\bigl(0,C^{(g)}\bigr)$$
 
 ![CMA-ES 的优势:采样分布从圆到椭圆再到旋转椭圆自适应变形,使搜索方向与目标函数的等高线形状对齐;左下为目标函数三维图,右下为等高线](images/fig_026.png)
 
-## ES 五步 vs EP 三步
+### ES 五步 vs EP 三步
 
 $(\mu,\lambda)$-ES 的完整流程有五步,每步都在 slide 5 的框图里画出:[p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=5)
 
@@ -749,7 +764,7 @@ $(\mu,\lambda)$-ES 的完整流程有五步,每步都在 slide 5 的框图里画
 
 一句话区分:ES 在进化这件事上更"工程化"(有交叉、有明确的 $\mu$ 与 $\lambda$);EP 更"直接"(只有变异,而且父代与子代一起进参考集排序)。[p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=13)
 
-## 高斯变异 vs 柯西变异:尾巴厚度决定能不能跳出去
+### 高斯变异 vs 柯西变异:尾巴厚度决定能不能跳出去
 
 EP 有一个 ES 没有的可选项:把高斯变异换成柯西变异(Yao、Liu 与 Lin,1999)。要先说清 PDF 是什么:概率密度函数 (PDF) 是一条曲线,曲线下的面积代表概率(总面积 $=1$);标准高斯 PDF 在 $x=0$ 处最高(高度约 0.399),向两侧迅速变薄。
 
@@ -761,13 +776,13 @@ $$f_{\text{Gaussian}}(x)=\frac{1}{\sqrt{2\pi}\,\sigma}\exp\left(-\frac{(x-m)^2}{
 
 **一句可直接背下来的口诀:远离最优解用柯西、接近最优解用高斯。** 理由:柯西尾厚 ⇒ 抽到 $|x|$ 很大值的概率比高斯高得多 ⇒ 容易跳出局部最优;高斯集中在小步长 ⇒ 适合在最优解附近精修。两者的组合让 EP 在各种问题上都稳定。[p. 20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=20)
 
-## 1/5 成功法则:步长自动调的依据
+### 1/5 成功法则:步长自动调的依据
 
 **1/5 成功法则 (one-fifth success rule)** 是一条"自动调步长"的经验规则:**如果最近若干次变异中,成功的比例高于 1/5,说明步子还可以更大;低于 1/5 就该把步子收小。** 这里的"成功"指变异后的解比父代更好。[p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=17)
 
 **固定步长的局限**:在最小例子上能跑通,却不能同时兼顾远距离搜索与最优点附近的精细搜索。考虑 $f(x)=x^2$、$x=2$:取 $\delta=0.01$ 时,即使抽到 $N(0,1)=3$,位移也只有 $0.03$;取 $\delta=10$ 时,一次常规抽样就可能把解带到远离 $0$ 的位置。步长有个"对的值"——不大不小。这与第 1 章的"探索 vs 开发"是同一条线:$\delta$ 越大越偏探索,越小越偏开发。
 
-### ∂P/∂δ 的推导与几何
+#### ∂P/∂δ 的推导与几何
 
 $\partial f/\partial \delta$ 读作"只看 $\delta$ 这一个量变化时 $f$ 的变化率",只需要会读这个符号,不需要自己求导。
 
@@ -789,9 +804,9 @@ $\partial f/\partial \delta$ 读作"只看 $\delta$ 这一个量变化时 $f$ �
 
 **一个必须写明的来源事实**:PPT (Ch3) 里**没有出现过"1/5 成功法则"这五个字**。slide 17–19 的三页 ``Theoretical Background'' 给的是这条法则的**理论推导依据**(对成功概率 $P(\delta)$ 关于步长 $\delta$ 求偏导,发现 $P$ 先增后减,即存在最优步长)。"1/5" 这个具体数字来自 Rechenberg 1965–1973 年间的系列实验:在线性走廊与球面模型上,当每步成功率约 1/5 时,平均收敛速度最快。法则名与这个数字都由讲义补出,引用时应写明依据是 slide 17–19 的 $\partial P/\partial \delta$ 推导,而不是硬说成 PPT 原文。
 
-## 手算例子
+### 手算例子
 
-### 手算 (1+1)-ES 在 $f(x)=x^2$ 上走 3 步
+#### 手算 (1+1)-ES 在 $f(x)=x^2$ 上走 3 步
 
 用 $(1{+}1)$-ES 求 $\min f(x)=x^2$ 在 $x\in[-5,5]$ 上的最优。初始 $x^{(0)}=2$、$\delta^{(0)}=0.5$。每代先变异步长 $\delta'=\delta\exp(\tau N(0,1))$,再用新步长变异解 $x'=x+\delta' N(0,1)$,然后与父代比:好就整体接受 $(x,\delta)\leftarrow(x',\delta')$,差就整体保留原值。取 $D=1$,所以 $\tau=(\sqrt{1})^{-1}=1$,公式简化为 $\delta'=\delta\exp(N(0,1))$。下面手算 3 代(每代抽两个独立的标准正态量,数值四舍五入到 4 位):
 
@@ -802,7 +817,7 @@ $\partial f/\partial \delta$ 读作"只看 $\delta$ 这一个量变化时 $f$ �
 
 3 代后 $x^{(3)}=-0.2663$、$f=0.0709$,离真实最优 $x^*=0$($f=0$)已经很近。第 2 代因为 $N_2(0,1)=-1.8$ 抽到一个"大的负量",大步向最优方向跳了一步;步长在连续两次成功后被推到 1.5021——这正是"成功多、步长该放大"的雏形。第 1 代被拒绝时解与步长一起回退,说明**步长也是个体的一部分**,不能只留步长扔掉解。[p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
 
-### 同样的 $f(x)=x^2$ 改用 $(\mu{+}\lambda)$,$\mu=2,\lambda=4$
+#### 同样的 $f(x)=x^2$ 改用 $(\mu{+}\lambda)$,$\mu=2,\lambda=4$
 
 初始父代 $\{x_1,x_2\}=\{2,-2\}$,$\delta_1=\delta_2=0.5$。从每个父代变异出 $\lambda/\mu=2$ 个子代,加号策略从 $2+4=6$ 个候选中挑最优 2 个。本例为把注意力放在**选择池**上,暂不更新步长(固定 $\delta=0.5$):
 
@@ -813,7 +828,7 @@ $\partial f/\partial \delta$ 读作"只看 $\delta$ 这一个量变化时 $f$ �
 
 本代 $f$ 最优由 $x'_2=1.25$(从 $x_1=2$ 跳过来)与 $x'_4=-1.1$(从 $x_2=-2$ 跳过来)占据,父代 $\{2,-2\}$ 全部被淘汰——这在 $(1{+}1)$ 里见不到,因为父代只有一个。**关键点**:加号策略保留了"父代也可以竞争"的权利,但**不代表父代一定赢**。[p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
-### 单峰与多峰分别该选哪种策略
+#### 单峰与多峰分别该选哪种策略
 
 同一个 $f(x)=x^2$、同样起点 $x^{(0)}=2$、$\delta^{(0)}=0.5$,比较 $(1{+}1)$-ES 与 $(2{+}4)$-ES 的收敛。$(1{+}1)$-ES 每代只生成 1 个子代($\mu=\lambda=1$);$(2{+}4)$-ES 每代生成 4 个子代、从 $\mu+\lambda$ 的池子里挑 2 个。注意**这两个都是加号策略**,唯一的差别是种群规模与每代候选数。
 
@@ -823,7 +838,7 @@ $\partial f/\partial \delta$ 读作"只看 $\delta$ 这一个量变化时 $f$ �
 
 **单峰问题用加号 $(\mu{+}\lambda)$——精英保留、收敛快;多峰 / 崎岖问题用逗号 $(\mu,\lambda)$——允许退化、能逃出局部最优。** 要比较加号与逗号,必须固定 $\mu,\lambda$ 只改选择池。[p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
-## 易错点
+### 易错点
 
 > [!WARNING] ES/EP 最常踩的 5 个坑
 >
@@ -833,7 +848,9 @@ $\partial f/\partial \delta$ 读作"只看 $\delta$ 这一个量变化时 $f$ �
 > 4. **以为 ES 也有柯西变异**。ES 在 PPT 的伪代码里只演示了高斯变异 $x+\delta N(0,1)$;柯西变异是 **EP** 的可选项(Ch3 slide 14–16)。
 > 5. **把 slide 6 的 $\tau=(\sqrt{D})^{-1}$ 与 slide 7 的 $\tau'=(2D)^{-1}$ 当成 PPT 笔误**。这是**两种不同的变异变体**:slide 6 是"各维同步长"(只有 1 个系数 $\tau$),slide 7 是"各维独立步长"(有 $\tau'$ 与 $\tau$ 两个系数,前者管全局、后者管逐维)。姊妹坑是把"1/5 成功法则"硬说成 PPT 原文——Ch3 slide 17–19 只给推导,这五个字由讲义补出;被问"该法则在 PPT 哪一页",应写"slide 17–19 的 Theoretical Background 三页给的是推导,**法则名是讲义补充的**"(硬塞"slide 20"是错的,slide 20 讲的是高斯/柯西的使用建议)。
 
-## 步长自适应有多贵
+## 第 4 章 差分进化 (DE)
+
+### 步长自适应有多贵
 
 第 3 章的 CMA-ES 通过学习一个完整的 $D\times D$ 协方差矩阵，把搜索区域从圆调到椭圆、再调到旋转椭圆。代价是每代要算一次协方差矩阵的更新，涉及 $O(D^2)$ 的存储与运算，维度一高就吃不消 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=4)。
 
@@ -841,13 +858,13 @@ $\partial f/\partial \delta$ 读作"只看 $\delta$ 这一个量变化时 $f$ �
 
 DE 与前面三章算法的核心区别只有一句话：它把"变异方向"这件事交给了"种群内部个体之差"。代价是三个算子的细节必须严格记牢、不能背错。
 
-## 浓雾里的一群登山者
+### 浓雾里的一群登山者
 
 想象你管着一群登山者，要在浓雾里找山的最低点。每个人只能看到自己脚下与身旁几个人的相对位置。某个人想知道下一步往哪走，他可以这么做：随便挑另外三个队友 $A$、$B$、$C$，看 $A$ 在哪儿（基向量），再看从 $B$ 到 $C$ 这条矢量指向哪儿（差分向量），然后从 $A$ 出发、沿着这条矢量迈一步。迈多大呢？自己定一个倍率 $F$。最后停下来之前，先看一眼自己现在的位置（目标向量）和新算出来的位置（试验向量）哪个海拔更低，更低的那个留下，高的那个丢回原来的位置。这就是 DE 一代里发生的全部事情 [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=10)。
 
 本章全部变体都是"基向量 + 一组差分向量的线性组合"。基向量与差分向量这两个角色一旦搞混，变异公式必错。
 
-## 术语速查
+### 术语速查
 
 - **种群规模 $NP$**：DE 一代里同时持有的个体数。第 1 章的通用符号写作 $N$，第 3 章 ES 把"种群中的父代个数"写作 $\mu$，三者满足 $N=NP=\mu$；ES 另有一个子代个数 $\lambda\ge\mu$。本讲义统一写 $NP$ [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6)。
 - **迭代代数 $G$**：DE 的迭代轮数。$G$ 与第 1 章的 $t$ 是同一个量，DE 文献习惯用 $G$ [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=4)。
@@ -872,9 +889,9 @@ DE 与前面三章算法的核心区别只有一句话：它把"变异方向"这
 
   所以 DE/rand/1/bin 是"基向量随机挑 + 一个差分向量 + 二项式交叉"，DE/best/2/exp 是"基向量用当前最优 + 两个差分向量 + 指数交叉"。本章全部例题以 DE/rand/1/bin 为主线，这是最经典、最常用、文献里出现频率最高的一种型号。
 
-## 三个算子
+### 三个算子
 
-### 差分变异 DE/rand/1/bin
+#### 差分变异 DE/rand/1/bin
 
 最经典的差分变异公式只有 5 个符号：从随机选出的基向量出发，沿着两个随机个体之差的方向，迈出 $F$ 倍距离，得到变异向量。
 
@@ -888,7 +905,7 @@ $$
 
 ![DE/rand/1/bin 的几何解释:基向量 $\vec x_{r_1,G}$ 加上缩放后的差分向量 $F(\vec x_{r_2,G}-\vec x_{r_3,G})$ 得到变异向量 $\vec v_{i,G}$,再与目标向量交叉得到试验向量;图中三角形顶点即试验向量](images/fig_033.png)
 
-### 变异公式族
+#### 变异公式族
 
 除 DE/rand/1 之外常见的还有 5 种 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6)：
 
@@ -904,7 +921,7 @@ $$
 
 "基向量怎么选"与"用几个差分向量"是正交的两个维度。DE/current-to-rand/1 具有旋转不变性（把坐标系整体旋转后，它产生的搜索行为不变），因此特别适合变量耦合的旋转问题 [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=18)。
 
-### 二项式交叉
+#### 二项式交叉
 
 伪代码如下（课件只给示意图，伪代码按该图整理）：
 
@@ -924,7 +941,7 @@ $CR$ 越大、$u_{i,G}$ 越像 $v_{i,G}$；$CR$ 越小、$u_{i,G}$ 越像 $x_{i,
 
 ![二项式交叉的逐维选择:每一维以概率 $CR$ 取自变异向量、否则取自目标向量,并强制至少保留一维来自变异向量,保证 $\vec u_{i,G}\neq\vec x_{i,G}$](images/fig_031.png)
 
-### 指数交叉
+#### 指数交叉
 
 指数交叉从随机起点 $s$ 开始连续若干维抄自变异向量，直到某维掷出的 $rand$ 大于等于 $CR$ 才停：
 
@@ -955,7 +972,7 @@ $$
 
 ![指数交叉的连续交换段:从随机起点开始连续若干维取自变异向量,直到某个分量不满足概率条件才停止,交换段长度服从 $P(r=v)=CR^{v-1}(1-CR)$](images/fig_032.png)
 
-### 一对一贪婪选择
+#### 一对一贪婪选择
 
 试验向量与目标向量一对一比较，赢者留下：
 
@@ -974,7 +991,7 @@ DE 没有种群层面的选择算子。整代替换、轮盘赌选择都不存�
 
 ![差分进化的算法框架(Step 1 至 Step 4):采样初始群体,对每个目标向量先变异得到 $\vec v_{i,G}$,再与 $\vec x_{i,G}$ 交叉得到试验向量 $\vec u_{i,G}$,最后贪婪选择更优者进入下一代](images/fig_030.png)
 
-## 手算：DE/rand/1/bin 的一代
+### 手算：DE/rand/1/bin 的一代
 
 设目标函数 $f(x)=(x-5)^2$，最优 $x^*=5$、$f(x^*)=0$。种群规模 $NP=4$，第 $G$ 代的 4 个目标向量是 $x_{1,G}=1$、$x_{2,G}=3$、$x_{3,G}=6$、$x_{4,G}=8$，对应函数值 $16$、$4$、$1$、$9$，当前最优是 $x_{3,G}=6$。参数取 $F=0.8$、$CR=0.9$。下面完整跑 $i=1$ 的更新 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6)。
 
@@ -1002,7 +1019,7 @@ $$
 
 $12.96<16$，试验向量更优，所以 $x_{1,G+1}=u_{1,G}=1.4$ [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5)。个体 1 从 $x=1$ 跳到了 $x=1.4$，离真实最优 $x^*=5$ 反而更近了。
 
-### 变式一：只把 F 改成 1.5
+#### 变式一：只把 F 改成 1.5
 
 种群、下标、目标函数不变，$F$ 从 $0.8$ 改成 $1.5$ [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6)：
 
@@ -1014,7 +1031,7 @@ $f(0)=25$，$f(1)=16$。变异向量比目标向量更差，即使强制维让�
 
 结果：$v_{1,G}=0$，$u_{1,G}=0$，$x_{1,G+1}=1$。$F$ 偏大时变异向量可能"跳过头"飞到比原来更差的位置；差分向量的方向正好背离最优时，这种浪费更明显。$F$ 调大的完整效果是：步子变大、多样性提高、偏探索，但偶尔会跳过头 [p. 19](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=19)。
 
-### 变式二：升到 3 维，只把 CR 改掉
+#### 变式二：升到 3 维，只把 CR 改掉
 
 种群换成 3 维向量 $x_{1,G}=(1,2,3)$、$x_{2,G}=(3,4,5)$、$x_{3,G}=(6,7,8)$、$x_{4,G}=(8,9,10)$，仍取 $r_1=2,r_2=3,r_3=4$，$F=0.8$。差分向量 $(6-8,\,7-9,\,8-10)=(-2,-2,-2)$ [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=8)：
 
@@ -1028,7 +1045,7 @@ $$
 
 $CR$ 直接决定试验向量在多大程度上"借用"变异向量的信息：$CR$ 大，试验向量更像变异向量（偏探索）；$CR$ 小，试验向量更像目标向量（偏开发，各变量独立优化）。目标函数可分离（$f(x)=\sum_j f_j(x_j)$）时小 $CR$ 反而更好，变量耦合（旋转问题）时大 $CR$ 更合适 [p. 20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=20)。
 
-### 对比：DE/rand/1/bin 与 DE/best/1/bin
+#### 对比：DE/rand/1/bin 与 DE/best/1/bin
 
 仍用 $f(x)=(x-5)^2$、$NP=4$、$F=0.8$、$CR=0.9$、种群 $x=[1,3,6,8]$、当前最优 $x_{best,G}=6$。对 $i=1$ 仍抽 $r_1=2,r_2=3,r_3=4$，差分向量 $=6-8=-2$。
 
@@ -1050,7 +1067,7 @@ DE/rand/1/bin 的变异向量 $1.4$ 远离当前最优 $6$、向目标向量 $1$
 
 "基向量用最优"也不保证每一步都更近。把下标换成 $r_1=2,r_2=4,r_3=3$，DE/rand/1/bin 得 $v_{1,G}=3+0.8(8-6)=4.6$（离 $x^*=5$ 只有 0.4），DE/best/1/bin 得 $v_{1,G}=6+0.8(3-8)=2$（离 $5$ 有 3.0）——同一组参数下 best 反而跳过了头。它快的是长期趋势，不是每一步 [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=18)。
 
-## 改进：CoDE、QOX 与 OXDE
+### 改进：CoDE、QOX 与 OXDE
 
 **CoDE（复合差分进化，composite DE）**把"挑哪个策略、选哪组参数"也变成了一个随机过程。预先准备一个策略候选池（DE/rand/1/bin、DE/rand/2/bin、DE/current-to-rand/1）和一个参数候选池（3 组 $(F,\,CR)$ 取值），每个个体每次从两个池里各抽一个组合，生成 3 个试验向量，再取最好的那个进入下一代 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=15)。
 
@@ -1070,7 +1087,7 @@ OXDE 把 QOX 接入任意 DE 变体：用正交表一次生成 $M$ 个候选解�
 
 ![OXDE 的通用框架:用正交表 $L_M(Q^K)$ 一次生成 $M$ 个候选解,与差分进化的试验向量一起比较取优;该框架可直接替换任意 DE 变体](images/fig_039.png)
 
-## 怎么判断一个改动有效
+### 怎么判断一个改动有效
 
 DE 的实验口径是固定的：在 IEEE CEC2005 基准的 25 题上跑（单模 F1–F5、基本多模 F6–F12、扩展多模 F13–F14、混合复合 F15–F25）[p. 2](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=2)，每个算法在每题上做 25 或 50 次独立运行，每次记录一次函数误差 $|f(x_{best})-f(x^*)|$ [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=3)，用均值与标准差描述收敛表现，再用 Wilcoxon 秩和检验在显著性水平 $\alpha=0.05$ 上比较两个算法 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=4)。预算必须统一在 FES 上（$FES_{max}=10000\times D$），否则"收敛快"只说明代数少，不说明计算量小。
 
@@ -1080,7 +1097,7 @@ DE 的实验口径是固定的：在 IEEE CEC2005 基准的 25 题上跑（单�
 
 OXDE（DE/rand/1/bin + QOX）在原版 DE/rand/1/bin 的基础上，误差下降更快、最终精度更高 [p. 38](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=38)。横轴用 FES 而不是代数，保证两个算法在同一计算预算下比较。
 
-## 易错点
+### 易错点
 
 > [!WARNING]
 > **把 $F$ 当成变异率。** $F$ 是缩放因子，控制差分向量的放大倍数。DE 里没有 GA 意义上的"逐位变异率"——差分向量整体被 $F$ 缩放，然后要么整体进入试验向量、要么不进。$F=0$ 时 $v_{i,G}=x_{r1,G}$，变异算子完全无效，等于没有搜索 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6)。
@@ -1091,13 +1108,15 @@ OXDE（DE/rand/1/bin + QOX）在原版 DE/rand/1/bin 的基础上，误差下降
 > [!WARNING]
 > **下标 $r_1,r_2,r_3$ 互不相同且不等于 $i$。** 必须从 $\{1,\dots,NP\}\setminus\{i\}$ 中均匀抽取，三件事缺一不可：① 排除 $i$ 本身，否则差分可能为 0、变异方向消失；② 三个下标互不相同，否则差分向量的某一项就退化为 0；③ 每代每维重抽，不能缓存 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6)。
 
-## 粒子群优化：速度合成、记忆与拓扑
+## 第 5 章 粒子群优化 (PSO)
+
+### 粒子群优化：速度合成、记忆与拓扑
 
 PSO 的粒子永不淘汰:没有选择算子、没有交叉、没有变异,粒子只会被"挪一挪"位置 [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.14](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=14)。那么问题来了:不淘汰任何粒子,也不让粒子交配或突变,它怎么还能把一群解搜得越来越好?[Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=4)
 
 答案藏在"记着"两个字里:每个粒子记着自己到过的最好位置,整群也记着全局最好位置;速度由"旧速度、自己的历史最优、全群最优"三项合成,位置跟着速度走。PSO 由 Kennedy(社会心理学家)与 Eberhart(电气工程师)在 1995 年提出 [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=4),灵感来自鸟群觅食与进化计算两个源头 [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=5)。
 
-### 鸟群比喻与术语
+#### 鸟群比喻与术语
 
 把一群鸟扔到一片有食物但看不见的草地上找食物。最自然的策略是:**每只鸟一方面朝自己去过的最好位置飞(经验),另一方面朝整群里飞得最远的那只鸟所在位置飞(共享信息)**。PSO 把"鸟"换成了"粒子"(particle),"位置"就是候选解 $\mathbf{x}$,把"朝哪飞、飞多远"叫"速度" $\mathbf{v}$,并让两者一代一代地更新下去。
 
@@ -1123,7 +1142,7 @@ PSO 的两大思想来源画在一起是这样:
 
 ![PSO 的两大思想来源:人工生命(鸟群与鱼群的群体行为及群理论)与进化算法(遗传算法与进化规划)](images/fig_043.png)
 
-### 速度更新:三项各管什么
+#### 速度更新:三项各管什么
 
 PSO 只有两条公式,所有"粒子在飞"的过程都被这两条公式穷尽。速度更新方程给出第 $t$ 代、第 $i$ 个粒子在第 $j$ 维上的新速度(种群规模 $N$,搜索空间 $D$ 维),由惯性项、认知项、社会项相加得到:
 
@@ -1143,7 +1162,7 @@ $$
 
 ![PSO 速度更新公式的向量合成:惯性项 ωv、认知项 c1r1(pbest−x)、社会项 c2r2(gbest−x) 相加得到新速度,再叠加到位置上得到新位置](images/fig_040.png)
 
-### 位置更新与完整流程
+#### 位置更新与完整流程
 
 位置更新方程把新速度叠到老位置上:
 
@@ -1175,7 +1194,7 @@ PPT slide 17 给出了三个反例,直接告诉你这三项缺一不可 [Chapter
 8. 更新 $\mathrm{gbest}$:在所有粒子的 $\mathrm{pbest}$ 里挑出当前最优。
 9. 终止条件:达到最大代数、达到适应度阈值、或连续若干代不再改善。
 
-### 速度上限与修补算子
+#### 速度上限与修补算子
 
 速度太大有两个坏处:一是数值可能溢出(浮点表示范围有限),二是粒子直接飞出搜索空间。常用做法是事先给每维设一个上限 $v_{\max,j}$,常取 $v_{\max,j} \approx U_j - L_j$ [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=12)。$v_{\max}$ 还有三条副作用 [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=11):
 
@@ -1189,7 +1208,7 @@ PPT slide 17 给出了三个反例,直接告诉你这三项缺一不可 [Chapter
 - **往中点拉**:$x_{i,j}^{t+1} = (x_{i,j}^{t} + L_j)/2$ 或 $(x_{i,j}^{t} + U_j)/2$;
 - **镜像反弹**:$x_{i,j}^{t+1} = 2L_j - x_{i,j}^{t+1}$ 若越下界,$x_{i,j}^{t+1} = 2U_j - x_{i,j}^{t+1}$ 若越上界。
 
-### 参数:$c_1$、$c_2$ 与惯性权重 $\omega$
+#### 参数:$c_1$、$c_2$ 与惯性权重 $\omega$
 
 PPT slide 12 给出口诀:常取 $c_1 = c_2 = 2$,太低会让粒子在群里漫游很久才被拉回来,太高会让粒子猛烈地冲向目标 [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=12)。两个边界情形常考,它们是速度公式的直接推论:
 
@@ -1205,7 +1224,7 @@ $\omega$ 的两条经验来自 PPT slide 18 [Chapter 5_ Introduction to Particle
 
 为什么这么选?前期 $\omega$ 大,粒子冲得猛,搜索覆盖大半个空间(偏探索);后期 $\omega$ 小,粒子稳下来,在已知好解附近细挖(偏开发)。这是"探索 vs 开发"在 PSO 中的标准落地方式:**同一个 $\omega$ 时刻在变,前期偏探索、后期偏开发,所以判断"此刻偏哪边"先看 $\omega$ 走到哪一段**。
 
-### 限制系数 $\chi$:把爆炸压住
+#### 限制系数 $\chi$:把爆炸压住
 
 经典 PSO 的三项都是随机加权和,速度和位置有可能"越滚越大、冲向无穷",这种病叫**爆炸**(explosion) [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.19](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=19)。Clerc 和 Kennedy 在 PPT slide 20 提出限制系数(constriction coefficient)$\chi$,把整条公式再乘上 $\chi$ [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=20):
 
@@ -1223,7 +1242,7 @@ PPT slide 21 给出三条优点 [Chapter 5_ Introduction to Particle Swarm Optim
 
 但 Eberhart 与 Shi 的实验表明:加上 $v_{\max} \approx U_j - L_j$ 仍然能进一步改善性能 [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=21),所以 $v_{\max}$ 不必,但加它通常不亏。这两句不矛盾:"理论不必"来自 $\chi$ 提供的收敛保证,"实操推荐"来自实验——限制系数只保证收敛,不保证收敛得快,也不保证收敛到的正是想要的解。
 
-### 拓扑:gbest 与 lbest
+#### 拓扑:gbest 与 lbest
 
 PPT slide 7 同时给出 global version 与 local version [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7):
 
@@ -1234,7 +1253,7 @@ PPT slide 7 同时给出 global version 与 local version [Chapter 5_ Introducti
 
 于是判断"此刻偏探索还是偏开发"有三个旋钮:$\omega$ 决定时间上的前后期,$c_1$、$c_2$ 决定信任的分配,拓扑决定信息流通的范围。**gbest 偏开发**(收敛快,代价是早熟风险),**lbest 偏探索**(收敛慢,换来多样性)。
 
-### OL-PSO 与正交试验设计
+#### OL-PSO 与正交试验设计
 
 第 4 章(DE)的 QOX(量化正交交叉)只讲动机与几何,正交设计的方法细节放在这里。
 
@@ -1296,7 +1315,7 @@ $$
 
 **代价**:每代多花 $M$ 次函数评价(要评测 $M$ 个候选向量,见上面第 2 步)。所以 OL-PSO 比经典 PSO 更贵,换来的是一份更靠谱的学习榜样。
 
-### 三个手算例子
+#### 三个手算例子
 
 **例:2 维粒子的一次更新。** 2 维搜索空间,第 $t$ 代第 $i$ 个粒子的状态如下:
 
@@ -1364,7 +1383,7 @@ $$
 
 三者最终都收敛到 $x = 0$;差别在收敛速度、最终精度、抗早熟能力上:PSO 的精度不被编码限制(直接用实数),DE 在大步长时收敛最快,GA 在多峰问题上更鲁棒(交叉 + 变异的组合多)。PSO 的两个参数档位取自 PPT 的常用档:$\omega$ 见 slide 18、$c_1 = c_2 = 2$ 见 slide 12 [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=18)。
 
-### 三个最容易写错的地方
+#### 三个最容易写错的地方
 
 > [!WARNING]
 > 把 $r_1, r_2$ 当成常数。它们是每次更新粒子、每一维都重新掷一次的均匀随机数,不能约掉、不能合并成常数。错把它们当成 $0.5$,公式就简化成确定的常数倍,丢掉"用随机扰动打破粒子被单一目标拉死"的设计意图 [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)
@@ -1375,13 +1394,15 @@ $$
 > [!WARNING]
 > 把 $c_1 = 0$ 或 $c_2 = 0$ 当作"无所谓"。$c_1 = 0$ 时粒子被 $\mathrm{gbest}$ 单点拉死,易早熟;$c_2 = 0$ 时粒子退化为各爬各的山,完全失去群智能。写"取 $c_1 = 0$ 节省计算"会失分 [Chapter 5_ Introduction to Particle Swarm Optimization.pptx · p.12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=12)
 
-## 同一场讨论里的两种说法
+## 第 6 章 计算智能术语体系
+
+### 同一场讨论里的两种说法
 
 跟同学讨论「为什么我的 GA 在这个问题上跑不过 DE」，你说「DE 探索更广」，他说「DE 收敛更快」。这两句话听起来像在描述同一件事，方向却相反：一个说 DE 在搜索空间里看得多，一个说 DE 离最优更近。它们能同时成立，因为探索与开发是一对方向相反的力，任何算法在某一瞬间都只能偏向一边 [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=3)。
 
 第二组对话是同一个问题的另一个侧面。你说「Rosenbrock 不可分离」，老师说「它的等高线是斜的」，两句话是同一件事的两面。地形上变量互相耦合时，变量需要协同变化，只按坐标轴方向做高斯变异就变慢。CMA-ES 在二次问题上快、在 Rosenbrock 上慢，原因是它学习协方差矩阵，把搜索方向转到了地形主轴上 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=7) [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=8)。
 
-## 六个对子，三个层面
+### 六个对子，三个层面
 
 | 术语对子 | 左端含义 | 右端含义 |
 |---|---|---|
@@ -1400,7 +1421,7 @@ $$
 
 前两个层面描述算法，第三个层面描述问题。问题结构层面说的就是适应度地形（fitness landscape）——目标函数在搜索空间里的形状，第 1 章 §1.3 给出过定义 [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=11)。地形在这里被拆成可分离性和各向同性两个可以判定的性质。算法对不上问题结构，就会出现「跑不快 / 跑不到」。
 
-## 探索与开发：方向相反的两个力
+### 探索与开发：方向相反的两个力
 
 **探索**（exploration）：种群覆盖的搜索空间比例大，不同个体出现在不同的山谷里；算法更可能发现新谷，但单一个体离最优还不够近 [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=3)。
 
@@ -1417,7 +1438,7 @@ $$
 
 ![探索与开发在同一适应度地形上的对比:种群分散覆盖多个山谷是探索,聚拢到一个山谷精细搜索是开发](images/fig_044.png)
 
-## 全局搜索与局部搜索：愿不愿意跨山谷
+### 全局搜索与局部搜索：愿不愿意跨山谷
 
 **全局搜索**（global search）：把整张地形都纳入考虑，即使当前位置已经靠近最优，也不放弃远方的山谷 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=4)。
 
@@ -1431,7 +1452,7 @@ $$
 
 ![全局搜索与局部搜索:全局搜索覆盖多个盆地,局部搜索只在当前邻域内沿下降方向走](images/fig_045.png)
 
-## 多样性与收敛性：同一现象的两次测量
+### 多样性与收敛性：同一现象的两次测量
 
 **多样性**（diversity）：种群中个体彼此不同的程度，$\sigma_{\text{pop}}$ 是它常见的数值化指标 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=5)。
 
@@ -1447,7 +1468,7 @@ $$
 
 ![概念链:探索对应多样性与全局搜索,开发对应收敛性与局部搜索](images/fig_046.png)
 
-## 单模与多模：盆地数决定成败
+### 单模与多模：盆地数决定成败
 
 **单模问题**（unimodal problem）：整个搜索空间里只有一个全局最优，没有局部最优。球面函数 $f(\mathbf{x})=\sum x_i^2$ 是典型单模 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=6)。
 
@@ -1461,7 +1482,7 @@ $$
 
 ![单模地形只有一个全局最优,多模地形有多个局部最优,单点搜索会停在第一个遇到的局部最优](images/fig_047.png)
 
-## 可分离与不可分离：Hessian 的非对角元
+### 可分离与不可分离：Hessian 的非对角元
 
 **可分离问题**（separable problem）：目标函数可以写成 $f(\mathbf{x}) = \sum_{j=1}^{D} f_j(x_j)$，变量之间互不影响，可以逐维独立优化。$f = x + y$ 是可分离的，最优点可以分别对 $x$ 和 $y$ 优化 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=7)。
 
@@ -1473,7 +1494,7 @@ $$
 
 ![可分离函数 f=x+y 可以逐维独立优化;不可分离函数 f=x*y 的变量互相耦合,必须同时调整](images/fig_048.png)
 
-## 各向同性与旋转：等高线的主轴方向
+### 各向同性与旋转：等高线的主轴方向
 
 **各向同性**（isotropic）：地形在不同方向上的「曲率」相同——对二次地形而言，等高线是圆，或者 Hessian 与单位阵成比例。主轴沿坐标轴但长短轴不同的椭圆只是未旋转的各向异性 [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=8)。
 
@@ -1487,9 +1508,9 @@ $$
 
 ![各向同性地形的等高线是圆或主轴沿坐标轴的椭圆;旋转地形的等高线是倾斜椭圆,需要旋转搜索方向](images/fig_049.png)
 
-## 两个指标是怎么算出来的
+### 两个指标是怎么算出来的
 
-### 多样性指标 $\sigma_{\text{pop}}$
+#### 多样性指标 $\sigma_{\text{pop}}$
 
 目标是把「种群有多分散」量化成一个数。
 
@@ -1511,7 +1532,7 @@ $$
 
 物理意义：$\sigma_{\text{pop}}$ 描述种群覆盖搜索空间的能力。$N$ 个点散在 $[-5,5]^D$ 上时，$\sigma_{\text{pop}}$ 的量级约为 5；收敛到最优时，$\sigma_{\text{pop}} \to 0$ [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=5)。
 
-### 不可分离的形式化判定
+#### 不可分离的形式化判定
 
 对 $f(\mathbf{x})$ 求二阶偏导，得 Hessian 矩阵
 
@@ -1528,9 +1549,9 @@ $H_f$ 是 $D \times D$ 实对称矩阵（连续二阶偏导相等）。可分离
 
 工程意义：算法如果只在坐标轴方向变异（各维同向、互不相关），遇到 $H_f$ 有非对角元的问题就慢，必须让搜索方向旋转到主轴方向。CMA-ES 的协方差矩阵学习、DE 的差分向量都属于这一类 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=7) [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=8)。
 
-## 四个例子
+### 四个例子
 
-### 例 6.1：球面函数 $f(\mathbf{x})=\sum x_i^2$ 的术语定位
+#### 例 6.1：球面函数 $f(\mathbf{x})=\sum x_i^2$ 的术语定位
 
 判断 $f(\mathbf{x})=\sum_{i=1}^{D} x_i^2$ 在搜索空间 $[-5,5]^D$ 上的术语属性。逐对检查：
 
@@ -1541,7 +1562,7 @@ $H_f$ 是 $D \times D$ 实对称矩阵（连续二阶偏导相等）。可分离
 
 答案：单模 / 可分离 / 各向同性 / 开发优先。这种「简单」问题用什么算法都行，GA、ES、DE、PSO 都能轻松找到 $\mathbf{0}$ [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=7)。
 
-### 例 6.2：Rosenbrock $f=100(y-x^2)^2+(1-x)^2$ 的术语定位
+#### 例 6.2：Rosenbrock $f=100(y-x^2)^2+(1-x)^2$ 的术语定位
 
 定义域 $[-2,2]^2$，最优 $(x^*,y^*)=(1,1)$。
 
@@ -1552,7 +1573,7 @@ $H_f$ 是 $D \times D$ 实对称矩阵（连续二阶偏导相等）。可分离
 
 答案：单模 / 不可分离 / 旋转 / 探索+开发并用。GA 在 Rosenbrock 上慢，是因为它在坐标轴方向变异，走不出旋转窄谷；CMA-ES 快，是因为它学到协方差矩阵，把搜索方向转到了谷轴上 [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%206_%20Terminology%20in%20EAs.pdf#page=8)。
 
-### 例 6.3：二次型 $f(x,y)=x^2+2xy+2y^2$ 的可分离性与旋转
+#### 例 6.3：二次型 $f(x,y)=x^2+2xy+2y^2$ 的可分离性与旋转
 
 先算 Hessian：
 
@@ -1566,7 +1587,7 @@ $$
 
 为什么沿 $x$ 坐标轴的高斯变异对这个问题有效但慢：只沿 $x$ 方向变异能优化掉 $x^2$ 项，但 $2xy+2y^2$ 仍耦合着 $x$——$x$ 变好时 $y$ 的最优点也跟着变，必须反复「优化 $x$ → 重选 $y$ → 再优化 $x$」。算法能跑，但每一步只跨过 $x$ 方向，沿旋转主轴的快路径走不到。
 
-### 例 6.4：六个对子 → 算法选型
+#### 例 6.4：六个对子 → 算法选型
 
 问题：连续优化 $D=10$、多峰、变量弱耦合、地形近似各向同性，该选什么算法。
 
@@ -1578,7 +1599,7 @@ $$
 
 答案：DE 或 PSO/lbest，不用 CMA-ES（过度杀鸡用牛刀，且各向同性下协方差矩阵学不到有意义的结构）。六个对子是诊断工具：它不能直接告诉你用哪个算法，但能告诉你这个算法为什么跑不动，或者哪个对子是问题的瓶颈。
 
-## 容易踩的坑
+### 容易踩的坑
 
 > [!WARNING]
 > **把「多样性低」当成「算法失败」。** 在单模、凸问题上，多样性降到 0 是收敛成功的标志，算法做完了它该做的事。多样性低只是早熟的必要条件，不是充分条件；判定要看「多样性低」和「当前最优离真实最优还远」同时成立。
@@ -1589,259 +1610,9 @@ $$
 > [!WARNING]
 > **在多模问题上用 $(\mu{+}\lambda)$-ES 或 gbest 拓扑。** 这两种机制都只留一个吸引子，全群朝当前最优收缩，容易早熟。多模问题必须避免单一吸引子：ES 用 $(\mu,\lambda)$（只看子代），PSO 用 lbest 拓扑（每小撮各自看最优）；DE 因为是一对一贪婪选择，在多模上也有早熟风险，要靠大 $NP$ + 大 $F$ 维持多样性（第 4 章 §4.6）。
 
-## 目标互相冲突，最优点不是一个点
+## 第 7 章 算法比较方法
 
-买车要在价格和舒适度之间取舍。10 万元的车便宜但不太舒服，20 万元的车更舒服但贵——两个目标互相冲突，没法同时满足，只能平衡。这类问题叫**多目标优化问题**（multiobjective optimization problem, MOP）[p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=8)。
-
-决策者要的是一组「在不同价位上舒适度最高」的备选，一辆「最便宜」的车解决不了问题。只优化价格这一个目标，等于把整条帕累托前沿扔掉。
-
-![购车问题：价格与舒适度互相冲突，只能得到一组不同权衡下的最优解](images/fig_054.png)
-
-进化算法天然适合这类问题：它一次维护一群解，一群解正好能同时逼近前沿上的多个点。在两个目标的共同作用下，整个种群被推向「更便宜也更舒适」的方向，直到无法继续改进，得到一组供决策者挑选的解 [p. 9](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=9)。
-
-![多目标进化算法让种群整体向左上角（双目标更优方向）推进，直到无法继续改进](images/fig_055.png)
-
-## 多目标优化问题与帕累托支配
-
-### MOP 的形式化
-
-第 1 章把优化问题写成「决策变量 $\mathbf{x}$ → 目标函数 $f(\mathbf{x})$」。多目标情形下目标函数有 $m$ 个（$m \ge 2$），决策变量维数 $D$ 不变，可行域仍是各变量取值区间的直积 $S = \prod_{i=1}^{D}[L_i, U_i]$：
-
-$$\min_{\mathbf{x}\in S} \mathbf{f}(\mathbf{x}) = (f_1(\mathbf{x}), f_2(\mathbf{x}), \dots, f_m(\mathbf{x})), \qquad \mathbf{x} = (x_1,\dots,x_D)$$
-
-单目标用一个数决定好坏；多目标用一个 $m$ 维向量决定好坏。向量之间没有天然的大小关系，要比较两个解，需要标量化（MOEA/D 用的方法）或支配关系（NSGA-II 用的方法）[p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=4)。
-
-### 帕累托支配
-
-两个解 $\mathbf{x}_a, \mathbf{x}_b$，当且仅当下面两条同时成立时，称 $\mathbf{x}_a$ **支配** $\mathbf{x}_b$（记作 $\mathbf{x}_a \prec \mathbf{x}_b$）：
-
-- 在**所有**目标上都不比 $\mathbf{x}_b$ 差：$\forall i \in \{1,\dots,m\}: f_i(\mathbf{x}_a) \le f_i(\mathbf{x}_b)$；
-- 在**至少一个**目标上严格好于 $\mathbf{x}_b$：$\exists j \in \{1,\dots,m\}: f_j(\mathbf{x}_a) < f_j(\mathbf{x}_b)$ [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=6)。
-
-谁支配谁，谁就更好。两个解谁都不支配谁，就是**互不支配**，它们代表不同的目标权衡。
-
-![帕累托支配：xa 在所有目标上不差且至少一个目标严格更好时支配 xb；帕累托前沿是所有非支配解在目标空间的像](images/fig_053.png)
-
-### 帕累托最优解集与帕累托前沿
-
-**帕累托最优解集**（Pareto optimal set）是所有不被任何其他解支配的解：
-
-$$\text{PS} = \{\mathbf{x}^* \in S : \neg\exists \mathbf{x} \in S,\ \mathbf{x} \prec \mathbf{x}^*\}$$
-
-**帕累托前沿**（Pareto front）是这个解集在目标空间里的像：
-
-$$\text{PF} = \{\mathbf{f}(\mathbf{x}^*) : \mathbf{x}^* \in \text{PS}\}$$
-
-单目标的最优解是一个点；多目标的最优解是前沿这条曲线（曲面）。算法的目标是找到一组在前沿上均匀分布的点，让决策者从中挑一个 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=6)。
-
-最小的例子是 $\min f_1 = x^2$、$\min f_2 = (x-2)^2$，$x \in [-2, 4]$：两个目标各自的最优位置不同，$x$ 从 0 扫到 2 会把前沿上每个点都经过一遍 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=5)。
-
-![双目标例子：最小化 f1=x^2 与 f2=(x-2)^2 时不存在单个最优解，而是一组帕累托最优解](images/fig_052.png)
-
-## 非支配排序：分层保证收敛
-
-多目标上「谁更好」没法用一个数决定，但种群内部的解仍然分得出层次。**非支配排序**（nondominated sorting）把种群按支配关系分层 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=15)：
-
-- $F_1$：不被任何解支配的解，也就是当前种群的帕累托前沿；
-- $F_2$：从种群中去掉 $F_1$ 之后，不被任何剩余解支配的解；
-- $F_3$、$F_4$ 依次类推。
-
-![非支配排序把种群按帕累托支配关系分成 F1、F2 等层，第一层不被任何解支配](images/fig_056.png)
-
-层与层之间有明确的好坏：$F_2$ 中每个解至少被 $F_1$ 中某个解支配。所以选择算子可以优先选低层，这就是**收敛性**的来源——种群被压向帕累托前沿。
-
-同一层里的解互相不支配，支配关系排不出顺序。NSGA-II 用**拥挤度距离**给同层继续排序。
-
-### 算法过程
-
-把种群 $\mathcal{P} = \{\mathbf{x}_1,\dots,\mathbf{x}_N\}$ 分层的标准做法：
-
-1. **初始化**。每个 $\mathbf{x}_i$ 配一个支配计数器 $n_i = 0$ 和被支配集合 $S_i = \emptyset$。
-2. **两两比较**。对每对 $(\mathbf{x}_i, \mathbf{x}_j)$：若 $\mathbf{x}_i \prec \mathbf{x}_j$，则 $S_i \leftarrow S_i \cup \{\mathbf{x}_j\}$，$n_j \leftarrow n_j + 1$；若 $\mathbf{x}_j \prec \mathbf{x}_i$，则 $S_j \leftarrow S_j \cup \{\mathbf{x}_i\}$，$n_i \leftarrow n_i + 1$。
-3. **提取第一层**。$F_1 = \{\mathbf{x}_i : n_i = 0\}$，即没有解支配 $\mathbf{x}_i$。
-4. **逐层提取**。当前层 $F_k$ 中每个 $\mathbf{x}_i$ 遍历 $S_i$ 中每个 $\mathbf{x}_j$，把 $n_j$ 减 1；$n_j$ 减到 0 的解进下一层 $F_{k+1}$。
-5. **终止**。$F_k = \emptyset$ 时停止。
-
-直接两两比较的复杂度是 $O(mN^2)$：$m$ 个目标、$N$ 个个体，每次比较要看 $m$ 个目标值 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=15)。
-
-## 拥挤度距离：同层排序保证分布
-
-同层内部的解互相不支配。NSGA-II 用**拥挤度距离**（crowding distance）给它们排序：取 $\mathbf{x}_i$ 在每个目标上最近的两个同层邻居，把各个方向上归一化后的间距相加，得到「$\mathbf{x}_i$ 周围有多空旷」的度量 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=16)。
-
-$m = 2$ 时，$j$ 与 $h$ 分别是 $\mathbf{x}_i$ 在 $f_1$、$f_2$ 方向上最近的同层个体：
-
-$$
-i_{\text{distance}} = \frac{f_1(j) - f_1(h)}{f_{1\max} - f_{1\min}} + \frac{f_2(h) - f_2(j)}{f_{2\max} - f_{2\min}}
-$$
-
-拥挤度距离越大，说明周围越空旷，保留它有助于种群均匀铺开。**同层排序时距离大的优先**；边界个体（在某个目标上取值最小或最大的）距离取 $\infty$，优先保留。
-
-![拥挤度距离：用同层邻居在每个目标上的归一化距离之和衡量个体周围的空旷程度，边界个体取无穷大](images/fig_057.png)
-
-### 归一化怎么来的
-
-各目标的量纲不同，$f_1$ 的一个单位可能远大于 $f_2$ 的一个单位，直接相加会让某个目标独占拥挤度。归一化把每个目标压到同一个尺度：
-
-1. 对每个目标 $f_i$，把同层个体按 $f_i$ 值排序，边界个体（最小与最大）的距离取 $\infty$。
-2. 对中间个体 $\mathbf{x}_k$，$f_i$ 方向上最近的两个同层个体是 $\mathbf{x}_{k-1}$ 与 $\mathbf{x}_{k+1}$：
-
-$$\Delta f_{i,k} = \frac{f_i(\mathbf{x}_{k+1}) - f_i(\mathbf{x}_{k-1})}{f_{i,\max} - f_{i,\min}}$$
-
-3. 各目标方向上的间距相加，得到总距离：
-
-$$k_{\text{distance}} = \sum_{i=1}^{m} \Delta f_{i,k}$$
-
-$\Delta f_{i,k}$ 反映 $\mathbf{x}_k$ 在 $f_i$ 方向上的「密度比」：周围密集则 $\Delta f_{i,k}$ 小，周围空旷则大 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=16)。
-
-## 手动判定：支配关系、分层与同层排序
-
-### 例：4 个解的支配关系
-
-4 个解，二维目标，都最小化：
-
-$$\mathbf{x}_a = (1, 3), \mathbf{x}_b = (2, 2), \mathbf{x}_c = (3, 1), \mathbf{x}_d = (1, 4)$$
-
-逐对比较：
-
-- $\mathbf{x}_a$ vs $\mathbf{x}_b$：$f_1 = 1 < 2$，$f_2 = 3 > 2$——在 $f_1$ 上好、在 $f_2$ 上差，**互不支配**；
-- $\mathbf{x}_a$ vs $\mathbf{x}_c$：$f_1 = 1 < 3$，$f_2 = 3 > 1$——**互不支配**；
-- $\mathbf{x}_a$ vs $\mathbf{x}_d$：$f_1 = 1 = 1$，$f_2 = 3 < 4$——$f_1$ 平，$f_2$ 上严格好，$\mathbf{x}_a \prec \mathbf{x}_d$；
-- $\mathbf{x}_b$ vs $\mathbf{x}_c$：$f_1 = 2 < 3$，$f_2 = 2 > 1$——**互不支配**。
-
-答案：$\mathbf{x}_a \prec \mathbf{x}_d$，其他各对互不支配。$\mathbf{x}_a, \mathbf{x}_b, \mathbf{x}_c$ 都属于帕累托最优解集，$\mathbf{x}_d$ 被 $\mathbf{x}_a$ 支配。
-
-### 例：提取第一层与第二层
-
-6 个解的二维目标值（都最小化）：
-
-$$\mathcal{P} = \{(1,5), (2,3), (3,4), (4,2), (5,1), (3,3)\}$$
-
-逐个检查「有没有解支配它」：
-
-- $(1,5)$：$f_1$ 全场最小，任何解的 $f_1$ 都只能更大，做不到「两个目标都不差且至少一个严格更好」。**属于 $F_1$**；
-- $(2,3)$：没有解能支配它；它反而支配 $(3,4)$（$2<3, 3<4$）与 $(3,3)$（$2<3, 3=3$）。**属于 $F_1$**；
-- $(3,4)$：被 $(2,3)$ 支配（$2<3, 3<4$）。**不在 $F_1$**；
-- $(4,2)$：没有解能同时在这两个目标上不差于它并严格更好。**属于 $F_1$**；
-- $(5,1)$：$f_2$ 全场最小，同理无人能支配。**属于 $F_1$**；
-- $(3,3)$：被 $(2,3)$ 支配（$2<3$ 且 $3=3$，满足「都不差 + 至少一个严格更好」）。**不在 $F_1$**。
-
-答案：$F_1 = \{(1,5), (2,3), (4,2), (5,1)\}$。去掉 $F_1$ 后剩下的 $(3,4)$ 与 $(3,3)$ 互不支配，所以 $F_2 = \{(3,4), (3,3)\}$。
-
-$(1,5)$ 的 $f_2$ 是全场最差，但没人能支配它。帕累托最优看的是支配关系，不看总分。
-
-### 例：同层排序
-
-沿用上例的 $F_1 = \{(1,5), (2,3), (4,2), (5,1)\}$：
-
-1. **边界个体**：按 $f_1$ 排序为 $(1,5) \to (2,3) \to (4,2) \to (5,1)$，两端的 $(1,5)$ 与 $(5,1)$ 拥挤度距离取 $\infty$，优先保留；
-2. **中间个体 $(2,3)$**：按 $f_1$ 邻居是 $(1,5)$ 与 $(4,2)$，$\Delta f_1 = \frac{4-1}{5-1} = \frac{3}{4}$；按 $f_2$ 排序为 $(5,1) \to (4,2) \to (2,3) \to (1,5)$，邻居是 $(4,2)$ 与 $(1,5)$，$\Delta f_2 = \frac{5-2}{5-1} = \frac{3}{4}$。合计 $i_{\text{distance}} = \frac{3}{4} + \frac{3}{4} = 1.5$；
-3. **中间个体 $(4,2)$**：按 $f_1$ 邻居是 $(2,3)$ 与 $(5,1)$，$\Delta f_1 = \frac{5-2}{5-1} = \frac{3}{4}$；按 $f_2$ 邻居是 $(5,1)$ 与 $(2,3)$，$\Delta f_2 = \frac{3-1}{5-1} = \frac{1}{2}$。合计 $i_{\text{distance}} = \frac{3}{4} + \frac{1}{2} = 1.25$。
-
-保留顺序（拥挤度距离从大到小）：$(1,5)$ 与 $(5,1)$（边界，$\infty$）$>$ $(2,3)$（1.5）$>$ $(4,2)$（1.25）。同层优先保留距离大的个体，种群才能均匀铺在前沿上。
-
-## NSGA-II：父代与子代合并成 2N 再排序
-
-NSGA-II（非支配排序遗传算法 II）由 K. Deb 等人于 2002 年提出，是 NSGA 的改进版，也是进化多目标优化领域最经典的方法 [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=13)。它只动一个地方：把单目标 GA 的选择算子换成**非支配排序 + 拥挤度距离排序**这两步 [p. 14](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=14)。
-
-框架的关键在种群更新这一步。$P_t$ 是当前父代种群（$N$ 个个体），$Q_t$ 是子代种群（$N$ 个个体），NSGA-II 把两者合并成一个 $2N$ 的排序池：
-
-$$R_t = P_t \cup Q_t, \qquad |R_t| = 2N$$
-
-对 $R_t$ 做非支配排序分成 $F_1, F_2, \dots$，再在每层内按拥挤度距离从大到小排序，按这个顺序取前 $N$ 个组成下一代 $P_{t+1}$，其余的被拒绝（Rejected）[p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=17)。
-
-![NSGA-II 框架：父代 Pt 与子代 Qt 合并为 2N 的 Rt，经非支配排序与拥挤度排序选出下一代的 N 个个体](images/fig_058.png)
-
-父代进入排序池这一步是 NSGA-II 的**精英保留**：父代一定参加和子代的竞争，好解不会被下一代挤掉。
-
-![购车示例中 NSGA-II 的进化过程：种群沿价格-舒适度权衡前沿逐步逼近左上角](images/fig_059.png)
-
-图里是购车问题上的进化过程：每一代种群整体向左上角推进，前沿从零散分布逐渐铺成一条权衡曲线 [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=18)。
-
-## MOEA/D：分解成 NP 个单目标子问题
-
-MOEA/D（基于分解的多目标进化算法）由 Q. Zhang 和 H. Li 于 2007 年提出。它与 NSGA-II 走的是相反的路：NSGA-II 在整个种群上做全局排序，MOEA/D 先**分解**问题，再用**邻域信息**更新种群 [p. 20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=20)。
-
-### 标量化与权重向量
-
-**标量化**（scalarization）把多目标问题转成单目标：给每个目标一个权重 $\alpha_i \ge 0$ 且 $\sum_{i=1}^{m}\alpha_i = 1$，优化加权和
-
-$$\min \sum_{i=1}^{m} \alpha_i f_i(\mathbf{x})$$
-
-双目标情形就是 $\min \alpha f_1(\mathbf{x}) + (1-\alpha) f_2(\mathbf{x})$，$0 \le \alpha \le 1$。在适当条件下，每个权重向量对应一个标量子问题，其最优解通常是帕累托最优解。不同的权重可能得到同一个解；前沿非凸时，加权和还会漏掉一部分区域 [p. 21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=21)。
-
-![MOEA/D 的分解思想：用不同权重把双目标问题分解成一组单目标加权和子问题，每个子问题对应帕累托前沿上的一个点](images/fig_060.png)
-
-权重向量在目标空间里指的是一个**方向**：$\alpha$ 越靠近 1，子问题越偏 $f_1$，靠近 0 就越偏 $f_2$。它回答的是「在前沿上往哪个方向取点」，目标的重要性不在权重里。$\alpha_1 = 0.8$ 的子问题会给出 $f_1$ 相对更好、$f_2$ 相对更差的解，两个目标都还在各自的平衡点上。
-
-### 邻域与替换
-
-MOEA/D 的进化过程按子问题逐个推进 [p. 25](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=25)：
-
-1. 均匀生成 $NP$ 个权重向量；
-2. 每个权重向量初始化一个个体，种群与权重向量一一对应；
-3. 为每个个体算邻居——权重向量空间里欧几里得距离最近的 $T$ 个；
-4. 从邻居中选两个做杂交，产生一个后代；
-5. 评估后代，如果它在自己子问题的标量化目标上比父个体好，就替换父个体 [p. 22](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=22) [p. 23](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=23) [p. 24](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=24)。
-
-![均匀生成 NP 个权重向量，并为每个权重向量初始化一个个体](images/fig_061.png)
-
-![MOEA/D 用邻域个体的杂交产生后代，若标量化目标更优则替换其父个体](images/fig_062.png)
-
-![MOEA/D 框架：生成权重向量与初始种群，反复由邻居产生后代并做邻域内替换，直到停止条件满足](images/fig_063.png)
-
-邻居机制让子问题之间互相学习：邻域里的解给当前子问题提供搜索方向。每代每个子问题只跟 $T$ 个邻居打交道，复杂度 $O(NT)$，比 NSGA-II 的 $O(mN^2)$ 便宜。
-
-### 两条路线的差别
-
-| 维度 | NSGA-II | MOEA/D |
-|---|---|---|
-| 选择 | 非支配排序 + 拥挤度距离排序 | 邻居内的标量函数值比较 |
-| 多样性来源 | 拥挤度距离（同层内） | 权重向量的分布 |
-| 收敛来源 | 非支配排序（优先选低层） | 邻居信息（子问题互相学习） |
-| 每代复杂度 | $O(mN^2)$ | $O(NT)$ |
-| 适合的前沿 | 非凸、形状不规则 | 规则（凸或近似凸） |
-
-MOEA/D 用加权和做分解，前沿非凸时有一部分区域扫不到；NSGA-II 不做加权，对非凸前沿更稳 [p. 21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=21)。
-
-## 评价一个结果集：IGD 与 HV
-
-算法输出一组解，怎么判断它离真正的最优前沿有多远？两个常用指标，分别对应「真实前沿已知」和「真实前沿未知」两种情形。
-
-### IGD：前沿已知时看距离
-
-**IGD**（inverted generational distance，反向世代距离）以前沿上的一组参考点为起点，算每个参考点到算法找到的最近解的距离，再取平均：
-
-$$\text{IGD}(A) = \frac{1}{|R|}\sum_{r \in R} \min_{a \in A} d(r, a)$$
-
-**IGD 越小越好**。小说明解集既贴近前沿，又沿着前沿铺得均匀 [p. 26](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=26)。
-
-![IGD 指标：从真实帕累托前沿上的参考点到算法输出解的平均距离，值越小表示收敛性与分布越好](images/fig_064.png)
-
-### HV：前沿未知时看覆盖体积
-
-**HV**（hypervolume，超体积）算非支配解集相对一个固定参考点所支配的目标空间体积：
-
-$$\text{HV}(A) = \lambda\!\left(\bigcup_{a \in A} \text{box}(a, \mathbf{r})\right)$$
-
-**HV 越大越好**。大说明解集覆盖的目标空间更广 [p. 27](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=27)。
-
-![HV 指标：非支配解相对参考点支配的目标空间体积，值越大表示解集质量越好](images/fig_065.png)
-
-## 三个容易踩的坑
-
-> [!WARNING] 把「互不支配」当成「等价」
-> **错误**：$\mathbf{x}_a$ 与 $\mathbf{x}_b$ 互不支配时，认为二者没有区别。
-> **正确**：互不支配只说明比不出大小。它们是帕累托最优解集上的不同点，各代表一种权衡方向。决策者按偏好挑一个，但算法不能只留其中一个。
-
-> [!WARNING] 只算非支配排序，忽略拥挤度距离
-> **错误**：同层个体随机选。这样同层里密集的解全部保留，稀疏区域的解被丢，种群只覆盖帕累托前沿的一段。
-> **正确**：同层必须按拥挤度距离排序，距离大的优先，确保种群均匀覆盖整条前沿 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=16)。
-
-> [!WARNING] 把权重向量当成「目标重要性」
-> **错误**：$\alpha_1 = 0.8$、$\alpha_2 = 0.2$ 表示「$f_1$ 比 $f_2$ 重要 4 倍」。
-> **正确**：权重只是标量化工具。$\alpha_1 = 0.8$ 优化 $0.8 f_1 + 0.2 f_2$，得到的解在 $f_1$ 上相对更好、$f_2$ 上相对更差，两个目标都达到各自的平衡。权重向量是前沿上的方向选择。
-
-## 甲比乙好，凭什么这么说
+### 甲比乙好，凭什么这么说
 
 两个进化算法摆在面前，凭什么说「甲比乙好」？
 
@@ -1862,7 +1633,7 @@ $$\text{HV}(A) = \lambda\!\left(\bigcup_{a \in A} \text{box}(a, \mathbf{r})\righ
 
 论文里「算法 A 在 25 题里 22 题显著优于 B」这句话，每个数字都对应上面这六步。
 
-## 基准：统一什么才叫公平
+### 基准：统一什么才叫公平
 
 基准测试函数（benchmark test function）是一组已知全局最优 $\mathbf{x}^*$ 与 $f(\mathbf{x}^*)$ 的测试问题，用来在统一条件下评价算法。本课程采用 IEEE CEC2005 标准，共 25 题，分四类 [p. 2](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=2)：
 
@@ -1879,7 +1650,7 @@ $$\text{HV}(A) = \lambda\!\left(\bigcup_{a \in A} \text{box}(a, \mathbf{r})\righ
 
 真实工程问题（如 PID 控制器调参）当基准有两条走不通：一是全局最优 $\mathbf{x}^*$ 不知道，算不出函数误差；二是单次评估很贵（例如仿真 1 小时），跑 25 次独立运行代价太大。CEC2005 基准解析可算 $\mathbf{x}^*$、单次评估快、四类覆盖，所以成了论文通用基准 [p. 2](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=2)。
 
-## 预算：FES 与 FES$_{\text{max}}$
+### 预算：FES 与 FES$_{\text{max}}$
 
 适应值评价次数（fitness evaluations, FES）指算法调用目标函数 $f(\mathbf{x})$ 一次的计数 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=5)。最大函数评价次数 FES$_{\text{max}}$ 是算法的算力预算——一个算法最多调用 $f$ 的次数，设完之后它决定算法能跑多久 [p. 2](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=2)。
 
@@ -1890,7 +1661,7 @@ $$\text{HV}(A) = \lambda\!\left(\bigcup_{a \in A} \text{box}(a, \mathbf{r})\righ
 - **种群规模差异**：GA 每代通常评估 $N$ 个新个体，DE 每代通常评估 $NP$ 个试验向量，PSO 每代通常评估 $N$ 个移动后的粒子，ES 每代通常评估 $\lambda$ 个子代。同样的 100 代，A、B 用的 FES 不同，无法比较。
 - **公平比较**：统一在「FES$_{\text{max}}$ 次函数评估」上——A、B 都跑到 100 万次 FES，谁找到的 $\mathbf{x}_{\text{best}}$ 更好，谁就更优 [p. 2](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=2)。
 
-## 成绩单：多次独立运行
+### 成绩单：多次独立运行
 
 进化算法有随机性：同样的算法、同样的问题、同样的参数，只换随机种子，最终结果就不同。一次运行 $\mathbf{x}_{\text{best}}$ 的好坏只是一个样本点，不能代表算法的能力。多次独立运行（many independent runs）用不同的随机种子把同一个算法重复跑 $R$ 次（通常 $R = 25$ 或 $R = 50$），每次记录最终函数误差 [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=3)。
 
@@ -1902,7 +1673,7 @@ $$\text{HV}(A) = \lambda\!\left(\bigcup_{a \in A} \text{box}(a, \mathbf{r})\righ
 
 然后对 $R$ 次的 $E_r$ 求均值 $\bar{E}$ 与标准差 $\sigma_E$，这两个数字才是算法的成绩单 [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=3)。
 
-## 收敛速度：成功率与两个 FES 口径
+### 收敛速度：成功率与两个 FES 口径
 
 成功条件（successful condition）通常设一个阈值 $\varepsilon$（如 $0.01$ 或 $10^{-8}$），只要 $E_r \le \varepsilon$ 就称这次运行为成功运行（successful run）[p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=5)。成功率是成功运行占全部运行的比例：
 
@@ -1930,7 +1701,7 @@ $$
 
 ![成功运行的判定条件是函数误差不超过阈值;成功 FES 统计收敛速度,失败运行取 FESmax](images/fig_051.png)
 
-## 判定：Wilcoxon 秩和检验
+### 判定：Wilcoxon 秩和检验
 
 均值差异 $\bar{E}_A - \bar{E}_B$ 必须通过统计检验才算「显著」。
 
@@ -1946,9 +1717,9 @@ Wilcoxon 秩和检验（Wilcoxon rank-sum test）是非参数统计检验，把�
 - $A - B$：A 显著差于 B；
 - $A \approx B$：A、B 无显著差异。
 
-## 公式推导
+### 公式推导
 
-### 函数误差的均值与方差
+#### 函数误差的均值与方差
 
 用 $R$ 次独立运行的 $E_1, \dots, E_R$ 估计算法在这道问题上的真实均值误差。样本均值是真实均值的无偏估计：
 
@@ -1964,7 +1735,7 @@ $$
 
 论文通常写作 $\bar{E} \pm \sigma_E$。$\bar{E}$ 反映算法的平均表现，$\sigma_E$ 反映算法的稳定性：$\bar{E}$ 小且 $\sigma_E$ 小的算法既快又稳 [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=3)。
 
-### Wilcoxon 秩和检验的检验量
+#### Wilcoxon 秩和检验的检验量
 
 从两组样本 $X = (X_1, \dots, X_m)$ 与 $Y = (Y_1, \dots, Y_n)$ 检验「两组分布是否存在位置或整体差异」。计算分四步。
 
@@ -1984,9 +1755,9 @@ $$
 
 判定：若 $p < \alpha$（通常 $\alpha = 0.05$），拒绝「两组分布没有差异」的零假设，两组存在统计显著差异。这个结论只在「当前检验假设下」成立，不要无条件把它写成中位数差异。
 
-## 三个例子
+### 三个例子
 
-### 例 7.1：均值、标准差与 Wilcoxon 判定
+#### 例 7.1：均值、标准差与 Wilcoxon 判定
 
 算法 A、B 各跑 5 次，误差 $E_A = [1.2, 1.5, 1.1, 1.3, 1.4] \times 10^{-3}$，$E_B = [1.0, 1.1, 0.9, 1.0, 1.2] \times 10^{-3}$。求均值、标准差，并粗判 B 是否显著优于 A。
 
@@ -2020,7 +1791,7 @@ $$
 
 显著性：均值差 $\bar{E}_A - \bar{E}_B = 0.26 \times 10^{-3}$，接近 $2\sigma_A$。Wilcoxon 检验在 $m = n = 5$ 的小样本下不一定显著——粗判 B 略优，但需要更多运行确认 [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=3)。
 
-### 例 7.2：成功率与收敛速度
+#### 例 7.2：成功率与收敛速度
 
 某算法在 $D = 10$ 球面上跑 25 次，FES$_{\text{max}} = 5 \times 10^4$，成功阈值 $\varepsilon = 10^{-6}$。20 次成功，5 次失败；成功运行所用 FES 列表 $S = [8000, 9200, 7500, 11000, 8500, \dots]$。
 
@@ -2044,7 +1815,7 @@ $$
 
 报告格式：SR = 80%，只含成功运行 9000 FES，含失败运行 17200 FES [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=5)。
 
-### 例 7.3：CEC2005 25 题的完整报告
+#### 例 7.3：CEC2005 25 题的完整报告
 
 A、B 两算法在 CEC2005 上各跑 25 次，逐题报告 $\bar{E}_A \pm \sigma_A$ 与 $\bar{E}_B \pm \sigma_B$，并用 Wilcoxon 检验。汇总分三层写。
 
@@ -2054,7 +1825,7 @@ A、B 两算法在 CEC2005 上各跑 25 次，逐题报告 $\bar{E}_A \pm \sigma
 
 总评：「A 在 F1–F5 上 5/5 优于 B、在 F6–F12 上 4/7 优于 B、在 F13–F14 上 1/2 优于 B、在 F15–F25 上 5/11 优于 B；在 25 题中 A 显著优于 15 题、显著差于 6 题、无显著差异 4 题。」这是进化计算论文的通用格式 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=4)。
 
-## 容易踩的坑
+### 容易踩的坑
 
 > [!WARNING]
 > **用一次运行的 $\mathbf{x}_{\text{best}}$ 做算法比较。** 跑 1 次看谁好就下结论，是把一个样本点当成了算法的能力。进化算法有随机性，必须至少 25 次独立运行取均值与标准差，且 Wilcoxon 检验显著之后才能下结论 [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=3)。
@@ -2065,7 +1836,263 @@ A、B 两算法在 CEC2005 上各跑 25 次，逐题报告 $\bar{E}_A \pm \sigma
 > [!WARNING]
 > **把「无显著差异」说成「两个算法相同」。** Wilcoxon 检验 $p > 0.05$ 只说明在当前样本量下没有足够证据证明它们不同，不等于接受「两者相同」这个原假设。$R$ 增大、换一道问题，显著差异可能就出来了。论文里的 $A \approx B$ 应读作「本测试集与本样本量下未检出显著差异」 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=4)。
 
-## 同一个问题上，四种算法差了几个数量级
+## 第 8 章 多目标进化算法
+
+### 目标互相冲突，最优点不是一个点
+
+买车要在价格和舒适度之间取舍。10 万元的车便宜但不太舒服，20 万元的车更舒服但贵——两个目标互相冲突，没法同时满足，只能平衡。这类问题叫**多目标优化问题**（multiobjective optimization problem, MOP）[p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=8)。
+
+决策者要的是一组「在不同价位上舒适度最高」的备选，一辆「最便宜」的车解决不了问题。只优化价格这一个目标，等于把整条帕累托前沿扔掉。
+
+![购车问题：价格与舒适度互相冲突，只能得到一组不同权衡下的最优解](images/fig_054.png)
+
+进化算法天然适合这类问题：它一次维护一群解，一群解正好能同时逼近前沿上的多个点。在两个目标的共同作用下，整个种群被推向「更便宜也更舒适」的方向，直到无法继续改进，得到一组供决策者挑选的解 [p. 9](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=9)。
+
+![多目标进化算法让种群整体向左上角（双目标更优方向）推进，直到无法继续改进](images/fig_055.png)
+
+### 多目标优化问题与帕累托支配
+
+#### MOP 的形式化
+
+第 1 章把优化问题写成「决策变量 $\mathbf{x}$ → 目标函数 $f(\mathbf{x})$」。多目标情形下目标函数有 $m$ 个（$m \ge 2$），决策变量维数 $D$ 不变，可行域仍是各变量取值区间的直积 $S = \prod_{i=1}^{D}[L_i, U_i]$：
+
+$$\min_{\mathbf{x}\in S} \mathbf{f}(\mathbf{x}) = (f_1(\mathbf{x}), f_2(\mathbf{x}), \dots, f_m(\mathbf{x})), \qquad \mathbf{x} = (x_1,\dots,x_D)$$
+
+单目标用一个数决定好坏；多目标用一个 $m$ 维向量决定好坏。向量之间没有天然的大小关系，要比较两个解，需要标量化（MOEA/D 用的方法）或支配关系（NSGA-II 用的方法）[p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=4)。
+
+#### 帕累托支配
+
+两个解 $\mathbf{x}_a, \mathbf{x}_b$，当且仅当下面两条同时成立时，称 $\mathbf{x}_a$ **支配** $\mathbf{x}_b$（记作 $\mathbf{x}_a \prec \mathbf{x}_b$）：
+
+- 在**所有**目标上都不比 $\mathbf{x}_b$ 差：$\forall i \in \{1,\dots,m\}: f_i(\mathbf{x}_a) \le f_i(\mathbf{x}_b)$；
+- 在**至少一个**目标上严格好于 $\mathbf{x}_b$：$\exists j \in \{1,\dots,m\}: f_j(\mathbf{x}_a) < f_j(\mathbf{x}_b)$ [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=6)。
+
+谁支配谁，谁就更好。两个解谁都不支配谁，就是**互不支配**，它们代表不同的目标权衡。
+
+![帕累托支配：xa 在所有目标上不差且至少一个目标严格更好时支配 xb；帕累托前沿是所有非支配解在目标空间的像](images/fig_053.png)
+
+#### 帕累托最优解集与帕累托前沿
+
+**帕累托最优解集**（Pareto optimal set）是所有不被任何其他解支配的解：
+
+$$\text{PS} = \{\mathbf{x}^* \in S : \neg\exists \mathbf{x} \in S,\ \mathbf{x} \prec \mathbf{x}^*\}$$
+
+**帕累托前沿**（Pareto front）是这个解集在目标空间里的像：
+
+$$\text{PF} = \{\mathbf{f}(\mathbf{x}^*) : \mathbf{x}^* \in \text{PS}\}$$
+
+单目标的最优解是一个点；多目标的最优解是前沿这条曲线（曲面）。算法的目标是找到一组在前沿上均匀分布的点，让决策者从中挑一个 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=6)。
+
+最小的例子是 $\min f_1 = x^2$、$\min f_2 = (x-2)^2$，$x \in [-2, 4]$：两个目标各自的最优位置不同，$x$ 从 0 扫到 2 会把前沿上每个点都经过一遍 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=5)。
+
+![双目标例子：最小化 f1=x^2 与 f2=(x-2)^2 时不存在单个最优解，而是一组帕累托最优解](images/fig_052.png)
+
+### 非支配排序：分层保证收敛
+
+多目标上「谁更好」没法用一个数决定，但种群内部的解仍然分得出层次。**非支配排序**（nondominated sorting）把种群按支配关系分层 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=15)：
+
+- $F_1$：不被任何解支配的解，也就是当前种群的帕累托前沿；
+- $F_2$：从种群中去掉 $F_1$ 之后，不被任何剩余解支配的解；
+- $F_3$、$F_4$ 依次类推。
+
+![非支配排序把种群按帕累托支配关系分成 F1、F2 等层，第一层不被任何解支配](images/fig_056.png)
+
+层与层之间有明确的好坏：$F_2$ 中每个解至少被 $F_1$ 中某个解支配。所以选择算子可以优先选低层，这就是**收敛性**的来源——种群被压向帕累托前沿。
+
+同一层里的解互相不支配，支配关系排不出顺序。NSGA-II 用**拥挤度距离**给同层继续排序。
+
+#### 算法过程
+
+把种群 $\mathcal{P} = \{\mathbf{x}_1,\dots,\mathbf{x}_N\}$ 分层的标准做法：
+
+1. **初始化**。每个 $\mathbf{x}_i$ 配一个支配计数器 $n_i = 0$ 和被支配集合 $S_i = \emptyset$。
+2. **两两比较**。对每对 $(\mathbf{x}_i, \mathbf{x}_j)$：若 $\mathbf{x}_i \prec \mathbf{x}_j$，则 $S_i \leftarrow S_i \cup \{\mathbf{x}_j\}$，$n_j \leftarrow n_j + 1$；若 $\mathbf{x}_j \prec \mathbf{x}_i$，则 $S_j \leftarrow S_j \cup \{\mathbf{x}_i\}$，$n_i \leftarrow n_i + 1$。
+3. **提取第一层**。$F_1 = \{\mathbf{x}_i : n_i = 0\}$，即没有解支配 $\mathbf{x}_i$。
+4. **逐层提取**。当前层 $F_k$ 中每个 $\mathbf{x}_i$ 遍历 $S_i$ 中每个 $\mathbf{x}_j$，把 $n_j$ 减 1；$n_j$ 减到 0 的解进下一层 $F_{k+1}$。
+5. **终止**。$F_k = \emptyset$ 时停止。
+
+直接两两比较的复杂度是 $O(mN^2)$：$m$ 个目标、$N$ 个个体，每次比较要看 $m$ 个目标值 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=15)。
+
+### 拥挤度距离：同层排序保证分布
+
+同层内部的解互相不支配。NSGA-II 用**拥挤度距离**（crowding distance）给它们排序：取 $\mathbf{x}_i$ 在每个目标上最近的两个同层邻居，把各个方向上归一化后的间距相加，得到「$\mathbf{x}_i$ 周围有多空旷」的度量 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=16)。
+
+$m = 2$ 时，$j$ 与 $h$ 分别是 $\mathbf{x}_i$ 在 $f_1$、$f_2$ 方向上最近的同层个体：
+
+$$
+i_{\text{distance}} = \frac{f_1(j) - f_1(h)}{f_{1\max} - f_{1\min}} + \frac{f_2(h) - f_2(j)}{f_{2\max} - f_{2\min}}
+$$
+
+拥挤度距离越大，说明周围越空旷，保留它有助于种群均匀铺开。**同层排序时距离大的优先**；边界个体（在某个目标上取值最小或最大的）距离取 $\infty$，优先保留。
+
+![拥挤度距离：用同层邻居在每个目标上的归一化距离之和衡量个体周围的空旷程度，边界个体取无穷大](images/fig_057.png)
+
+#### 归一化怎么来的
+
+各目标的量纲不同，$f_1$ 的一个单位可能远大于 $f_2$ 的一个单位，直接相加会让某个目标独占拥挤度。归一化把每个目标压到同一个尺度：
+
+1. 对每个目标 $f_i$，把同层个体按 $f_i$ 值排序，边界个体（最小与最大）的距离取 $\infty$。
+2. 对中间个体 $\mathbf{x}_k$，$f_i$ 方向上最近的两个同层个体是 $\mathbf{x}_{k-1}$ 与 $\mathbf{x}_{k+1}$：
+
+$$\Delta f_{i,k} = \frac{f_i(\mathbf{x}_{k+1}) - f_i(\mathbf{x}_{k-1})}{f_{i,\max} - f_{i,\min}}$$
+
+3. 各目标方向上的间距相加，得到总距离：
+
+$$k_{\text{distance}} = \sum_{i=1}^{m} \Delta f_{i,k}$$
+
+$\Delta f_{i,k}$ 反映 $\mathbf{x}_k$ 在 $f_i$ 方向上的「密度比」：周围密集则 $\Delta f_{i,k}$ 小，周围空旷则大 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=16)。
+
+### 手动判定：支配关系、分层与同层排序
+
+#### 例：4 个解的支配关系
+
+4 个解，二维目标，都最小化：
+
+$$\mathbf{x}_a = (1, 3), \mathbf{x}_b = (2, 2), \mathbf{x}_c = (3, 1), \mathbf{x}_d = (1, 4)$$
+
+逐对比较：
+
+- $\mathbf{x}_a$ vs $\mathbf{x}_b$：$f_1 = 1 < 2$，$f_2 = 3 > 2$——在 $f_1$ 上好、在 $f_2$ 上差，**互不支配**；
+- $\mathbf{x}_a$ vs $\mathbf{x}_c$：$f_1 = 1 < 3$，$f_2 = 3 > 1$——**互不支配**；
+- $\mathbf{x}_a$ vs $\mathbf{x}_d$：$f_1 = 1 = 1$，$f_2 = 3 < 4$——$f_1$ 平，$f_2$ 上严格好，$\mathbf{x}_a \prec \mathbf{x}_d$；
+- $\mathbf{x}_b$ vs $\mathbf{x}_c$：$f_1 = 2 < 3$，$f_2 = 2 > 1$——**互不支配**。
+
+答案：$\mathbf{x}_a \prec \mathbf{x}_d$，其他各对互不支配。$\mathbf{x}_a, \mathbf{x}_b, \mathbf{x}_c$ 都属于帕累托最优解集，$\mathbf{x}_d$ 被 $\mathbf{x}_a$ 支配。
+
+#### 例：提取第一层与第二层
+
+6 个解的二维目标值（都最小化）：
+
+$$\mathcal{P} = \{(1,5), (2,3), (3,4), (4,2), (5,1), (3,3)\}$$
+
+逐个检查「有没有解支配它」：
+
+- $(1,5)$：$f_1$ 全场最小，任何解的 $f_1$ 都只能更大，做不到「两个目标都不差且至少一个严格更好」。**属于 $F_1$**；
+- $(2,3)$：没有解能支配它；它反而支配 $(3,4)$（$2<3, 3<4$）与 $(3,3)$（$2<3, 3=3$）。**属于 $F_1$**；
+- $(3,4)$：被 $(2,3)$ 支配（$2<3, 3<4$）。**不在 $F_1$**；
+- $(4,2)$：没有解能同时在这两个目标上不差于它并严格更好。**属于 $F_1$**；
+- $(5,1)$：$f_2$ 全场最小，同理无人能支配。**属于 $F_1$**；
+- $(3,3)$：被 $(2,3)$ 支配（$2<3$ 且 $3=3$，满足「都不差 + 至少一个严格更好」）。**不在 $F_1$**。
+
+答案：$F_1 = \{(1,5), (2,3), (4,2), (5,1)\}$。去掉 $F_1$ 后剩下的 $(3,4)$ 与 $(3,3)$ 互不支配，所以 $F_2 = \{(3,4), (3,3)\}$。
+
+$(1,5)$ 的 $f_2$ 是全场最差，但没人能支配它。帕累托最优看的是支配关系，不看总分。
+
+#### 例：同层排序
+
+沿用上例的 $F_1 = \{(1,5), (2,3), (4,2), (5,1)\}$：
+
+1. **边界个体**：按 $f_1$ 排序为 $(1,5) \to (2,3) \to (4,2) \to (5,1)$，两端的 $(1,5)$ 与 $(5,1)$ 拥挤度距离取 $\infty$，优先保留；
+2. **中间个体 $(2,3)$**：按 $f_1$ 邻居是 $(1,5)$ 与 $(4,2)$，$\Delta f_1 = \frac{4-1}{5-1} = \frac{3}{4}$；按 $f_2$ 排序为 $(5,1) \to (4,2) \to (2,3) \to (1,5)$，邻居是 $(4,2)$ 与 $(1,5)$，$\Delta f_2 = \frac{5-2}{5-1} = \frac{3}{4}$。合计 $i_{\text{distance}} = \frac{3}{4} + \frac{3}{4} = 1.5$；
+3. **中间个体 $(4,2)$**：按 $f_1$ 邻居是 $(2,3)$ 与 $(5,1)$，$\Delta f_1 = \frac{5-2}{5-1} = \frac{3}{4}$；按 $f_2$ 邻居是 $(5,1)$ 与 $(2,3)$，$\Delta f_2 = \frac{3-1}{5-1} = \frac{1}{2}$。合计 $i_{\text{distance}} = \frac{3}{4} + \frac{1}{2} = 1.25$。
+
+保留顺序（拥挤度距离从大到小）：$(1,5)$ 与 $(5,1)$（边界，$\infty$）$>$ $(2,3)$（1.5）$>$ $(4,2)$（1.25）。同层优先保留距离大的个体，种群才能均匀铺在前沿上。
+
+### NSGA-II：父代与子代合并成 2N 再排序
+
+NSGA-II（非支配排序遗传算法 II）由 K. Deb 等人于 2002 年提出，是 NSGA 的改进版，也是进化多目标优化领域最经典的方法 [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=13)。它只动一个地方：把单目标 GA 的选择算子换成**非支配排序 + 拥挤度距离排序**这两步 [p. 14](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=14)。
+
+框架的关键在种群更新这一步。$P_t$ 是当前父代种群（$N$ 个个体），$Q_t$ 是子代种群（$N$ 个个体），NSGA-II 把两者合并成一个 $2N$ 的排序池：
+
+$$R_t = P_t \cup Q_t, \qquad |R_t| = 2N$$
+
+对 $R_t$ 做非支配排序分成 $F_1, F_2, \dots$，再在每层内按拥挤度距离从大到小排序，按这个顺序取前 $N$ 个组成下一代 $P_{t+1}$，其余的被拒绝（Rejected）[p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=17)。
+
+![NSGA-II 框架：父代 Pt 与子代 Qt 合并为 2N 的 Rt，经非支配排序与拥挤度排序选出下一代的 N 个个体](images/fig_058.png)
+
+父代进入排序池这一步是 NSGA-II 的**精英保留**：父代一定参加和子代的竞争，好解不会被下一代挤掉。
+
+![购车示例中 NSGA-II 的进化过程：种群沿价格-舒适度权衡前沿逐步逼近左上角](images/fig_059.png)
+
+图里是购车问题上的进化过程：每一代种群整体向左上角推进，前沿从零散分布逐渐铺成一条权衡曲线 [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=18)。
+
+### MOEA/D：分解成 NP 个单目标子问题
+
+MOEA/D（基于分解的多目标进化算法）由 Q. Zhang 和 H. Li 于 2007 年提出。它与 NSGA-II 走的是相反的路：NSGA-II 在整个种群上做全局排序，MOEA/D 先**分解**问题，再用**邻域信息**更新种群 [p. 20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=20)。
+
+#### 标量化与权重向量
+
+**标量化**（scalarization）把多目标问题转成单目标：给每个目标一个权重 $\alpha_i \ge 0$ 且 $\sum_{i=1}^{m}\alpha_i = 1$，优化加权和
+
+$$\min \sum_{i=1}^{m} \alpha_i f_i(\mathbf{x})$$
+
+双目标情形就是 $\min \alpha f_1(\mathbf{x}) + (1-\alpha) f_2(\mathbf{x})$，$0 \le \alpha \le 1$。在适当条件下，每个权重向量对应一个标量子问题，其最优解通常是帕累托最优解。不同的权重可能得到同一个解；前沿非凸时，加权和还会漏掉一部分区域 [p. 21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=21)。
+
+![MOEA/D 的分解思想：用不同权重把双目标问题分解成一组单目标加权和子问题，每个子问题对应帕累托前沿上的一个点](images/fig_060.png)
+
+权重向量在目标空间里指的是一个**方向**：$\alpha$ 越靠近 1，子问题越偏 $f_1$，靠近 0 就越偏 $f_2$。它回答的是「在前沿上往哪个方向取点」，目标的重要性不在权重里。$\alpha_1 = 0.8$ 的子问题会给出 $f_1$ 相对更好、$f_2$ 相对更差的解，两个目标都还在各自的平衡点上。
+
+#### 邻域与替换
+
+MOEA/D 的进化过程按子问题逐个推进 [p. 25](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=25)：
+
+1. 均匀生成 $NP$ 个权重向量；
+2. 每个权重向量初始化一个个体，种群与权重向量一一对应；
+3. 为每个个体算邻居——权重向量空间里欧几里得距离最近的 $T$ 个；
+4. 从邻居中选两个做杂交，产生一个后代；
+5. 评估后代，如果它在自己子问题的标量化目标上比父个体好，就替换父个体 [p. 22](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=22) [p. 23](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=23) [p. 24](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=24)。
+
+![均匀生成 NP 个权重向量，并为每个权重向量初始化一个个体](images/fig_061.png)
+
+![MOEA/D 用邻域个体的杂交产生后代，若标量化目标更优则替换其父个体](images/fig_062.png)
+
+![MOEA/D 框架：生成权重向量与初始种群，反复由邻居产生后代并做邻域内替换，直到停止条件满足](images/fig_063.png)
+
+邻居机制让子问题之间互相学习：邻域里的解给当前子问题提供搜索方向。每代每个子问题只跟 $T$ 个邻居打交道，复杂度 $O(NT)$，比 NSGA-II 的 $O(mN^2)$ 便宜。
+
+#### 两条路线的差别
+
+| 维度 | NSGA-II | MOEA/D |
+|---|---|---|
+| 选择 | 非支配排序 + 拥挤度距离排序 | 邻居内的标量函数值比较 |
+| 多样性来源 | 拥挤度距离（同层内） | 权重向量的分布 |
+| 收敛来源 | 非支配排序（优先选低层） | 邻居信息（子问题互相学习） |
+| 每代复杂度 | $O(mN^2)$ | $O(NT)$ |
+| 适合的前沿 | 非凸、形状不规则 | 规则（凸或近似凸） |
+
+MOEA/D 用加权和做分解，前沿非凸时有一部分区域扫不到；NSGA-II 不做加权，对非凸前沿更稳 [p. 21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=21)。
+
+### 评价一个结果集：IGD 与 HV
+
+算法输出一组解，怎么判断它离真正的最优前沿有多远？两个常用指标，分别对应「真实前沿已知」和「真实前沿未知」两种情形。
+
+#### IGD：前沿已知时看距离
+
+**IGD**（inverted generational distance，反向世代距离）以前沿上的一组参考点为起点，算每个参考点到算法找到的最近解的距离，再取平均：
+
+$$\text{IGD}(A) = \frac{1}{|R|}\sum_{r \in R} \min_{a \in A} d(r, a)$$
+
+**IGD 越小越好**。小说明解集既贴近前沿，又沿着前沿铺得均匀 [p. 26](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=26)。
+
+![IGD 指标：从真实帕累托前沿上的参考点到算法输出解的平均距离，值越小表示收敛性与分布越好](images/fig_064.png)
+
+#### HV：前沿未知时看覆盖体积
+
+**HV**（hypervolume，超体积）算非支配解集相对一个固定参考点所支配的目标空间体积：
+
+$$\text{HV}(A) = \lambda\!\left(\bigcup_{a \in A} \text{box}(a, \mathbf{r})\right)$$
+
+**HV 越大越好**。大说明解集覆盖的目标空间更广 [p. 27](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=27)。
+
+![HV 指标：非支配解相对参考点支配的目标空间体积，值越大表示解集质量越好](images/fig_065.png)
+
+### 三个容易踩的坑
+
+> [!WARNING] 把「互不支配」当成「等价」
+> **错误**：$\mathbf{x}_a$ 与 $\mathbf{x}_b$ 互不支配时，认为二者没有区别。
+> **正确**：互不支配只说明比不出大小。它们是帕累托最优解集上的不同点，各代表一种权衡方向。决策者按偏好挑一个，但算法不能只留其中一个。
+
+> [!WARNING] 只算非支配排序，忽略拥挤度距离
+> **错误**：同层个体随机选。这样同层里密集的解全部保留，稀疏区域的解被丢，种群只覆盖帕累托前沿的一段。
+> **正确**：同层必须按拥挤度距离排序，距离大的优先，确保种群均匀覆盖整条前沿 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=16)。
+
+> [!WARNING] 把权重向量当成「目标重要性」
+> **错误**：$\alpha_1 = 0.8$、$\alpha_2 = 0.2$ 表示「$f_1$ 比 $f_2$ 重要 4 倍」。
+> **正确**：权重只是标量化工具。$\alpha_1 = 0.8$ 优化 $0.8 f_1 + 0.2 f_2$，得到的解在 $f_1$ 上相对更好、$f_2$ 上相对更差，两个目标都达到各自的平衡。权重向量是前沿上的方向选择。
+
+## 第 9 章 五大算法横向对照与工程选型
+
+### 同一个问题上，四种算法差了几个数量级
 
 优化某控制器的 $D=10$ 个参数，让一个仿真模型的输出指标最小。同一套预算下换四种算法：
 
@@ -2090,7 +2117,7 @@ A、B 两算法在 CEC2005 上各跑 25 次，逐题报告 $\bar{E}_A \pm \sigma
 - **探索 vs 开发**：探索是种群散开、同时覆盖多个候选区域，开发是聚到一处做精细搜索。调大探索强度通常更不容易早熟，但收敛更慢。
 - **种群多样性**：种群中个体越分散，越可能同时覆盖多个候选区域；多样性过早消失就是早熟收敛。
 
-## 四大机制对照表
+### 四大机制对照表
 
 四种算法的关键差异一次性摆在下表，每一行都能直接用来做选型判断 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=7) [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5) [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
 
@@ -2110,9 +2137,9 @@ A、B 两算法在 CEC2005 上各跑 25 次，逐题报告 $\bar{E}_A \pm \sigma
 
 **怎么读这张表**：先看「主要算子」一行。这是四种算法最本质的分歧，其余各行都是它推出来的。GA 用「位翻转 + 单点交叉」，ES 用「高斯扰动」，DE 用「差分向量 + 交叉」，PSO 用「速度更新」。算子不同决定了参数不同（对应「关键参数」一行）、适用域不同、典型失效模式不同。
 
-## 五处符号与机制清算
+### 五处符号与机制清算
 
-### 各自的「变异」指什么
+#### 各自的「变异」指什么
 
 四种算法都有「变异」这一步，机制完全不同：
 
@@ -2123,7 +2150,7 @@ A、B 两算法在 CEC2005 上各跑 25 次，逐题报告 $\bar{E}_A \pm \sigma
 
 只有 GA 有位翻转变异。ES 与 DE 的变异也不是一回事：ES 的步长 $\delta$ 是个体自己携带的标量参数（由 1/5 成功法则等机制自适应更新），DE 的「步长」来自两个随机个体之差，是种群的瞬时统计量。
 
-### $p_c$ / $p_m$ vs $F$ / $CR$
+#### $p_c$ / $p_m$ vs $F$ / $CR$
 
 - **GA 的交叉率 $p_c$**（crossover probability）：一对父代是否真的交叉的概率，粒度在「对」。
 - **GA 的变异率 $p_m$**（mutation probability）：每一位是否翻转的概率，粒度在「位」。
@@ -2132,7 +2159,7 @@ A、B 两算法在 CEC2005 上各跑 25 次，逐题报告 $\bar{E}_A \pm \sigma
 
 四个参数粒度完全不同。$F$ 不是「变异率」，DE 里没有「每一位的变异率」，因为它的搜索方向来自种群差分，不是逐位翻转。
 
-### DE 的 $v$ vs PSO 的 $v$
+#### DE 的 $v$ vs PSO 的 $v$
 
 两者都叫 $v$，含义完全相反：
 
@@ -2141,7 +2168,7 @@ A、B 两算法在 CEC2005 上各跑 25 次，逐题报告 $\bar{E}_A \pm \sigma
 
 用法完全相反：DE 里 $v$ 算出来就丢给交叉算子，不再参与位置更新；PSO 里 $v$ 算出来后直接 $x \leftarrow x + v$，是位置更新的核心。同字母、异含义，只能靠章节区分。
 
-### $x^*$ / $x_{best,G}$ / gbest / pbest
+#### $x^*$ / $x_{best,G}$ / gbest / pbest
 
 四个都表示「最优解」，角色不同：
 
@@ -2152,7 +2179,7 @@ A、B 两算法在 CEC2005 上各跑 25 次，逐题报告 $\bar{E}_A \pm \sigma
 
 错把 $x_{best,G}$ 当成 $x^*$，函数误差就会写错。
 
-### 谁淘汰差解
+#### 谁淘汰差解
 
 - **GA**：轮盘赌或锦标赛挑选下一代父代，弱的被淘汰。
 - **ES/EP**：$(\mu{+}\lambda)$ 或 $(\mu,\lambda)$ 从 $\mu+\lambda$ 个（或仅 $\lambda$ 个）中挑 $\mu$ 个，$(\mu,\lambda)$ 时老父代可能全部被淘汰。
@@ -2161,7 +2188,7 @@ A、B 两算法在 CEC2005 上各跑 25 次，逐题报告 $\bar{E}_A \pm \sigma
 
 PSO 的「不淘汰」不是说差解不起作用，而是每个粒子都保留在种群中，差解只是不再被引用为 $pbest$ / $gbest$。这跟 GA 的「弱者直接被淘汰」是两种完全不同的策略。
 
-## 一题四解：同一个连续问题上各跑一代
+### 一题四解：同一个连续问题上各跑一代
 
 本章没有新公式，但可以把四种算法放在同一个最小问题上各手算一遍，差异出在哪一步一眼可见。
 
@@ -2171,7 +2198,7 @@ $$
 x^{(0)} = \{-2,\ 0,\ 3,\ 5\},\quad f = \{25,\ 9,\ 0,\ 4\}
 $$
 
-### GA：二进制编码 + 轮盘赌 + 单点交叉 + 位翻转
+#### GA：二进制编码 + 轮盘赌 + 单点交叉 + 位翻转
 
 **设定**：串长 $L = 10$，把 $[-5, 5]$ 切成 $2^{10} = 1024$ 个可取格点，精度 $\Delta = 10/1023 \approx 0.009775$。解码公式 $x = -5 + 10\,\mathrm{bin}/1023$，适应度取 $\mathrm{fit} = 100 - f$（保证所有 $\mathrm{fit} > 0$）。$p_c = 1$，$p_m = 1/L = 0.1$ [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=10) [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=11) [p. 12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=12)。
 
@@ -2225,7 +2252,7 @@ $$
 
 **新一代**：未计精英保留的四个子代为 $\{0.219941,\ 2.820137,\ -1.959922,\ 4.960899\}$，对应 $f \approx \{7.728726,\ 0.032351,\ 24.600824,\ 3.845126\}$，其中最优为 $x \approx 2.820137$。若采用精英保留，父代中解码后的最优个体 $x \approx 2.996090$（$f \approx 0.000015$）替换最差子代，故实际保留种群的最优值是 $f \approx 0.000015$，而不是精确的 $0$。
 
-### ES：$(1{+}1)$-ES + 步长自适应
+#### ES：$(1{+}1)$-ES + 步长自适应
 
 **设定**：父代 $x = 5$（$f = 4$，取种群里最差的那个，看 ES 能不能救回来），步长 $\delta = 0.5$，$D = 1$，$\tau = (\sqrt{1})^{-1} = 1$，步长更新公式 $\delta' = \delta\exp(N(0,1))$ [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=13)。
 
@@ -2247,7 +2274,7 @@ $f(3.5825) = 0.5825^2 \approx 0.339 < 4$，接受。$x \leftarrow 3.5825$，$\de
 
 **结果**：2 步后 $x = 3.5825$，$f = 0.339$，离真实最优 $x^* = 3$ 还差一点。ES 直接做实数操作，精度不受 $L$ 限制，但每代只看父代与子代的对比（$(\mu{+}\lambda)$ 也是父子一起比，不像 GA 的整代排序）。
 
-### DE/rand/1/bin
+#### DE/rand/1/bin
 
 **设定**：$NP = 4$，$F = 0.8$，$CR = 0.9$，初始种群 $x_{1,G} = 5$，$x_{2,G} = 3$，$x_{3,G} = 0$，$x_{4,G} = -2$。当前最优 $x_{best,G} = 3$ [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5)。
 
@@ -2267,7 +2294,7 @@ $$
 
 **结果**：$x_{1,G+1} = 1.4$，$f = 2.56$。对其他三个个体跑同样的步骤，新一代种群大约会向 $x^* = 3$ 聚拢。DE 的变异方向来自种群差分，选择是一对一贪婪；种群聚拢后差分向量变小，搜索可能停滞。
 
-### PSO：经典 gbest 版本
+#### PSO：经典 gbest 版本
 
 **设定**：4 个粒子位置 $x^{(0)} = \{-2,\ 0,\ 3,\ 5\}$，$f = \{25,\ 9,\ 0,\ 4\}$。初始速度 $v^{(0)} = \{-0.5,\ 0.5,\ 0,\ 0.5\}$。$\omega = 0.7$，$c_1 = c_2 = 1.5$。每个粒子的初始 $pbest$ 等于自身位置，全局 $gbest = 3$（$f = 0$，第 3 个粒子） [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
 
@@ -2301,7 +2328,7 @@ $f(2.90) = (2.90-3)^2 = 0.01$。
 
 **结果**：粒子 1 一代后从 $x = -2$ 跳到 $x = 2.90$（$f = 0.01$），几乎到位。PSO 不淘汰粒子，靠 $pbest$ 与 $gbest$ 间接「记忆」好解；速度公式的三项把惯性、个人经验、社会信息合成一个方向与步长。
 
-### 四解对比：中间变量差在哪一步
+#### 四解对比：中间变量差在哪一步
 
 | 对比项 | GA | ES(1+1) | DE/rand/1/bin | PSO |
 | --- | --- | --- | --- | --- |
@@ -2314,7 +2341,7 @@ $f(2.90) = (2.90-3)^2 = 0.01$。
 
 四种算法的差异集中在「新解怎么来」和「差解怎么处理」两步，其余的（初始化、终止、迭代代数）在工程上几乎相同 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=7) [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5) [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
 
-## 比较算法效率：固定评价预算，不固定代数
+### 比较算法效率：固定评价预算，不固定代数
 
 沿用 $f(x) = (x-3)^2$，固定 $F = 0.5$，$CR = 0.9$。种群规模分别取 $NP = 4$ 与 $NP = 50$，初始种群都在 $[-5, 5]$ 上均匀采样。能不能只凭 $NP$ 判断哪一种设置更快？
 
@@ -2322,7 +2349,7 @@ $f(2.90) = (2.90-3)^2 = 0.01$。
 
 正确的比较口径是：固定适应度评价次数预算，用多个随机种子分别运行两种设置，比较最终误差或达到同一误差所需的评价次数。$NP = 50$ 每代要评价 50 个试验个体，$NP = 4$ 每代只评价 4 个——前者提供更丰富的差分方向，后者在同一预算里迭代更多代。题设不足以推出确定的快慢关系。
 
-## 多峰问题上谁先卡死
+### 多峰问题上谁先卡死
 
 把目标函数改成多峰 $f(x) = x^4 - 3x^2 + 1$（$x \in [-3, 3]$）。它在 $x = \pm\sqrt{3/2} \approx \pm 1.225$ 处有两个全局谷底 $f = -1.25$，在 $x = 0$ 处有一个局部极大 $f = 1$。四种算法各跑 100 代（固定 $N = 10$，参数取各章常用值），记录最后 10 代里「全局最优 $f$ 值」的变化。
 
@@ -2335,7 +2362,7 @@ $f(2.90) = (2.90-3)^2 = 0.01$。
 
 答案：ES(1+1) 最先卡死，DE 与 PSO(gbest) 次之，GA 中等。多峰问题上 ES 选 $(\mu,\lambda)$，避免父代长期占据种群；单峰或单调改进问题通常选 $(\mu{+}\lambda)$。其余算法靠种群多样性、DE 的多策略（CoDE）或 PSO 的 lbest 拓扑延缓早熟。
 
-## 实战选型：三道工程题
+### 实战选型：三道工程题
 
 三个工程优化问题，特征各不相同。为每个问题选最合适的算法与关键参数，并写出可能的失败模式。
 
@@ -2353,7 +2380,7 @@ $f(2.90) = (2.90-3)^2 = 0.01$。
 
 答案：A 选 GA（排列专用交叉）；B 选 CMA-ES；C 选 PSO(lbest) 或 DE + 周期性重启。最易出错的选型是把 GA 套到 B，或把 PSO(gbest) 套到 C——这两种「看起来差不多」的搭配都会显著拉低算法效率。
 
-## 三个容易踩的坑
+### 三个容易踩的坑
 
 > [!WARNING] 把 DE 的 $F$ 当成 GA 的 $p_m$
 > **错误**：说「DE 的变异率是 $F$」。
@@ -2366,134 +2393,3 @@ $f(2.90) = (2.90-3)^2 = 0.01$。
 > [!WARNING] 把四种算法的早熟收敛说成同一件事
 > **错误**：认为「早熟收敛 = 种群多样性掉光」，对所有算法都这么回答。
 > **正确**：四种算法的成因不同。GA 是模式定理过度发挥加 $p_m$ 太小，好模式指数增长、个体越来越相似；ES 是步长不会自适应加 $(\mu{+}\lambda)$ 保留父代，步长快速收缩；DE 是贪婪选择加种群聚拢，差分向量变小、搜索停滞；PSO 是 gbest 拓扑社会吸引过强，整个种群挤向一个粒子。答「为什么这个算法早熟」必须按各自机制回答。
-
-## 三个月后回来查，先认符号再认算法
-
-讲义按算法分章组织，同一个字母在不同章里指不同的东西。考完试再打开，最先卡住的问题通常不是"DE 的算法我忘了"，而是"这里写的 $\mathbf{v}$ 到底是 DE 的变异向量还是 PSO 的速度"。要翻的页有几百页，要查的东西只有三类：公式、字母的归属、两个相近词的边界。
-
-### 八个词先垫底
-
-| 术语 | 一句话理解 | 出处 |
-|---|---|---|
-| 优化问题 | 在所有允许方案中找一个最好方案；变量 $\mathbf{x}$ 是可调的选择，函数 $f(\mathbf{x})$ 是好坏标准 | [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=11) |
-| 搜索空间 | 所有允许候选解组成的区域；每一个点都是一个可能答案 | [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=11) |
-| 局部最优 | 在附近看起来已经最好，但整个空间里可能还有更好的点 | [p. 2](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2) |
-| 种群 | 同时保留的一批候选解；它让算法能从多个位置并行尝试 | [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=7) |
-| 探索 | 去没有看过的区域试一试，降低卡在局部最优的风险 | [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3) |
-| 开发 | 围绕当前较好的区域细调，把已发现的机会用足 | [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3) |
-| 适应度 | 给候选解打的分，分高表示在当前任务里更值得被保留或学习 | [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=8) |
-| 早熟收敛 | 种群太早挤到同一个不够好的区域，失去继续探索其他区域的能力 | [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=13) |
-
-## 五条必记公式
-
-### GA 轮盘赌
-
-把每个个体的适应度占比，换成它被复制成下一代个体的概率。
-
-$$p_i=\frac{\mathrm{fit}_i}{\sum_{j=1}^{N}\mathrm{fit}_j}$$
-
-适用条件：适应度非负，而且方向已经统一（目标函数越小越好，适应度越大越好，两者之间要换算）[p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=6)。PPT 把 $f$ 与 $\mathrm{fit}$ 分成两列，就是因为做过适应度缩放之后两者不相等 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=7)。
-
-### ES 变异
-
-给实数解加一个高斯扰动，扰动的尺度就是步长。
-
-$$\mathbf{x}'=\mathbf{x}+\sigma\boldsymbol\xi,\qquad \boldsymbol\xi\sim\mathcal{N}(\mathbf{0},\mathbf{I})$$
-
-口径：ES 的步长在正文里记作逐维向量 $\delta_i=(\delta_{i,1},\dots,\delta_{i,D})$，随个体一起进化；$\sigma$ 只留给高斯密度公式 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=15)。步长自适应靠 1/5 成功法则，而这个名字是讲义补充的，PPT 只给了 $\partial P/\partial\delta$ 的推导 [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=17)。
-
-### DE/rand/1/bin
-
-拿两个随机个体之差当搜索方向，造出变异向量。
-
-$$\mathbf{v}_{i,G}=\mathbf{x}_{r_1,G}+F\left(\mathbf{x}_{r_2,G}-\mathbf{x}_{r_3,G}\right)$$
-
-$r_1,r_2,r_3$ 从 $\{1,\dots,NP\}\setminus\{i\}$ 里互不相同地抽，必须排除 $i$ 本身，否则差分向量可能为零、变异方向消失 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6)。变异后按 $CR$ 做二项式交叉，强制至少一维来自变异向量 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=7)，再与目标向量一对一比较，目标值更优者存活 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5)。
-
-### PSO 速度
-
-把惯性、个体经验、群体信息三项线性叠成下一步的速度。
-
-$$\mathbf{v}_i^{(t+1)}=\omega\mathbf{v}_i^{(t)}+c_1r_1\left(\mathbf{pbest}_i-\mathbf{x}_i^{(t)}\right)+c_2r_2\left(\mathbf{gbest}-\mathbf{x}_i^{(t)}\right)$$
-
-$r_1,r_2$ 每次迭代每一维都重新抽，是随机变量不是常数，不能当固定系数约掉 [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=8)。$\omega$ 常从 0.9 线性递减到 0.4 [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=18)。
-
-### PSO 位置
-
-位置更新不含随机数，就是老位置加上刚算出的新速度。
-
-$$\mathbf{x}_i^{(t+1)}=\mathbf{x}_i^{(t)}+\mathbf{v}_i^{(t+1)}$$
-
-位置与速度都是实数向量，PSO 不做 0/1 编码 [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=8)。
-
-## 跨章符号表
-
-同一个字母在不同章里的含义，以及讲义的统一写法。
-
-| 符号 | 出现在 | 那里指什么 | 统一写法 |
-|---|---|---|---|
-| $\delta$ | GA 章 / ES 章 / EP 章 | 解码精度 / ES 的步长 / EP 的柯西随机量 | GA 章改写 $\Delta$；ES 章保留 $\delta$；EP 章改写 $\mathrm{Cauchy}_j(0,1)$ |
-| $\Delta$ | GA 章 | 解码精度 $\Delta=(U_x-L_x)/(2^L-1)$ | 只在 GA 章出现 [p. 9](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=9) |
-| $d(H)$ | GA 章 | 模式的定义长度 | 讲义写 $d(H)$，PPT 原文写 $\delta(H)$ [p. 14](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=14) |
-| $H$ | GA 章 / DE 章 | 模式（schema）/ QOX 切出的子向量 $H_1..H_K$ | 靠章节区分，不靠字母 |
-| $\mathbf{v}$ | DE 章 / PSO 章 | 变异向量 $\mathbf{v}_{i,G}$ / 速度 $\mathbf{v}_{i,j}^{t}$ | 看下标：带一代下标 $G$ 是 DE，带迭代上标 $t$ 与维度下标 $j$ 是 PSO |
-| $L$ | GA 章 / DE 章 | 染色体串长 / 指数交叉的起始维 | DE 章改写 $s$；上下界写 $L_j,U_j$ |
-| $s$ | DE 章 | 指数交叉的起始维 | 讲义写 $s$（PPT 原文写 $L$）[p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=8) |
-| $r$ | DE 章 | 随机维度下标 $x_{i,r,G}$ / 连续交换位数 | 下标位置保留 $r$；交换位数改写 $n$ |
-| $n$ | DE 章 | 指数交叉连续交换的位数，$P(n=v)=CR^{v-1}(1-CR)$ | 讲义写 $n$（PPT 原文写 $r$）[p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=8) |
-| $N$ / $K$ | 全书 / PSO 章 | $N$ 种群规模（DE 章写 $NP$、ES 章写 $\mu$）/ $K$ 正交设计因子数 | 因子数一律写 $K$，正交表记 $L_M(Q^K)$；PPT 原文在 PSO 章用 $N$ [p. 24](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=24) |
-| $F$ | DE 章 | 差分缩放因子，常用 0.5–1.0 | 只与 $f(x)$ 差大小写 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6) |
-| $\sigma$ | ES 章 | 高斯分布的标准差 | 不作 ES 步长用，ES 步长写 $\delta$ |
-| $\omega$ | PSO 章 | 惯性权重 | 讲义与 PPT 都写 $\omega$，不写 $w$ [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=18) |
-| $\mathrm{pbest}$ / $\mathrm{gbest}$ / $\mathrm{lbest}$ | PSO 章 / GA 章 | 最优位置 / GA 的选择概率 | 不写单字母 $p_i$ 表示 pbest [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7) |
-| $x^*$ / $x_{best,G}$ | 全书 / DE 章 | 问题真实全局最优 / 算法至今找到的最好 | 函数误差以 $x^*$ 为参照 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6) |
-
-讲义对 PPT 未展开的内容统一标注「讲义补充」：适应度缩放、锦标赛选择公式、两点交叉与均匀交叉、1/5 成功法则的名称、粒子轨迹图、进化算法分类树。
-
-## 手算一代：把每个符号对回它来的章
-
-DE 的一代，$f(x)=(x-5)^2$，种群 $x=[1,3,6,8]$，$F=0.8$，$CR=0.9$，对 $i=1$。
-
-抽下标：从 $\{2,3,4\}$ 里互不相同地抽到 $r_1=2,r_2=3,r_3=4$。排除 $i=1$ 本身是硬规定，否则差分可能为零。这些 $r$ 是 DE 章的随机维度下标，与 GA 章轮盘赌的 $p_i,q_i$ 无关。
-
-变异：$v_{1,G}=x_{2,G}+0.8\,(x_{3,G}-x_{4,G})=3+0.8\,(6-8)=1.4$。这里的 $\mathbf{v}$ 是 DE 章的变异向量，不是 PSO 章的速度；$F$ 是缩放因子，不是 GA 章的变异率；下标 $G$ 是代数，不是 PSO 的迭代上标 $t$。
-
-交叉：$D=1$，强制维 $j_{rand}=1$，于是 $u_{1,G}=v_{1,G}=1.4$。$CR$ 作用在每一维，GA 章的 $p_c$ 作用在"一对父代"上。
-
-选择：$f(1.4)=12.96<16=f(1)$，所以 $x_{1,G+1}=1.4$。比的对象是 $x_{1,G}$（这个个体的旧解），当前种群最优 $x_{best,G}=6$ 跟真实最优 $x^*=5$ 是两回事 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5)。
-
-## 最容易混的术语对
-
-| 容易混的一对 | 怎么分 | 结论口径 |
-|---|---|---|
-| 目标函数 $f$ vs 适应度 $\mathrm{fit}$ | $f$ 越小越好（默认最小化），$\mathrm{fit}$ 越大越好 | 先说目标方向，再说 $\mathrm{fit}$ 怎么由 $f$ 换算；缩放规则 PPT 未展开（讲义补充） |
-| 群体 population vs 父代集 parent set | 群体是全部个体，父代集是被选中当父母的那一小批 | 父代集是选择算子的产物，规模记 $N_p$，不等于种群规模 $N$ |
-| GA 交叉：单点 / 两点 / 均匀 | 单点只切一处，交换切点之后的后段 | PPT 只展开单点交叉；两点与均匀交叉是讲义补充，答题要标出来 |
-| 三种变异 | GA 位翻转 0↔1；ES/EP 高斯扰动（EP 可换柯西）；DE 差分向量 | PSO 严格说没有经典变异算子，只有速度更新 |
-| 交叉率 $p_c$ vs DE 的 $CR$ | $p_c$ 落在"一对父代"上，$CR$ 落在"每一维"上 | DE 的 $CR$ 强制至少一维来自变异向量，GA 的 $p_c$ 不强制任何位参与 |
-| 变异率 $p_m$ vs DE 的 $F$ | $p_m$ 落在"每一位"上，$F$ 是差分向量的放大倍数 | DE 里没有逐位翻转的变异率 |
-| $x$ / $x^*$ / $x_{best}$ | 任意解 / 问题真实全局最优 / 算法当前找到的最好 | 函数误差用 $x^*$ 做参照 |
-| $\mathrm{pbest}$ $\mathrm{gbest}$ $\mathrm{lbest}$ vs GA 的 $p_i$ | 前三个是位置，$p_i$ 是选择概率 | 讲义不写单字母 $p_i$ 表示 pbest |
-| $(\mu{+}\lambda)$ vs $(\mu,\lambda)$ | 加号的候选池含老父代，逗号只看子代 | 多峰用逗号（需 $\lambda\ge\mu$，常取 $7\mu$）；单峰或要求每代不退化用加号 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) |
-| 二项式交叉 vs 指数交叉 | 二项式逐维独立掷骰，指数从某维起连续抄一段 | 记名 DE/rand/1/bin 里的 bin 就是二项式 |
-| 轮盘赌 vs 锦标赛 | 轮盘赌按适应度比例抽，锦标赛随机抓几个比一场 | 锦标赛的抽样规则与公式 PPT 未展开（讲义补充） |
-| $\omega$ vs $c_1,c_2$ | $\omega$ 管保留多少旧速度，$c_1,c_2$ 管追 pbest 和 gbest 追多猛 | $\omega$ 大不等于收敛快，是探索更强、收敛更慢 |
-| 探索 vs 开发 | 探索去没去过的地方，开发在老地方细挖 | 调大任一参数几乎都翻译成"更偏探索 = 更不易早熟但收敛更慢" |
-| gbest 拓扑 vs lbest 拓扑 | gbest 全群共享一个最好，lbest 每个粒子只看自己邻域 | lbest 更抗早熟、gbest 收敛更快；多峰问题优先 lbest [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7) |
-| 收敛 vs 早熟收敛 | 收敛是中性描述"曲线变平了"，早熟是"变平得太早、且停在很差的解上" | 两者用同一对指标判定：多样性降为 0、收敛性停在错误的位置 [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=13) |
-| 适应度地形 vs 目标函数 | 同一个东西的两种说法 | 数值说目标函数，几何说地形 [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=11) |
-| 谁淘汰差解 | GA/ES/DE 都淘汰差解，PSO 粒子永不淘汰 | 答"PSO 靠什么选择"：无显式选择算子，粒子永不被淘汰 [p. 14](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=14) |
-
-## 三处最容易写错
-
-> [!WARNING] DE 的 $F$、$CR$ 与 GA 的 $p_m$、$p_c$ 不是一档事
-> **错误**：把 DE 的 $F$ 说成"DE 的变异率"，或把 GA 的 $p_c$ 直接套到 DE 上。
-> **正确**：四个参数各自有固定的取值尺度：$F$ 常用 0.5–1.0，$p_m$ 量级约 $1/L$，$p_c$ 与 $CR$ 都取 0 到 1。答卷里说清粒度才不丢分——$F$ 是倍数、$p_m$ 是概率、$p_c$ 是成对的概率、$CR$ 是逐维的概率 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=7) [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=8)。
-
-> [!WARNING] ES 的步长写 $\delta$，别写 $\sigma$
-> **错误**：把 ES 的步长写成 $\sigma$，或者反过来把密度公式里的 $\sigma$ 当成步长。
-> **正确**：ES 的步长是逐维向量 $\delta_i=(\delta_{i,1},\dots,\delta_{i,D})$，随个体一起进化；$\sigma$ 是高斯分布的标准差，只出现在密度公式和 $\partial P/\partial\delta$ 的推导里。讲义两处口径不同：ES 章正文用 $\delta$，考前速查表用 $\sigma$ 作简写，考卷上按正文写 $\delta$ [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6) [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=15)。
-
-> [!WARNING] $\mathbf{v}$ 的两义：看代数下标
-> **错误**：在 DE 的题里说"速度 $\mathbf{v}$"，或者在 PSO 的题里说"变异向量 $\mathbf{v}$"。
-> **正确**：DE 的 $\mathbf{v}_{i,G}$ 是变异向量，算出来后丢给交叉算子，不再参与位置更新；PSO 的 $\mathbf{v}_{i,j}^{t}$ 是速度，算完后直接进位置更新。判断口径：带一代下标 $G$ 的是 DE，带迭代上标 $t$ 与维度下标 $j$ 的是 PSO [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6) [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
