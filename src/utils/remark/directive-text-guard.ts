@@ -8,6 +8,7 @@ type TextDirectiveNode = {
 	type: "textDirective";
 	name: string;
 	label?: string | null;
+	attributes?: Record<string, string | null | undefined> | null;
 	children: Root["children"];
 };
 
@@ -20,8 +21,9 @@ type TextDirectiveNode = {
  * unknown directive renders as an empty `<div>` — the visible label loses
  * everything after the first colon.
  *
- * A real text directive always carries a label or children (`:ruby[音(reading)]`).
- * A bare `:name` with neither is prose, so it is restored to `:name` text.
+ * A real text directive always carries a label, children or attributes
+ * (`:ruby[音(reading)]`, `:pin{x="12" y="34"}`). A bare `:name` with none of
+ * them is prose, so it is restored to `:name` text.
  * The colon is re-attached to the preceding text node when there is one, so
  * `03` + `:10` renders as `03:10`.
  */
@@ -29,6 +31,7 @@ const remarkDirectiveTextGuard: Plugin<[], Root> = () => {
 	return tree => {
 		visit(tree, "textDirective", (node: TextDirectiveNode, index, parent: Parent | undefined) => {
 			if (node.label || node.children.length > 0) return;
+			if (node.attributes && Object.keys(node.attributes).length > 0) return;
 			if (typeof index !== "number" || !parent) return;
 
 			const previous = parent.children[index - 1];

@@ -7,6 +7,7 @@ import Footer from "$layouts/Footer.astro";
 import Tip from "$components/Tip.svelte";
 import "$styles/global.css";
 import "$styles/markdown.css";
+import "$styles/interactive.css";
 import "medium-zoom/dist/style.css";
 import "katex/dist/katex.min.css";
 
@@ -20,6 +21,7 @@ const title = config.title;
 	import zoom from "medium-zoom/dist/pure";
 	import Time from "$utils/time";
 	import { renderMermaid } from "$utils/mermaid";
+	import { initInteractive } from "$utils/interactive";
 
 	// Set the `title` attribute of all `<time>` elements to localized date-time strings
 	const localizeTimes = () => document.querySelectorAll("time").forEach(time => time.dateTime && (time.title = Time.locale(time.dateTime, navigator.language, Time.userTimezone)));
@@ -40,6 +42,7 @@ const title = config.title;
 		localizeTimes();
 		window.zoom();
 		renderMermaid();
+		initInteractive();
 	}
 
 	// Execute initialization on first load

@@ -94,15 +94,39 @@
 - 每章下把旧章标题降成 `###` 小节，131 行正文一字未改，17 处图引用、36 处时间戳原样保留
 - 补上章首索引（13 行，一章一行），frontmatter 与 `cardlink` 块保持原样
 
+### 文档：讲义体系改造方案改写为 as-built 记录
+
+- `docs/lecture-skill-redesign.md` 从「计划」改写成「已建成什么」的记录：每节标已完成/部分完成/未开始
+- 新增「施工过程中发现的问题」一节：Astro content store 撞车发旧版、TOC 的 `scrollIntoView` 顶页、MathType 公式读不出、`extract_materials.py` 走坏 soffice 返回 0 block、AList 从 /hdd 搬到 /Nextcloud
+- 下一件事：交互模块库仍未提交（`pnpm check` 报 4 个类型错），PDF 导出脚本与 `@media print` 未写
+
 ## 下一步
 
-### 阶段 B：mermaid 修复
+### 阶段 B：mermaid 修复（已完成，见 b5843ef）
 
-1. 改 `src/layouts/Base.astro` 的 mermaid 判定：读 `pre[data-language="mermaid"]`，删掉 14 词首词猜测
+1. `src/layouts/Base.astro` 的 mermaid 判定：读 `pre[data-language="mermaid"]`，删掉 14 词首词猜测
 2. 主题跟 `document.documentElement.dataset.theme`，监听 `theme:change` 重绘
 3. SVG 注入 `pre` 内部，不动容器（现在 `outerHTML` 整块替换删掉了复制按钮）
 4. `await import("mermaid")` 动态加载，Base chunk 从 140KB gzip 降到 3.5KB
 
-### 阶段 C：提交第 10、12 章
+### 阶段 C：提交第 10、12 章（已完成，见 b29a157）
 
 1. `git add -A src/content/lecture/zh-cn/计算智能_进化算法与优化方法/index.md && git commit -m "note: expand chapters 10 and 12 with the formulas recovered from the slides"`
+
+### 阶段 D：交互模块库（未提交，`pnpm check` 报 4 个类型错）
+
+1. 修 `scripts/test-interactive.ts:24,26`、`src/utils/remark/directive-text-guard.ts:32`、`src/utils/remark/interactive.ts:117` 的类型错
+2. 落地 7 个模块：chart / slider / compare / steps / annotate / 可排序表格 / 代码块 chrome
+3. 补 `src/styles/` 的 `@media print` 一页 CSS，展开折叠面板、隐藏 range 与排序按钮、图表 `break-inside: avoid`
+
+### 阶段 E：PDF 导出（未开始）
+
+1. 写 `scripts/export-pdf.mjs`，或先定「人从页面打印」这条路要什么 print CSS
+2. 实测两条降级：Chrome headless 的 PDF 无 outline 书签树、CJK 被嵌成 Type3 字体
+3. 实测 headless 打印时 mermaid 是否渲染完成
+
+### 阶段 F：工具链欠账
+
+1. 修 `/opt/homebrew/bin/soffice` 坏 shim，或让 `extract_materials.py` 彻底不走 soffice
+2. 第 9、10、12 章的渲染 PDF 没上传 AList，笔记里 188 处页码链接指向分享上没有的文件
+3. 引用标签统一成 `<文件名> · p.<页码>`，现在 499 处里只有 89 处是这个形状，lint 与 `build_source_manifest.py` 只看得见这 89 处

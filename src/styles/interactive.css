@@ -1,0 +1,45 @@
+@import "./modules/chart.css";
+@import "./modules/slider.css";
+@import "./modules/compare.css";
+@import "./modules/steps.css";
+@import "./modules/code.css";
+@import "./modules/annotate.css";
+@import "./modules/table.css";
+
+/*
+ * Shared tokens for the interactive modules.
+ *
+ * The modules read the site palette instead of hard-coded colors, so they
+ * follow the light and the dark theme without a second set of rules.
+ */
+:root {
+	--iw-border: var(--shadow-color);
+	--iw-surface: var(--surface-05);
+	--iw-surface-strong: var(--surface-10);
+	--iw-accent: var(--accent-color);
+	--iw-radius: var(--radius-12);
+}
+
+/* Every widget is a block that keeps its own spacing. */
+.iw-widget {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6em;
+	margin-block: 1em;
+	padding: 0.9em 1em;
+	border: 1px solid var(--iw-border);
+	border-radius: var(--iw-radius);
+	background-color: var(--iw-surface);
+}
+
+.iw-widget-title {
+	font-weight: 600;
+	font-size: 0.95em;
+	color: var(--primary-color);
+}
+
+/* The caption of a widget stays muted. */
+.iw-widget-caption {
+	font-size: 0.85em;
+	color: var(--remark-color);
+}

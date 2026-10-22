@@ -34,9 +34,11 @@ import attr from "./src/utils/remark/attr";
 import abbr from "./src/utils/remark/abbr";
 import wrapper from "./src/utils/remark/table-wrapper";
 import copy from "./src/utils/code-copy";
+import chrome from "./src/utils/code-chrome";
 import reading from "./src/utils/remark/reading";
 import figure from "./src/utils/remark/figure";
 import cardlink from "./src/utils/remark/cardlink";
+import interactive from "./src/utils/remark/interactive";
 
 import siteConfig from "./site.config";
 import { ZeoSevenFonts } from "./src/fonts/config";
@@ -72,7 +74,10 @@ export default defineConfig({
 			ruby,
 			directiveTextGuard,
 			[alerts, { legacyTitle: true }],
-			reading
+			reading,
+			// The interactive modules run last, so the reading time still
+			// counts the markdown source of the widgets.
+			interactive
 		],
 		remarkRehype: {
 			footnoteLabel: null,
@@ -115,7 +120,8 @@ export default defineConfig({
 			transformers: [
 				copy({
 					duration: 1500
-				})
+				}),
+				chrome()
 			]
 		}
 	},
