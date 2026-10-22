@@ -2720,7 +2720,7 @@ f_2(x)=1-\dfrac{\sum_{i=1}^{n}w_i x_i}{\sum_{i=1}^{n}w_i}+\displaystyle\sum_{i=1
 \end{cases}
 $$
 
-分子是决策变量的加权和，分母是权重之和，所以这一项是 $x$ 的一个加权线性组合，落在 0 与 1 之间；再加上第二项，$f_1$ 与 $f_2$ 仍然互相冲突。
+分子是决策变量的加权和，分母是权重之和，所以这一项是 $x$ 的一个加权平均，取值落在 $x$ 各分量的最小值与最大值之间；再加上第二项，$f_1$ 与 $f_2$ 仍然互相冲突。
 
 WeB 与 MONES 的关系很清楚：若 $w_1\ne 0$ 且 $(w_2,\dots,w_n)=(0,\dots,0)$，WeB 就退化成 MONES，所以 MONES 只是 WeB 的一个特例。WeB 继承了 MONES 的三个好性质，并多出一条 one-to-one mapping：NES 的所有最优解会映到 Pareto front 上互不相同的点，从而不会互相挤掉 [p. 25](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=25)。
 
@@ -2754,7 +2754,7 @@ f_2(x)=1-x_1+\dfrac{\left|f(x)-\mathrm{best\_refer}\right|}{\left|\mathrm{worst\
 \end{cases}
 $$
 
-第一项是 $x_1$ 与 $1-x_1$，与 MONES 的第一项相同；第二项由课件单独展开讲 [p. 32](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=32)。第二项里的各个量课件逐个标注：$\mathrm{best\_refer}$ 是进化过程中最好的个体的目标函数值，$\mathrm{worst\_refer}$ 是最差个体的目标函数值，$f(x)$ 是当前个体的目标函数值，$U_1-L_1$ 是第一个决策变量的取值范围，最后那个系数 $\eta$ 是 the scaling factor（缩放因子）。课件的 Remark 点明设计意图：目的是让第一项与第二项处在同一量级。对原 MMOP 的最优解，$f(x)=\mathrm{best\_refer}$，第二项取到零 [p. 33](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=33)。把两项合起来，MMOP 最优解在目标空间里的像同样落在 $y=1-x$ 的线段上 [p. 34](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=34)。
+第一项是 $x_1$ 与 $1-x_1$，与 MONES 的第一项相同；第二项由课件单独展开讲 [p. 32](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=32)。第二项里的各个量课件逐个标注：$\mathrm{best\_refer}$ 是进化过程中最好的个体的目标函数值，$\mathrm{worst\_refer}$ 是最差个体的目标函数值，$f(x)$ 是当前个体的目标函数值，$U_1-L_1$ 是第一个决策变量的取值范围，最后那个系数是 the scaling factor（缩放因子），这里的 $\eta$ 记它，课件第 33 页的公式把它写作 $\alpha$，第 34 页的公式写成斜体的 $a$。课件的 Remark 点明设计意图：目的是让第一项与第二项处在同一量级。对原 MMOP 的最优解，$f(x)=\mathrm{best\_refer}$，第二项取到零 [p. 33](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=33)。把两项合起来，MMOP 最优解在目标空间里的像同样落在 $y=1-x$ 的线段上 [p. 34](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=34)。
 
 课件接着回答"MOMMOP 为什么有效"。答案是 MOMMOP 是一种隐含的小生境方法（implicit niching method）。课件用三个个体说明。决策空间里的点是 $(0.1,1)$、$(0.15,0.8)$、$(0.6,0.8)$，横坐标是 $x$、纵坐标是 $f(x)$。变换到目标空间，三个个体的像是 $(0.0,0.9)$、$(0.35,1.05)$、$(0.8,0.6)$。课件在图上算了两笔账：函数值 0.8 的那个个体加上第二项得到 $0.15+0.2=0.35$ 与 $1-0.15+0.2=1.05$，函数值 0.8 的另一个个体得到 $0.6+0.2=0.8$ 与 $1-0.6+0.2=0.6$。关键在中间两个点：它们的目标函数值相同，第一个决策变量不同，变换后落到目标空间里两个不同的位置，彼此不支配；函数值最高的那个点第二项为零，落在 $(0.0,0.9)$。个体在目标空间里靠位置分开，效果上等价于把不同区域分开占据，这就是"隐含的小生境" [p. 35](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=35)。
 
@@ -2819,7 +2819,7 @@ $$
 \mathbf{x} = (x_1, x_2, \dots, x_D) \in S
 $$
 
-$D$ 是决策变量的维数，$S$ 是决策空间。两类约束连续编号：不等式约束 $g_j(\mathbf{x}) \le 0$ 占前 $l$ 个下标，等式约束 $h_j(\mathbf{x}) = 0$ 的下标接着从 $l+1$ 数起。课件的公式里，目标函数的末位下标与等式约束的末位下标都写作 $m$。
+$D$ 是决策变量的维数，$S$ 是决策空间。两类约束连续编号：不等式约束 $g_j(\mathbf{x}) \le 0$ 占前 $l$ 个下标，等式约束 $h_j(\mathbf{x}) = 0$ 的下标接着从 $l+1$ 数起；目标函数的末位下标与等式约束的末位下标都写作 $m$。
 
 约束把一部分解挡在可行域之外，帕累托前沿因此分成两条：不受约束影响的那条叫无约束帕累托前沿，落进可行域的那条叫约束帕累托前沿 (constrained PF)。课件用四张图区分两者的关系 [p. 2](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=2)。有一种情形里整条无约束前沿都落在可行域内，约束帕累托前沿与无约束前沿完全重合，约束不起作用。另一种情形里前沿有一段跑到可行域外面，这一段被切掉，约束帕累托前沿变短并向可行域内侧弯。可行域的形状直接决定前沿的形状，前沿不再只由目标函数之间的冲突决定。
 
@@ -2889,7 +2889,7 @@ DOC 由三部分组成 [p. 10](http://10.188.31.55:5244/Nextcloud/School/Compute
 课件给出的构造例子按这三部分铺开 [p. 11](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=11)。无约束问题取
 
 $$
-\min \begin{cases} f_1 = x_1 \\ f_2 = g(\mathbf{x})\left(1 - \sqrt{f_1/g(\mathbf{x})}\right) \end{cases}
+\min \begin{cases} f_1 = x_1 \\ f_2 = g(\mathbf{x})\left(1 - \frac{f_1}{g(\mathbf{x})}\right) \end{cases}
 $$
 
 目标空间约束取两条不等式：

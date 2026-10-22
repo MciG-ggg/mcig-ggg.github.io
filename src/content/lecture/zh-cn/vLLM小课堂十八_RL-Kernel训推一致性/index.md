@@ -34,7 +34,7 @@ image: http://i2.hdslb.com/bfs/archive/2d388bd039aced3e6eef1f6e5ff577bb1666aa53.
 
 ## 开场与分享内容
 
-讲者是 Vensen Mu，RL-Kernel 的核心维护者。这次分享基于 v0.1.0 版本，主题是大模型 RL 后训练中的训推一致性 [00:12](https://www.bilibili.com/video/BV1Ech96cEzW/?t=12)。
+讲者是 Vensen Mu，RL-Kernel 的核心维护者。这次分享基于 v0.1.0 版本，主题是大模型 RL 后训练中的训推一致性 [00:02](https://www.bilibili.com/video/BV1Ech96cEzW/?t=2)。
 
 分享内容分四段。第一段是问题背景：同一个模型、同一批 token，为什么两套引擎算出来的 LogP 还会不一样。第二段是项目定位：vime 负责流程，RL-Kernel 对齐关键计算。第三段是 v0.1.0 的结果：CUDA 和 ROCm 上的 200-step 验证。第四段是当前边界：已验证的范围和下一阶段计划 [00:41](https://www.bilibili.com/video/BV1Ech96cEzW/?t=41)。
 
@@ -60,7 +60,7 @@ RL 后训练里有两个 logprob 来源。rollout 侧由 vLLM 执行：读取当
 
 四个数相加，数学上等于一个数。浮点世界里，加的顺序会改结果。
 
-拿 a、b、c、d 四个值举例，假设 a 是 1000，c 是 -1000，b 和 d 都是 1，每次加法的结果保留三位有效数字 [05:30](https://www.bilibili.com/video/BV1Ech96cEzW/?t=330)。
+拿 a、b、c、d 四个值举例，假设 a 是 1000，c 是 -1000，b 和 d 都是 1，每次加法的结果保留三位有效数字 [05:37](https://www.bilibili.com/video/BV1Ech96cEzW/?t=337)。
 
 顺序一是 `((a + b) + c) + d`：1000 + 1 舍入后还是 1000，1000 - 1000 = 0，0 + 1 = 1。顺序二是 `(a + b) + (c + d)`：-1000 + 1 舍入后是 -1000，1000 + (-1000) = 0 [05:41](https://www.bilibili.com/video/BV1Ech96cEzW/?t=341)。
 
@@ -112,7 +112,7 @@ RL-Kernel 关注的是这条流程里的关键计算能不能对齐：attention 
 
 ## RL-Kernel 在单个 RL step 中的位置
 
-一轮 RL 训练的完整链路 [13:27](https://www.bilibili.com/video/BV1Ech96cEzW/?t=807)。
+一轮 RL 训练的完整链路 [13:34](https://www.bilibili.com/video/BV1Ech96cEzW/?t=814)。
 
 ![RL-Kernel 在单个 RL step 中的位置](images/fig_007.jpg)
 
@@ -156,10 +156,10 @@ v0.1.0 沿着当前支持的模型逐段检查，把影响 logprob 的主路径�
 
 | 算子 | 主要累加范围 | 差异来源 |
 |---|---|---|
-| RMSNorm | hidden dimension | 均值和方差依赖 hidden 维的累加顺序 [22:28](https://www.bilibili.com/video/BV1Ech96cEzW/?t=1348) |
+| RMSNorm | hidden dimension | 均值和方差依赖 hidden 维的累加顺序 [22:31](https://www.bilibili.com/video/BV1Ech96cEzW/?t=1351) |
 | GEMM | K dimension | 不同 tile 会改变局部和最终合并方式 [22:38](https://www.bilibili.com/video/BV1Ech96cEzW/?t=1358) |
 | Attention | visible keys | softmax 依赖可见 key 的最大值与求和 [22:49](https://www.bilibili.com/video/BV1Ech96cEzW/?t=1369) |
-| Linear LogP | vocabulary | LogSumExp 需要在整个词表上归一化 [22:59](https://www.bilibili.com/video/BV1Ech96cEzW/?t=1379) |
+| Linear LogP | vocabulary | LogSumExp 需要在整个词表上归一化 [22:54](https://www.bilibili.com/video/BV1Ech96cEzW/?t=1374) |
 | Collectives | ranks | 跨卡结果的合并顺序影响末位结果 [23:03](https://www.bilibili.com/video/BV1Ech96cEzW/?t=1383) |
 
 排查时先确认参与归约的元素范围，再检查数据切分、结果合并、精度转换位置。
@@ -202,7 +202,7 @@ Attention 侧，一个 query 会给多个 key 打分，这些分数要一起做�
 
 推理侧同样存在这个问题。vLLM 里有一套专门跑这些 model 的 lm-eval 标准，参照它来看模型分数有没有问题 [30:53](https://www.bilibili.com/video/BV1Ech96cEzW/?t=1853)。原本能到 0.99 量级的分数掉到 0.8 几，就说明中间出了偏差，要回头查是哪一环 [30:11](https://www.bilibili.com/video/BV1Ech96cEzW/?t=1811)。
 
-**新算子支持与算子复用。** vLLM 那边一直在持续支持新算子。其他仓库现在也在开始做这块，尤其是针对 NVIDIA 的 H 系列、B 系列这种自带硬件加速技术的卡 [33:45](https://www.bilibili.com/video/BV1Ech96cEzW/?t=2025)。RL-Kernel 的取舍是：保证一致性时会牺牲性能，所以要保性能时尽量复用高性能算子库，比如 vLLM 里的、FlashInfer、AMD 那边的 ROCm 算子库。只有确实保证不了累加顺序或规约顺序的时候，才自己写 kernel [35:04](https://www.bilibili.com/video/BV1Ech96cEzW/?t=2104)。
+**新算子支持与算子复用。** vLLM 那边一直在持续支持新算子。其他仓库现在也在开始做这块，尤其是针对 NVIDIA 的 H 系列、B 系列这种自带硬件加速技术的卡 [33:45](https://www.bilibili.com/video/BV1Ech96cEzW/?t=2025)。RL-Kernel 的取舍是：保证一致性时会牺牲性能，所以要保性能时尽量复用高性能算子库，比如 vLLM 里的、FlashInfer、AMD 那边的 ROCm 算子库。只有确实保证不了累加顺序或规约顺序的时候，才自己写 kernel [34:42](https://www.bilibili.com/video/BV1Ech96cEzW/?t=2082)。
 
 **部署形态。** 有人问，在真正的模型部署时会不会把算子换回框架原来的算子，这样训练时保证的一致性就迁移不过去了。回答是不会。RL-Kernel 做的不是一个单独算子的替换，而是按模型拆出对应的一套：算子、通信方式、运行时检查、上下游集成代码，这是一个完整体系。部署时也不需要再切回原来的算子，因为 consistency 路径和 fast path 两套都会保留 [36:41](https://www.bilibili.com/video/BV1Ech96cEzW/?t=2201)。
 
@@ -248,7 +248,7 @@ Attention 侧，一个 query 会给多个 key 打分，这些分数要一起做�
 
 红线是 vime 原生路径，蓝线是 RL-Kernel 加 vime。左图统计不匹配 token 数，右图统计本轮最大的 LogP 绝对差值。蓝线在 200 个 step 里全程保持为 0，200/200 完整训练 steps，0 RL-Kernel mismatch [52:36](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3156)。曲线来源是 RL-Kernel v0.1.0 Blog / PR #377。
 
-**性能不低于原生路径。** 在保持 0 mismatch 的同时，端到端性能与 vime 原生路径相当。公开结论只对应 Qwen3-8B、8×H100 和当前并行配置 [55:14](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3314)。
+**性能不低于原生路径。** 在保持 0 mismatch 的同时，端到端性能与 vime 原生路径相当。公开结论只对应 Qwen3-8B、8×H100 和当前并行配置 [55:20](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3320)。
 
 各条关键路径的做法：
 
@@ -258,7 +258,7 @@ Attention 侧，一个 query 会给多个 key 打分，这些分数要一起做�
 - **FFN 和 LM head / LogP**：packed gate/up、SwiGLU 与 down GEMM 分段执行，复用 packed 权重；训练与 rollout 各自复用 local logits，减少重复的 LM-head GEMM [56:42](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3402)。
 - **CUDA IPC 通信**：单节点 fixed-tree collective，TP1/2/4/8 使用固定 balanced tree [57:01](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3421)。
 
-**快速启动**分四步：安装并指定本地路径、准备数据与 checkpoint、启动 Ray 并检查环境、运行基线与一致性路径 [57:35](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3455)。实际用的时候只需要替换 workspace 和模型目录，标准实验不要求修改 vime 或 RL-Kernel 的脚本 [58:22](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3502)。
+**快速启动**分四步：安装并指定本地路径、准备数据与 checkpoint、启动 Ray 并检查环境、运行基线与一致性路径 [57:35](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3455)。实际用的时候只需要替换 workspace 和模型目录，标准实验不要求修改 vime 或 RL-Kernel 的脚本 [58:37](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3517)。
 
 ## ROCm 实配：200 步逐 Bit 一致
 
@@ -270,7 +270,7 @@ ROCm 侧的配置是单机 8 张 MI300X 192GB，TP4 配 CP2，全局 batch 8，�
 
 ROCm 侧的性能与原生路径基本持平，也做了对应的特定优化：
 
-- **GEMM**：自研 MFMA kernel，固定 chunk 顺序，FP32 合并后写回 BF16 [60:56](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3656)。
+- **GEMM**：自研 MFMA kernel，固定 chunk 顺序，FP32 合并后写回 BF16 [60:59](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3659)。
 - **Attention 默认路径**：AITER 的 CK 和 Triton 实现，处理 K 分块，固定 decode 路径的 CK [61:11](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3671)。
 - **LogP**：各 TP shard 先算局部统计量，再按固定 vocab tile 顺序合并 [61:50](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3710)。
 - **ROCm 通信与执行**：HIP IPC 与 RCCL 分层传输，小 token 走 HIP IPC，较大的 token 走 RCCL，本地固定树归约，配合 HIP Graph 与 cache 复用 [62:02](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3722)。
@@ -300,10 +300,10 @@ ROCm 的快速启动跟 CUDA 稍有不同，走 profile 的路子：先选择公
 
 更多后端这条线由厂商推进：MUSA 由摩尔线程自己的人在做，昇腾这边有专门做昇腾算子的人去适配 [65:26](https://www.bilibili.com/video/BV1Ech96cEzW/?t=3926)。
 
-**社区参与。** 仓库是 `github.com/RL-Align/RL-Kernel`，Issues 面板里 88 个 open、89 个 closed、34 个 PR。每条线都在拆 RFC，谁认领谁做 [01:08:40](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4120)。
+**社区参与。** 仓库的 Issues 面板里 88 个 open、89 个 closed、34 个 PR。每条线都在拆 RFC，谁认领谁做 [01:08:40](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4120)。
 
-贡献的门槛不在卡的档次上。开发单算子的话，单张 5090 就够了，RL-Kernel 把 MoE 拆开后显存要求很低 [01:08:44](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4124)。分布式部分可以先实现代码，再一起在 H 卡上测，也可以租卡跑 TP2 这样的配置 [01:09:30](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4170)。
+贡献的门槛不在卡的档次上。开发单算子的话，单张 5090 就够了，RL-Kernel 把 MoE 拆开后显存要求很低 [01:08:52](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4132)。分布式部分可以先实现代码，再一起在 H 卡上测，也可以租卡跑 TP2 这样的配置 [01:09:30](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4170)。
 
-认领的入口是那几张 RFC 文档，比如 Nemotron-3-Nano-30B-A3B、BAGEL-7B-MoT、Qwen3-Next-80B-A3B-Instruct、MiniMax-H3、Gemma-4-31B-it、Qwen-Image 各自的 kernel roadmap 和集成计划 [01:10:20](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4220)。RFC 里写的是 acceptance contract，比如 operator acceptance 要求每个融合算子同时满足 batch invariance 和 performance 两项，parallelism acceptance 则规定 TP、CP、EP 三种并行下各自的 invariance 要求 [01:11:00](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4260)。
+认领的入口是那几张 RFC 文档，比如 Nemotron-3-Nano-30B-A3B、BAGEL-7B-MoT、Qwen3-Next-80B-A3B-Instruct、MiniMax-H3、Gemma-4-31B-it、Qwen-Image 各自的 kernel roadmap 和集成计划 [01:10:20](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4220)。RFC 里写的是 acceptance contract，比如 operator acceptance 要求每个融合算子同时满足 batch invariance 和 performance 两项，parallelism acceptance 则规定 TP、CP、EP 三种并行下各自的 invariance 要求 [01:11:20](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4280)。
 
 除了算子，documentation、benchmark 和 CI 测试的活也有不少可以领 [01:12:42](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4362)。社区交流在 Slack 和微信群，进群的时候说清背景就行 [01:13:45](https://www.bilibili.com/video/BV1Ech96cEzW/?t=4425)。

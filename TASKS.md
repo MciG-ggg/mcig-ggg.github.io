@@ -74,6 +74,11 @@
 - `fig_007`（第 0 章第 7 页课程主线图）和 `fig_006`（第 0 章第 12 页约束优化图）随内容移到第 0 章，图片文件与编号不动
 - 改完第 1 章只剩第 1 章课件的引用，字符数 14266 → 12824
 
+### 第 10、12 章公式复原与核对
+
+- 解码 MathType 的 WMF 记录流（记录长度按 16 位字计、`META_EXTTEXTOUT` 紧凑负载、`META_MOVETO` 先行后列），用 `Symbol.ttf` 的 cmap 还原希腊字母与运算符，重画后逐条核对课件 media
+- 修掉 4 处：DOC 目标函数里多出的平方根、MOMMOP 缩放因子 $\eta$ 未声明为自选符号、WeB 加权和"落在 0 与 1 之间"的说法错、MCOP 约束下标被说成课件原文
+
 ## 下一步
 
 ### 阶段 B：mermaid 修复
@@ -82,3 +87,7 @@
 2. 主题跟 `document.documentElement.dataset.theme`，监听 `theme:change` 重绘
 3. SVG 注入 `pre` 内部，不动容器（现在 `outerHTML` 整块替换删掉了复制按钮）
 4. `await import("mermaid")` 动态加载，Base chunk 从 140KB gzip 降到 3.5KB
+
+### 阶段 C：提交第 10、12 章
+
+1. `git add -A src/content/lecture/zh-cn/计算智能_进化算法与优化方法/index.md && git commit -m "note: expand chapters 10 and 12 with the formulas recovered from the slides"`
