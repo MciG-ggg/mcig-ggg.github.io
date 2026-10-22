@@ -2414,121 +2414,196 @@ $$\text{HV}(A) = \lambda\!\left(\bigcup_{a \in A} \text{box}(a, \mathbf{r})\righ
 
 ## 第 9 章 单目标约束优化问题的进化算法求解
 
-### 单目标约束优化问题
+### SCOP 的形式化：两类约束与违反度
 
-单目标约束优化问题 (single-objective constrained optimization problems, SCOPs) 在决策变量上带约束，目标是最小化一个目标函数 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
+单目标约束优化问题 (single-objective constrained optimization problems, SCOPs) 的骨架是：最小化一个目标函数 $f(\mathbf{x})$，同时让 $\mathbf{x}$ 满足一组约束 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。约束分两类——不等式约束 (inequality constraints) 和等式约束 (equality constraints) [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。等式约束带一个正的容差 (a positive tolerance value)：算法判不准 $h_j(\mathbf{x})=0$，只能判它落进一条容差带里 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
 
-课件用所有约束上的违反程度来度量一个解离可行有多远 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=5)，并给了三个例子 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=6) [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=7) [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=8)。
+约束让解多出一重身份。除了目标函数值，课件还要度量一个解违反了约束多少，叫**约束违反度** (degree of constraint violation)，分两步给：先算个体在第 $j$ 条约束上的违反度，再把个体在所有约束上的违反度加起来 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4) [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=5)。有了这个量，可行域 (feasible region) 才被定义出来：违反度为零的那片区域就是可行域，落进去的解叫可行解 (feasible solution)，落在外面的叫不可行解 (infeasible solution) [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=5)。课件把违反度按约束类型分成两支给出：不等式约束那支取 $\max\{0,\,g_j(\mathbf{x})\}$，等式约束那支取 $\max\{0,\,|h_j(\mathbf{x})|-\delta\}$，这里的 $\delta$ 记这个正的容差，课件正文只说了容差存在，没有给符号 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
 
-### 用进化算法解 SCOPs
+课件连着给三个例子，把"约束把可行域压成一小块"摆在眼前。第一个例子 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=6)：
 
-进化计算领域越来越关注用进化算法解 SCOPs [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=10)。
+$$
+\min\ f(\mathbf{x}) = \sum_{i=1}^{2} x_i^2 - 10\cos(2\pi x_i) + 10, \qquad -5 \le x_1, x_2 \le 5
+$$
 
-这类方法统称约束进化算法 (constraint-handling evolutionary algorithms, COEAs)。它由三部分组成：约束处理技术 (constraint-handling techniques) 加上进化算法本身，两者的组合才构成完整方法 [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=11)。
+$$
+\text{s.t.}\quad x_1 + 2 \le 0, \qquad -x_1 - 3 \le 0, \qquad 2x_1 + x_2 + 7 = 0
+$$
 
-COEAs 的目标是找到可行的最优解。有些不可行解携带的信息比可行解更有用 [p. 12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=12)。课件给了完整的优化过程示意 [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=13)。
+配图上画满等高线，可行域是左上角一小块，用箭头标了出来 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=6)。第二个例子换了搜索范围和约束形状 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=7)：
 
-### 约束处理技术
+$$
+\min\ f(\mathbf{x}) = \sum_{i=1}^{2} x_i^2 - 10\cos(2\pi x_i) + 10, \qquad -10 \le x_1 \le 5, \quad -5 \le x_2 \le 5
+$$
 
-约束处理技术的主要任务是确定用什么准则来比较两个解 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=15)。
+$$
+\text{s.t.}\quad 3(x_1+7)^2 + x_2^2 \le 0.3 \quad \text{or} \quad (x_1+8)^2 + (x_2-3)^2 \le 2
+$$
 
-主要有三类 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=16)：基于惩罚函数的方法、基于可行解偏好的方法、基于多目标优化的方法。
+可行域是两个小圆盘的并，图上只标出其中一个圆盘和最优解所在的那个点 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=7)。第三个例子把两个圆盘并成一个 [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=8)：
 
-### 惩罚函数法
+$$
+\min\ f(\mathbf{x}) = \sum_{i=1}^{2} x_i^2 - 10\cos(2\pi x_i) + 10, \qquad -10 \le x_1 \le 5, \quad -5 \le x_2 \le 5
+$$
 
-惩罚函数法引入惩罚因子 (penalty factors) [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=17)。它的缺陷是惩罚因子依赖问题本身 [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=17)。
+$$
+\text{s.t.}\quad 3(x_1+9)^2 + x_2^2 \le 2
+$$
 
-课件用六页分析惩罚函数。把惩罚项引入目标函数后 [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=18)：
+可行域依然只是搜索空间里的一小块 [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=8)。三个例子的目标函数一样，差别全在约束上。约束一改，可行域的形状、位置、大小跟着变，最优解也挪位置。约束处理技术因此不能只读目标函数的地形，它必须同时读懂可行域的形状 [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=8)。
 
-惩罚因子太小时，不可行解会被进化算法继续演化；惩罚因子太大时，进化算法在可行域里找不到足够的搜索方向 [p. 19](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=19)。
+### 用进化算法解 SCOP：两个目标与一个矛盾
 
-课件给出一个可操作的判断方法：先对 $\lambda$ 个个体排序，再检查相邻对 $i$ 和 $i+1$ [p. 20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=20)。比较结果分两种：被目标函数支配，或不被支配 [p. 21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=21)。
+进化算法解 SCOP 已经长成一支专门的队伍，叫约束优化进化算法 (constrained optimization EAs, COEAs)。成因很直接：因为约束的存在，人们提出了大量约束处理技术 (constraint-handling techniques)，并把它们集成进各种 EA 里 [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=10)。
 
-共识是惩罚不足和惩罚过度都不理想 [p. 22](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=22)。而且惩罚因子不是固定的，它们依赖问题 [p. 23](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=23)。
+课件给 COEAs 定了两个目的 [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=10)。第一个是尽快靠近可行域 (approach the feasible region promptly)，第二个是最后拿到最优解。两条目的的时序不同：搜索初期种群多半在可行域外，先得往里走；进了可行域，任务才切换成在域内找最优。课件用三张种群分布图演示这个过程：第 1 代个体散在整个搜索空间，第 30 代聚到可行域附近，第 50 代收敛到可行域里的最优点 [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=13)。
 
-### 可行解偏好法
+COEAs 的骨架由两件东西拼成：EA 提供搜索能力，约束处理技术提供比较准则 (criterion)。课件把这层关系写成 "COEAs = EAs + constraint-handling techniques"，并指出约束处理技术要回答的具体问题是：拿什么准则去比较父代群体和子代群体里的个体 [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=11)。搜索范围同时覆盖不可行域和可行域两片 [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=11)。
 
-可行解偏好法的缺陷是忽略了不可行解携带的重要信息 [p. 24](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=24)。
+这里有一个绕不开的矛盾 (contradiction)。COEAs 的目标是找到可行的最优解，可有些不可行解反而携带了对找到可行最优解更重要的信息——不可行解能告诉算法该往哪个方向挪 [p. 12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=12)。把不可行解一律判死刑，搜索就少了这半份信息；把它们一律留下，群体又会被拽离可行域。课件把出路说成一句话：在约束违反度 (constraint violation) 和目标函数 (objective function) 之间确定一个权衡 (tradeoff) [p. 12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=12)。
 
-其中的可行性准则 (feasibility rule) 是：取种群中最差的可行解的目标函数值 [p. 25](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=25)。
+### 约束处理技术的三条路线
 
-随机排序法 (stochastic ranking, SR) 属于这一类。它在可行域内用概率参数 $P_f$ 做比较 [p. 26](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=26)，实现上是冒泡排序 (bubble ranking) [p. 27](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=27)。
+课件把约束处理技术的主旨收成一句：确定比较父代与子代个体的准则；核心收成另一句：在目标函数和约束违反度之间做权衡 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=15)。按"怎么在两者之间权衡"分，主流做法有三类 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=16)：
 
-### 多目标优化法
+- **惩罚函数法** (methods based on penalty functions)：把违反度按一个系数加到目标函数上。
+- **可行解偏好法** (methods based on preference of feasible solutions over infeasible solutions)：先分层，可行解整体排在不可行解前面。
+- **多目标优化法** (methods based on multiobjective optimization)：把每条约束当成一个目标。
 
-多目标优化法的缺陷是当约束数量多时会遭受维数灾难 [p. 28](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=28)。
+三类的差别不在"是否用违反度"，而在违反度和目标函数怎么合成一个可比较的标量。惩罚函数法把它们加权成一个数，可行解偏好法先分层再排序，多目标优化法干脆不合成，让两个量各自参与支配比较 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=16)。
 
-课件列了相关综述文献 [p. 29](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=29)。
+### 惩罚函数法：把违反程度写进目标函数
 
-### 标准测试函数
+惩罚函数法往目标函数里塞一个惩罚项 (penalty term)，用一个惩罚因子 (penalty factor) 标定它的分量 [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=17)。惩罚项进适应度函数，约束问题就被改写成无约束问题。
 
-课件用了 24 个约束优化的标准测试函数 [p. 30](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=30)。
+课件给的第一条忠告是：惩罚因子依赖于问题 (penalty factors are problem-dependent) [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=17)。同一个因子换到另一个问题上就未必合用，这一条把固定因子的做法压得很紧。
 
-### 作者的工作
+后来的工作都冲着动态设置因子去。课件把这条线上的成果归成两类：一类用单调非减序列 (monotonically nondecreasing sequence) 让惩罚因子随代数上升，一类用自适应方法 (adaptive approach) 让因子跟着种群状态变 [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=18)。
 
-课件介绍了作者的六组方法 [p. 32](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=32)：CW 与 CMODE、HCOEA 与 DyHF、ATM 与 $(\mu+\lambda)$-CDE、FROFI。
+因子的大小决定成败，两头都坏 [p. 19](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=19)。因子太小，不可行解照样能在适应度上胜出，EA 会把它演化下去；因子太大，找可行解变得很容易，但解的质量很差。课件接着给这两头命名：惩罚不够叫 under-penalization，惩罚过头叫 over-penalization [p. 22](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=22)。
 
-### CW：约束与无约束混合
+那怎么定因子？课件给了一个从排序出发的办法 [p. 20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=20)：先把这 $\lambda$ 个个体按适应度排序 (rank)，再看排序后相邻的一对 (adjacent pair) $i$ 和 $i+1$，从这两步里算出一个至关重要的惩罚系数 (critical penalty coefficient)。相邻对正是"目标函数和惩罚项谁说话算数"翻转位置的地方，所以它被选来做临界点的计算。
 
-CW 的动机是：现有的约束处理技术通常用有偏的比较准则 [p. 34](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=34)。
+课件把相邻对的比较拆成三种情形 [p. 21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=21)。给定一个比较用的取值 $r_g$，两个个体的比较结果有三种可能：由目标函数支配 (dominated by the objective function)，由惩罚函数支配 (dominated by the penalty function)，或者两者都不能支配对方 (nondominated)。两个备注把它用起来：比较不可支配个体和可行个体时，$r_g$ 取什么值都不改变不等式关系；对整个种群来说，选定的 $r_g$ 决定了群体里有多大比例的个体分别被目标函数和惩罚函数支配 [p. 21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=21)。$r_g$ 就是那个权衡旋钮，课件在下一页把它和它的带横线版本 $\bar{r}_g$ 并排画出来，作为"两个方向都不对"之后的出路 [p. 22](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=22)。
 
-CW 与一般多目标优化问题的区别在于 [p. 35](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=35)：课件用符号标注了父代 (parent)、子代 (offspring) 和种群中的非劣个体 (nondominated individual) [p. 36](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=36)。
+课件最后补一条常识性的提醒：$r_g$ 和 $\bar{r}_g$ 都不是常数，它们依赖于问题，而且因为取决于当前种群 (the current population)，每一代都可能变 [p. 23](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=23)。
 
-存档和替换 (archiving and replacement) 的动机是 [p. 37](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=37)：约束违反程度最高的不可行解会被归档并替换掉。
+### 可行解偏好法：先分层，再比较
 
-重组用的是单形交叉 (simplex crossover, SPX)：$n+1$ 个个体在 $n$ 维搜索空间里构成一个单形 [p. 38](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=38)。
+第二类做法反过来：先按可行性分层，层内再比别的。可行解整体被认为优于不可行解，但只是"好到某个程度" (to a certain degree) [p. 24](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=24)。课件的批评很直白：这种做法忽略了不可行解携带的重要信息 (ignore the important information of infeasible solutions) [p. 24](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=24)。这一类有两种比较准则：可行性准则和随机排序 [p. 24](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=24)。
 
-### CMODE
+最常见的一条准则是**可行性准则** (the feasibility rule)，课件给了三个分支 [p. 25](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=25)。两个都不可行时，违反度小的那个更好；一个不可行一个可行时，可行的那个更好；两个都可行时，目标函数值更好的那个更好。准则还牵进一个量：群体中最差可行解的目标函数值 (the objective function value of the worst feasible solution in the population) [p. 25](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=25)。
 
-CMODE 的动机是 CW 含有一些依赖问题的控制参数，比如膨胀因子 (expanding factor) [p. 39](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=39)。
+随机排序 (stochastic ranking, SR) 换了个比较机制，用来削弱可行性准则的刚性 [p. 26](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=26)。它引一个概率参数 $P_f$，每次挑排序后相邻的两个个体来比：两个都可行时照常比目标函数；否则抽一个 $[0,1]$ 上均匀分布的随机数 $u$，$u<P_f$ 就比目标函数，否则比违反度，谁的违反度小谁赢 [p. 26](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=26)。$P_f$ 就是可行性优先程度的一个旋钮。
 
-它改进了不可行解的替换机制：约束违反程度最低的不可行解进入替换流程 [p. 40](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=40)。
+实现上 SR 用冒泡排序 (bubble ranking) 反复扫相邻对，课件把这段伪代码原样列出 [p. 27](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=27)。其中 $\phi$ 是约束违反度，$f$ 是目标函数值：
 
-替换是确定性的，用强度值 (strength value) 和排名值 (rank value) [p. 41](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=41)，课件给了替换的示例 [p. 42](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=42)。
+```
+I_j = j,  for j in {1, ..., λ}
+for i = 1 to N:
+    for j = 1 to λ-1:
+        sample u ∈ U(0, 1)
+        if (φ(I_j) = φ(I_{j+1}) = 0) or (u < P_f):
+            if f(I_j) > f(I_{j+1}): swap(I_j, I_{j+1})
+        else:
+            if φ(I_j) > φ(I_{j+1}): swap(I_j, I_{j+1})
+    if no swap done: break
+```
 
-### HCOEA 与 DyHF
+可行解偏好法这一支的代价和收益是对称的：它不要用户调任何参数，代价是丢掉了不可行解里的那半份信息 [p. 24](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=24)。
 
-HCOEA 的动机是 COEAs 可以概括为「约束处理技术 + 进化算法」，也就是一个恰当的约束处理技术需要配套恰当的搜索算法 [p. 44](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=44)。它给出了主框架 [p. 45](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=45)。
+### 多目标优化法与 24 个基准测试函数
 
-全局搜索模型把规模为 $N$ 的种群随机配成 $N/2$ 对 [p. 46](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=46)。局部搜索模型有专门的示意图 [p. 47](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=48)，它的实现要处理最优不可行个体和子种群 [p. 48](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=48)。
+第三类做法把每条约束都当成一个目标函数 (each constraint is considered as an objective function) [p. 28](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=28)。约束不再被折进一个标量适应度，而是和目标函数一起留在向量里，交给第 8 章讲过的多目标机制去排。这条路的代价被课件点得很明确：约束一多，维度就跟着涨，遭遇维数灾难 (curse of dimensionality) [p. 28](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=28)。约束少的时候这条路很干净，约束一多就得想别的办法。课件在这一点上列了相关综述文献 [p. 29](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=29)。
 
-DyHF 的动机是：进化不同阶段，局部搜索和全局搜索所需的概率可能不同 [p. 49](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=49)。它用 $\mathrm{rand} < N_F / N_P$ 动态决定用哪个模型 [p. 50](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=50)。
+算法好不好要有尺子。课件用 24 个标准测试函数 (benchmark test functions) 来量 [p. 30](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=30)，每个函数带一组特征：$\rho$ 是可行域占搜索空间的比例 (the proportion of the feasible region)；LI、NI 是线性与非线性不等式约束的个数；LE 是线性等式约束的个数；NE 这一列课件照抄了 LI 的措辞，按四列的命名对应关系它记的是非线性等式约束的个数；$a$ 是起作用的约束 (active constraints) 的个数，即最优解正压在某条约束的边界上 [p. 30](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=30)。
 
-课件给了三段分析：早期种群的可行比例可能很小甚至为零 [p. 51](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=51)；随着进化，种群可能收敛到可行域附近 [p. 52](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=52)；搜索后期大多数个体都可行 [p. 53](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=53)。
+这 24 个函数把可行域比例从接近 0 一直铺到接近 1，逼着算法在"可行域窄得难找"和"可行域宽得几乎等于无约束"两端都得能干活 [p. 30](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=30)。表里的几个极端例子能说明问题：g02 是 20 维非线性函数，可行域占 99.9971%，等于几乎不做约束；g12 是 3 维二次函数，可行域只占 4.7713%；g19 是 15 维非线性函数，可行域占 33.4761%；g24 是 2 维线性函数，可行域占 79.6566%。约束个数上 g20 最密：24 维线性函数，带 2 个线性等式约束和 12 个非线性等式约束，起作用的约束有 16 个 [p. 30](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=30)。
 
-### ATM
+### 讲者的方法：从 CW 到 FROFI
 
-ATM 的动机是：进化过程中种群不可避免会遇到三种情形 [p. 55](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=55)。
+课件把讲者本人的工作摆成四组 [p. 32](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=32)：CW 与 CMODE，HCOEA 与 DyHF，ATM 与 $(\mu+\lambda)$-CDE，最后是 FROFI。这四组恰好沿着两条轴展开：一条轴换约束处理技术，一条轴换搜索引擎。
 
-不可行情形的权衡 [p. 56](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=56)：非劣个体代表当前种群的帕累托最优集 [p. 57](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=57)，课件给了权衡的图示 [p. 58](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=58)。
+#### CW：把有偏的准则换成无偏的准则
 
-半可行情形的权衡 [p. 59](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=59)：COEAs 的目标是找到可行的最优解 [p. 60](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=60)。每个目标函数值先做归一化 [p. 61](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=61)，第二个权衡因此具备 [p. 62](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=62)。
+CW 的出发点是准则本身有偏 (biased)。课件的说法是：现有的约束处理技术大多用一套有偏的比较准则，而帕累托支配 (Pareto dominance) 是一套无偏的比较准则 (unbiased comparison criterion) [p. 34](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=34)。CW 的做法是把约束处理问题改写成双目标 (biobjective) 问题，再用多目标优化的机制去解 [p. 34](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=34)。课件在页面上标出它依据的问题形式 [p. 34](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=34)：
 
-可行情形的权衡 [p. 64](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=64)：此时退化成无约束优化。
+$$
+\min\ f(\bar{\mathbf{x}}) \quad \text{s.t.}\quad g_j(\bar{\mathbf{x}}) \le 0,\ j = 1,\dots,l; \qquad h_j(\bar{\mathbf{x}}) \le 0,\ j = l+1,\dots,p
+$$
 
-ATM 有一条性质：可行解之间按目标函数值比较，可行解与不可行解之间按 [p. 63](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=63) 比较。
+这个改写问题跟一般的多目标问题有一处不同：它在可行域内会退化成单目标问题 (retrogress into a single-objective optimization problem within the feasible region) [p. 35](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=35)。课件用一张图说明这个几何 [p. 35](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=35)：横轴是 $G$，纵轴是 $f$。帕累托最优集被映射到帕累托前沿 (Pareto front) 上，可行域 $\Omega$ 被映射到一段实线 (solid segment) 上，全局最优解落在前沿和实线的交点处，搜索空间 $S$ 里的点被映射到前沿上以及前沿上方的位置 [p. 35](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=35)。实线段的存在是这套几何的关键：可行域内的排序退化回普通单目标排序。
 
-### $(\mu+\lambda)$-CDE
+种群更新的一步，课件用三个记号写清楚：`.` 表示父代，`$\Delta$` 表示子代，`o` 表示子代群体里的非劣个体 (nondominated individual)，谁帕累托支配谁就标上 [p. 36](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=36)。
 
-$(\mu+\lambda)$-CDE 的动机是：ATM 用了简单的 $(\mu,\lambda)$-ES 作搜索引擎，改用 $(\mu+\lambda)$-DE [p. 65](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=65)。$(\mu+\lambda)$-DE 用 $\mu$ 个父代产生 $\lambda$ 个子代，再从 $\mu + \lambda$ 个个体里留 $\mu$ 个质量更高的 [p. 66](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=66)。
+CW 还有一套存档与替换 (archiving and replacement) 机制：每一代把违反度最低的那个不可行解存进档案 (archive) [p. 37](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=37)。课件同时点出帕累托支配在这件事上的低效：只有区域 ABCDA 里的个体能帕累托支配别人，于是替换很少发生 (replacement may occur occasionally)，选择压 (selection pressure) 很低 [p. 37](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=37)。补救办法是随机替换 (randomly replace) [p. 37](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=37)。重组算子用单形交叉 (simplex crossover, SPX)：$n+1$ 个个体在 $n$ 维空间里张成一个单形，把旧单形撑开得到新单形，再从新单形里随机生成一个个体 [p. 38](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=38)。
 
-它用两个准则计算个体的约束违反程度 [p. 67](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=67)。
+#### CMODE：换掉膨胀因子，换一套替换机制
 
-改进的 ATM 分不可行情形 [p. 68](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=68) 和半可行情形 [p. 69](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=69) 两种情形。
+CMODE 接着换掉 CW 的两个痛点 [p. 39](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=39)。第一，CW 里混进了问题相关的控制参数，比如单形交叉的膨胀因子 (expanding factor)；第二，课件给 CMODE 装上了差分进化 (DE) 来生成新解，并且配一套新的不可行解替换机制 (a novel infeasible solution replacement mechanism) [p. 39](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=39)。
 
-### FROFI
+新的替换机制分确定性和随机两种 [p. 40](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=40)。左边一栏是确定性替换 (deterministic replacement)，目标是同时提升群体的质量 (quality) 和可行性 (feasibility)；右边一栏是随机替换 (random replacement)，目标是同时提升群体的可行性 (feasibility) 和多样性 (diversity)。课件把进入这套流程的个体说成是在收敛性和可行性两方面最差的那批 [p. 40](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=40)。
 
-FROFI 用的可行性准则是：任何可行解都优于任何不可行解；两个可行解之间按目标函数值比较 [p. 71](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=71)。
+确定性替换靠三个量分工 [p. 41](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=41)：强度值 (strength value)、排名值 (rank value)，以及最终适应度函数 (final fitness function)。排名值按约束违反度排出来；最终适应度函数以帕累托支配 (based on Pareto dominance) 为基础，把收敛性 (convergence) 和可行性 (feasibility) 两项合到一起。课件用一个具体的小例子走了一遍替换过程 [p. 42](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=42)。
 
-它的动机是：可行性准则对约束强调过多，忽略了目标函数的信息 [p. 72](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=72)。
+#### HCOEA 与 DyHF：混合搜索与动态调度
 
-做法是把目标函数信息并入可行性准则 [p. 73](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=73)：课件列出了父代、子代、可行性判断的组合 [p. 74](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=74)，并把同样的信息并入搜索算法 [p. 75](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=75)。
+HCOEA (hybrid constrained EA) 的出发点是一个更一般的看法：COEAs 可以概括成"约束处理技术 + EA"，因此一个合适的约束处理技术必须配一个合适的搜索算法来一起考虑 [p. 44](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=44)。HCOEA 用多目标优化技术处理约束，同时把全局搜索模型 (global search model) 和局部搜索模型 (local search model) 组合起来 [p. 44](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=44)。
 
-FROFI 的优势是：它是在平衡约束和目标函数的有效方式，改进了 [p. 76](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=76)。
+课件把主框架写成一段伪代码 [p. 45](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=45)：$t=0$ 时用 $A(0)=\mathrm{initialize}(A)$ 建库；循环里先从搜索空间里任意取一个参考点 (reference point) $\bar{r}$，然后 $t=t+1$，把 $A'(t)$ 和 $A''(t)$ 都清空，$A'(t)$ 由全局搜索模型算出，$A''(t)$ 由局部搜索模型拿着 $\bar{r}$ 和 $A'(t)$ 算出，最后 $A(t)=A'(t)$，输出 $A(t)$。$A$ 是存档，两个带撇的分别是全局搜索和局部搜索的产物。
 
-### 结论
+全局搜索模型的做法是：先把 $N$ 个个体的种群随机配成 $N/2$ 对，再按顺序取配对个体，用交叉和变异产生成对子代；子代若帕累托支配对应的父代，就顶掉父代 [p. 46](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=46)。课件点明这个模型本质上是一个小生境遗传算法 (niching genetic algorithm) [p. 46](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=46)。局部搜索模型把种群划成若干子种群 (subpopulation)，每个子种群朝可行域和最优解推 [p. 47](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=47)。实现上，局部搜索拿当前最好的不可行个体 (the best infeasible individual) 出发，配一个子种群，父代与子代之间同样用帕累托支配和随机替换来定去留 [p. 48](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=48)。
 
-课件的结论是：COEAs 的性能同时取决于约束处理技术和搜索算法 [p. 77](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=77)。
+HCOEA 把两个模型的调用比例写死了。DyHF (dynamic hybrid framework) 的动机正是这个比例不该写死：进化的不同阶段需要不同的局部与全局搜索概率 (different probabilities for the local and global search) 才能拿到最好的性能 [p. 49](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=49)。DyHF 同样用 DE 生成子代群体，并且让两个模型动态地交替上场 [p. 49](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=49)。
+
+调度的依据是种群的可行比例 (feasibility proportion)。课件给的规则是一行判断 [p. 50](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=50)：取一个 $[0,1]$ 上均匀分布的随机数 `rand`，当前种群的可行比例为 $N_F/N_P$（$N_F$ 是可行解个数，$N_P$ 是种群规模），`rand` 小于 $N_F/N_P$ 就走全局搜索模型，否则走局部搜索模型。
+
+课件随后用三个阶段把这条规则的意义讲开 [p. 51](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=51) [p. 52](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=52) [p. 53](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=53)。早期可行比例可能为零甚至更小，局部搜索模型上场更频繁，把种群迅速往可行方向带；进化推进后种群靠近可行域，一部分个体已经可行，全局搜索被逐渐加强，让个体去探更有希望的区域，尤其是可行域那一侧；后期大多数个体都可行，局部搜索的概率被压低，全局搜索主要用来打磨群体整体质量。三段合起来的效果是：这套动态调度能在"求可行"和"求收敛"之间平滑切换 [p. 53](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=53)。
+
+#### ATM 与 $(\mu+\lambda)$-CDE：自适应权衡
+
+ATM (adaptive tradeoff model) 换了个角度组织约束处理。课件先摆出进化过程中种群必然遇到的三种情形 [p. 55](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=55)：不可行情形 (infeasible situation，种群里全是不可行解)、半可行情形 (semi-feasible situation，可行解与不可行解混在一起)、可行情形 (feasible situation，种群里全是可行解)。ATM 的做法是分而治之 (divide and conquer)：给每种情形配一套专门的权衡策略 [p. 55](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=55)。
+
+不可行情形下的策略是纯约束视角：非劣个体代表种群的帕累托最优集，用分层非支配排序 (hierarchical nondominated sorting) 处理，再按约束违反度升序给这些非劣个体排名，只把前一半非劣个体放进子代群体 [p. 57](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=57)。课件给这张权衡画了图 [p. 58](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=58)。
+
+半可行情形是 ATM 的主战场 [p. 59](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=59)。这里仍然要回答那个老问题：目标是找到可行的最优解，可有些不可行解携带了对找到可行最优解更重要的信息。所以第二套权衡策略要同时留下重要的可行解和重要的不可行解。课件给了这套策略的记法：把 $\lambda$ 个个体编号记成集合 $Z=\{1,2,\dots,\lambda\}$，再按可行性把 $Z$ 分成可行组 $Z_1$ 和不可行组 $Z_2$ [p. 59](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=59)。
+
+第二套策略先算出群体里最好和最差的可行解，再算一个转换后的目标函数 (converted objective function)：转换只动不可行个体的目标函数值，可行个体一个都不碰 [p. 60](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=60)。转换要用到上一代种群里的可行比例，它随种群状态变，于是转换后的适应度也跟着变 [p. 62](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=62)。
+
+接着是归一化 (normalization)。课件给了两条备注 [p. 61](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=61)：目标函数值的归一化同时用可行组和不可行组的数据；不可行个体违反度的归一化只用不可行组里的最大和最小违反度。第二套权衡策略因此具备两个能力：按上一代的可行比例自适应地转换个体适应度，按上一代的信息自适应地调整可行解与不可行解的排名 [p. 62](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=62)。
+
+课件用四条性质检查这套机制 [p. 63](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=63)。Property 1 是比较规则：两个可行解之间只看目标函数值，可行解与不可行解、不可行解与不可行解之间则把目标函数值和约束违反度放在一起看。Property 2 讲的是参数的影响：不可行个体的目标函数值越大，进入下一代种群的概率越低 (lower)，越小则越高 (higher)。Property 3：有些不可行个体比可行解更好。Property 4：最好的可行个体同时也是适应度最小的那个 [p. 63](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=63)。可行情形最简单：退化成无约束优化 (unconstrained optimization)，个体之间的比较只看目标函数值 [p. 64](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=64)。
+
+$(\mu+\lambda)$-CDE 换的是搜索引擎 [p. 65](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=65)。动机很直接：ATM 用的是简单的 $(\mu,\lambda)$-ES 作搜索引擎，改用 $(\mu+\lambda)$-DE 作搜索引擎，约束处理技术则交给改进过的 ATM [p. 65](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=65)。$(\mu+\lambda)$-DE 的结构是：$\mu$ 个父代产生 $\lambda$ 个子代，最后留下 $\mu$ 个质量更高的个体 [p. 66](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=66)。课件在这一页把 DE 的几种变异算子摆出来，$(\mu+\lambda)$-DE 的变异就出自其中 [p. 66](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=66)。
+
+$(\mu+\lambda)$-CDE 顺手修了 ATM 的一个粗糙处：算约束违反度时用了两个准则 (two criteria)，因为不同约束的违反度量可能差着量级 (largely different scales)，不同约束之间的差异也可能并不显著 (may not be significant) [p. 67](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=67)。改进后的 ATM 在不可行情形下先按约束违反度挑出最好的 $(\mu+\lambda)/2$ 个个体，再从中随机选；半可行情形沿用 ATM 的做法，只把最终适应度函数换掉；可行情形原样照搬 ATM [p. 68](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=68) [p. 69](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=69)。
+
+#### FROFI：把目标函数信息塞回可行性准则
+
+FROFI 回到 Deb 的可行性准则，但先看它被摆出来的位置 [p. 71](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=71)：任意可行解都优于任意不可行解；两个可行解之间比目标函数值；两个不可行解之间比违反度。课件的批评落在最后一条上：可行性准则把太多重量压在约束上 (too many emphases have been put on the constraints) [p. 72](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=72)。FROFI 的思路是把目标函数信息同时塞回可行性准则和搜索算法 (incorporating objective function information into both the feasibility rule and the search algorithm) [p. 72](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=72)。
+
+往准则里加信息这一步，课件写成两条定理 [p. 73](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=73)：如果一个子代被存进档案 (archive)，那么父代与该子代在帕累托意义下互不支配；并且该子代是一个不可行解。两条合起来把"什么样的不可行解值得留"讲清了。
+
+替换的流程因此也定下来了 [p. 74](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=74)：先把档案里的个体按约束违反度降序排，把种群里的个体按目标函数升序排、再切成若干子种群 (subpopulation)，然后用违反度最大的那个个体去替换，替换的数目取决于子种群个数 (we need to set the number of subpopulations)。往搜索算法里加信息这一步，课件给的是一个带 best 个体的 DE 变体 [p. 75](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=75)：
+
+```
+if rand < 0.5:
+    v_{i,t} = x_{i,t} + rand * (x_{r1,t} - x_{i,t}) + F * (x_{r2,t} - x_{r3,t})   # DE/current-to-rand/1
+    u_{i,t} = v_{i,t}
+else:
+    v_{i,t} = x_{r1,t} + rand * (x_{best,t} - x_{i,t}) + F * (x_{r2,t} - x_{r3,t})   # DE/rand-to-best/1
+    执行 DE 的二项式交叉，生成试探向量 u_{i,t}
+```
+
+其中 $x_{best,t}$ 是按目标函数值算出的群体最优个体 [p. 75](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=75)。
+
+FROFI 的三条优点被课件列在最后 [p. 76](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=76)：它是在约束和目标函数之间做平衡的有效办法；实现简单；时间复杂度是 $n\log n$。
+
+### 两条轴上的平衡
+
+课件最后收了四条 [p. 77](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=77)。COEAs 的性能同时取决于约束处理技术和搜索算法，两条轴都得站住。约束处理技术的本质是在约束和目标函数之间找平衡；搜索算法这一侧，同样要在约束和目标函数之间找平衡。走多目标化这条路处理约束是有希望的，而且看起来两个目标就够用 (it seems that two objectives are enough)。
+
+这两条轴和前面讲的四组工作正好对齐：CW、CMODE、ATM、FROFI 动的是第一条，HCOEA、DyHF、$(\mu+\lambda)$-CDE 动的是第二条。课件在结论里把它们并排放，等于把"约束处理技术 + 搜索算法"这个 COEAs 的通用结构又讲了一遍 [p. 77](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=77)。
 
 ## 第 10 章 多目标优化中多个最优解的定位
 
