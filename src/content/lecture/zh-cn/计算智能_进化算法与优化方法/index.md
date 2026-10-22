@@ -1,13 +1,20 @@
 ---
-title: 计算智能：从进化算法框架到工程选型
+title: 计算智能：进化算法与优化方法
 timestamp: 2026-10-21T20:30:00+08:00
 series: 计算智能
-tags: [计算智能, 进化算法, 遗传算法, 差分进化, 粒子群优化, 多目标优化]
-description: 中南大学自动化学院《计算智能》课程课件的中文精读版：把 GA、ES/EP、DE、PSO 的机制与公式串成一条主线，再补上多目标优化、算法比较方法与工程选型对照表，每处结论都链回课件 PDF 对应页。
+tags: [计算智能, 进化算法, 遗传算法, 差分进化, 粒子群优化, 多目标优化, 约束优化]
+description: 中南大学自动化学院《计算智能》课程课件的中文精读版。按课件的十二个章节讲：进化算法框架、GA、ES/EP、DE、PSO、术语体系、算法比较方法、多目标优化，以及约束优化问题的求解。每处结论都链回课件 PDF 的对应页。
 source_url: http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/
 toc: true
 draft: false
 ---
+
+```cardlink
+url: http://10.188.31.55:5244/hdd/School/Compute-Intelligence/课件/
+title: "计算智能 · 课程课件"
+description: "中南大学自动化学院《计算智能》课程的全部课件"
+host: 10.188.31.55:5244
+```
 
 - 第 0 章 开篇 — 课程信息与提纲、计算智能的定义与应用范围、课程主线、九个研究方向、重要性与现状、讲授方式与考试方式
 - 第 1 章 计算智能与进化算法导论 — 优化问题的三要素、适应度地形与局部/全局最优、多点并行与随机转变准则、EA 通用框架与贯穿术语
@@ -2549,7 +2556,7 @@ MONES 的出发点是：用进化算法解 NESs 时，期望定位到多个最�
 
 两项相加，最优解的像会落在目标空间的特定区域，同时在决策空间里各自成团 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=15)。
 
-MONES 的总结是：一个 NES 被转换成一个双目标优化问题 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=16)。它与前面提到的多目标方法 (CA) 在几个方面不同，课件用对照表列出 [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=17) [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=18)。
+MONES 的要点是：一个 NES 被转换成一个双目标优化问题 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=16)。它与前面提到的多目标方法 (CA) 在几个方面不同，课件用对照表列出 [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=17) [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=18)。
 
 ### 实验结果
 
