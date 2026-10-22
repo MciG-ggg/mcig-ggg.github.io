@@ -6,7 +6,7 @@ tags: [计算智能, 进化算法, 遗传算法, 差分进化, 粒子群优化, 
 description: 中南大学自动化学院《计算智能》课程课件的中文精读版：把 GA、ES/EP、DE、PSO 的机制与公式串成一条主线，再补上多目标优化、算法比较方法与工程选型对照表，每处结论都链回课件 PDF 对应页。
 source_url: http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/
 toc: true
-draft: true
+draft: false
 ---
 
 
