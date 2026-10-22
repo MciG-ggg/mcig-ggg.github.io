@@ -9,6 +9,7 @@ toc: true
 draft: false
 ---
 
+- 第 0 章 开篇 — 计算智能的定义与应用范围、课程的九个研究方向、讲授方式与考试方式
 - 第 1 章 计算智能与进化算法导论 — 优化问题的三要素、适应度地形、EA 通用框架与贯穿术语
 - 第 2 章 遗传算法 (GA) — 编码与解码、轮盘赌选择、交叉与变异、模式定理、实数编码
 - 第 3 章 进化策略 (ES) 与进化规划 (EP) — (1+1)-ES、加号与逗号选择、步长自适应、CMA-ES、1/5 成功法则
@@ -17,7 +18,121 @@ draft: false
 - 第 6 章 计算智能术语体系 — 探索与开发、全局与局部、多样性与收敛性等六个对子
 - 第 7 章 算法比较方法 — 基准函数、FES 预算、成功率与收敛速度、Wilcoxon 秩和检验
 - 第 8 章 多目标进化算法 — 帕累托支配、非支配排序、拥挤度距离、NSGA-II、MOEA/D、IGD 与 HV
-- 第 9 章 五大算法横向对照与工程选型 — 四大机制对照、符号清算、一题四解与实战选型
+- 第 9 章 单目标约束优化问题的进化算法求解 — 约束条件的表达与进化算法中的约束处理策略
+- 第 10 章 多目标优化中多个最优解的定位 — 多目标情形下多个最优解的定位方法
+- 第 12 章 多目标约束优化问题的进化算法求解 — 多目标与约束并存时的处理方式与求解流程
+
+### 四大机制对照表
+
+四种算法的关键差异一次性摆在下表，每一行都能直接用来做选型判断 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=7) [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5) [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
+
+本文用 $N$ 表示通用种群规模；DE 写作 $NP$，ES 的父代数写作 $\mu$，比较父代种群时 $N = NP = \mu$，且 $\lambda \ge \mu$。
+
+| 维度 | GA | ES / EP | DE | PSO |
+| --- | --- | --- | --- | --- |
+| 个体表示 | 二进制串（实数问题需先编码） | 实数向量 $x$；ES 还含步长 $\delta$ | 实数向量 $x$ | 实数向量 $x$（称「粒子位置」） |
+| 主要算子 | 选择 + 单点交叉 + 位翻转变异 | 高斯变异 $\delta\cdot N(0,1)$；ES 还有交叉 | 差分变异 + 二项式交叉 | 速度更新 + 位置更新 |
+| 新解来源 | 父代串某段互换 + 每一位小概率翻转 | 父代 + 一个正态扰动 | 基向量 + $F$ × 差分向量 + 交叉 | 上一步位置 + 刚算出的速度 |
+| 选择机制 | 轮盘赌 / 锦标赛（整代排序） | $(\mu{+}\lambda)$ 或 $(\mu,\lambda)$（整代排序） | 一对一贪婪（只与自己的旧解比） | **无显式选择**；粒子永不淘汰 |
+| 关键参数 | $p_c$，$p_m$，$L$（串长） | $\mu$，$\lambda$，初始 $\delta$（ES 还含 $\tau$） | $F$，$CR$，$NP$ | $\omega$，$c_1$，$c_2$，$NP$ |
+| 是否需要编码 | 是（连续问题需编码成串） | 否（直接实数） | 否 | 否 |
+| 适合的问题 | 离散 / 组合 / 中低维连续 | 实数连续，可配合 CMA-ES 解强耦合 | 实数连续，参数少、上手快 | 实数连续，有记忆，适合动态 / 带约束 |
+| 不适合的问题 | 高维连续（串长爆炸） | 离散（实数算子无意义） | 离散；强多峰易早熟 | 纯离散（粒子位置本就是实数） |
+| 典型失效模式 | 串长不够精度上不去；$p_m$ 太小早熟 | $\delta$ 不会自适应 → 卡死；$(\mu{+}\lambda)$ 易早熟 | 贪婪选择 + 种群聚拢 → 早熟 | gbest 拓扑 → 社会吸引过强，整个种群跟随一个粒子 |
+
+**怎么读这张表**：先看「主要算子」一行。这是四种算法最本质的分歧，其余各行都是它推出来的。GA 用「位翻转 + 单点交叉」，ES 用「高斯扰动」，DE 用「差分向量 + 交叉」，PSO 用「速度更新」。算子不同决定了参数不同（对应「关键参数」一行）、适用域不同、典型失效模式不同。
+
+## 第 0 章 开篇
+
+### 课程信息
+
+课程名「计算智能」，授课教师王勇，中南大学自动化学院，邮箱 ywang@csu.edu.cn，实验室主页 https://intleo.csu.edu.cn/ [p. 1](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=1)。
+
+课件自列的提纲分三段：课程的整体介绍、课程的研究对象、课程的讲授方式与预期目标与考试方式 [p. 2](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=2)。
+
+### 计算智能是什么
+
+计算智能 (Computational Intelligence) 是人工智能的一个重要分支。它借助于模糊逻辑、神经网络、进化算法等技术，通过计算机模拟人类智能的各种能力，包括学习能力、适应能力、决策能力等，使计算机可以更加智能化地理解和处理现实世界的复杂问题 [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=3)。
+
+计算智能课程是人工智能本科专业的核心课程，也是该专业唯一的一门英文课程。课件给它定了三个位置：衔接基础与高阶知识的「桥梁」、培养实践能力的「训练场」、对接产业需求的「通道」 [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=3)。
+
+学术组织上，IEEE 计算智能学会 (IEEE Computational Intelligence Society) 在全球计算智能领域的学术研究和技术应用方面发挥着重要的引领作用 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=4)。
+
+### 计算智能的应用范围
+
+计算智能的应用覆盖工业控制、金融、医疗、农业等各个领域，能解决很多难题。课件点名四个方向 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=5)：
+
+- **高效控制系统**：用模糊控制技术调节温度、湿度、气压等参数，让生产过程更智能、更高效。
+- **图像识别**：用神经网络技术做图像分类、自动标注、目标检测，落在智能安防、自动驾驶、医学影像等场景。
+- **金融风控**：分析大量历史数据，用进化算法预测未来市场走势，把投资决策智能化。
+- **医学诊断**：分析大量医疗数据做诊断，提高病例诊断的准确性和效率。
+
+计算智能已经成为人类智慧的一种展现形式，它不断改变着人类的工作、生活和思维方式 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=5)。
+
+### 进化算法在课程中的位置
+
+进化算法是最为著名的智能优化技术。它利用适应值 (fitness) 这一启发式信息引导群体进化，是一种高鲁棒性的全局优化方法，具有自组织、自适应、自学习等特性 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=6)。
+
+进化算法已被广泛应用于求解科学和工程领域中的各类复杂优化问题。2015 年 5 月，《Nature》机器智能专刊专文介绍了六个新兴研究领域，进化算法位列其中；2018 年 11 月，进化算法被美国商务部列入受出口管制的代表性新兴技术清单征求意见稿 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=6)。
+
+### 课程主线：算法设计与实际应用
+
+课件用两张图给出课程主线。
+
+第一张把「进化算法」经由「算法设计」接到八类复杂优化问题：复杂单目标、复杂约束、复杂多目标、复杂非线性方程系统、复杂多模态、复杂混合整数规划、复杂双水平、复杂多任务优化问题。图上的标注点明这条主线的前提——科学和工程领域中的很多问题都可以建模为优化问题 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=7)。
+
+第二张把「进化算法」经由「实际应用」接到七个工程方向：汽车轻量化设计、移动边缘计算、智能机器人、新能源、医疗大数据、药物设计、脑机接口 [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=8)。
+
+### 课程的研究对象：九个方向
+
+课件把研究对象分成九项，逐项给出该项的求解难点。
+
+**1. 进化算法**。课件列了六个算法 [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=10)：遗传算法 (Genetic Algorithm, GA)、进化策略 (Evolution Strategy, ES)、进化规划 (Evolutionary Programming, EP)、蚁群算法 (Ant Colony Optimization, ACO)、粒子群优化算法 (Particle Swarm Optimization, PSO)、差分进化算法 (Differential Evolution, DE)。
+
+**2. 单目标优化问题**。这类问题的数学描述十分简单。求解难度上来有三个来源：目标函数的拓扑结构比较复杂，决策变量的数目较大，决策变量之间存在较强的相关性。命中这三条，求解难度会显著增加 [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=11)。
+
+**3. 约束优化问题**。这类问题一般包含等式和非线性约束条件。这使得可行域占搜索空间中的比例非常小，可行解的搜索变得十分困难。可行域的离散程度进一步增加了搜索最优解的难度。决策变量个数与约束条件个数增加时，求解难度还会显著增加 [p. 12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=12)。
+
+**4. 多目标优化问题**。这类问题的最优解通常是一个解集。决策变量之间具有很强的耦合关系时，最优解集将呈现出很强的非线性，求解过程十分复杂。求解难度还与目标函数的个数、目标函数的冲突程度息息相关 [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=13)。
+
+**5. 非线性方程系统**。这类系统可能同时包含多个最优解，甚至包含无穷多个最优解。求解难度在于如何在一次运行中找到所有最优解。方程的非线性程度进一步增加了求解难度 [p. 14](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=14)。
+
+**6. 多模态优化问题**。这类问题同样包含多个最优解。它的求解难度与非线性方程系统同源，也在于如何在一次运行中找到所有最优解。决策变量个数与决策变量耦合程度增加时，求解难度显著增加 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=15)。
+
+**7. 混合整数规划问题**。这类问题指部分决策变量限制为整数的优化问题。整数决策变量将可行域划分为大量离散的片段，给搜索最优解提出了重大挑战。课件采用最优化的标准记号：`min` 是 minimize 的简称，`s.t.` 是 subject to 的简称 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=16)。
+
+**8. 双水平优化问题**。这类问题是一种具有双层递阶结构的系统优化问题，上下层问题都有各自的目标函数和约束条件。上层问题的目标函数和约束条件不仅与上层决策变量有关，还依赖于下层问题的最优解；下层优化问题的最优解又受到上层决策变量的影响 [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=17)。
+
+**9. 多任务优化问题**。$M$ 个优化任务之间具有相似性。求解的关键是利用优化任务间的相似性进行知识迁移，实现所有优化任务的高效求解。第 $m$ 个优化任务各自带有决策向量、目标函数、决策空间，以及决策变量的个数 [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=18)。
+
+### 求解优化问题的重要性
+
+2019 年数理科学部拟资助 6 个重大项目，直接费用预算不超过 2000 万元/项。第一个项目主题是「最优化问题的人工智能方法」，研究内容分五块 [p. 19](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=19)：
+
+- **（一）连续优化的自主学习方法**。模拟人工智能的自适应学习原理，分析连续优化方法的共性构造特征；对几类典型的连续优化问题研究其人工智能方法与理论；建立参数自调节、方向自选择的自适应迭代优化算法；通过建立连续函数空间的学习理论，为自适应优化算法建立理论基础。
+- **（二）多目标优化的机器学习方法**。利用机器学习方法分析各个目标间的冲突，构建自主协调策略；针对非凸多目标优化问题，建立其凸化问题的机器学习方法；针对非光滑多目标优化问题，建立光滑化的机器学习方法；发展多目标优化问题簇的元学习方法与理论。
+- **（三）混合整数规划的人工智能方法**。充分利用问题类别与历史数据信息，构造分支与节点选择、割平面、启发式调用等的自适应策略；建立这些方法的评价与反馈机制 [p. 20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=20)。
+- **（四）组合优化的深度强化学习方法**。分析共性结构，研究不同类型组合优化问题的表示方法、特征提取方法、价值网络与策略网络的构造方法；研究相应的训练算法和策略搜索算法；建立机器学习与优化方法的混合迭代算法框架；建立算法的评价与反馈机制，发展计算复杂性理论 [p. 20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=20)。
+- **（五）典型问题的应用**。结合信息科学与技术、管理科学与工程、交通运输等学科，应用前面发展的方法与理论，解决国家重大需求和瓶颈技术中的几类典型最优化问题，验证方法的有效性、可行性和优越性 [p. 21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=21)。
+
+2015 年 6 月，国家自然科学基金委公布“十二五”第五批重大项目指南，「工业过程全局优化运行的基础理论与关键技术」被列为重大项目 [p. 22](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=22)。以石油化工、钢铁冶金为代表的基础原材料工业是国民经济的支柱产业，研究和实施全局优化运行技术，是这些企业提高资源利用效率、节能减排、实现智能转型发展的必由之路。项目要求围绕大规模多尺度集成建模、实时多目标动态优化问题求解与全局优化运行等困难问题，从基础理论、关键技术和应用验证三个层面开展创新研究 [p. 22](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=22)。
+
+### 进化算法求解复杂优化问题的现状
+
+以大数据为代表的信息技术发展起来之后，优化问题的复杂程度越来越高，求解难度不断增加，这给进化算法提出重大挑战 [p. 23](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=23)：
+
+- 进化算法的搜索模式不够完善。
+- 在求解复杂优化问题时，对背景知识挖掘不够充分。
+- 算法鲁棒性、算法求解质量和求解效率均亟待提高。
+
+### 讲授方式、预期目标与考试方式
+
+- **课时与形式**：26 个讲授课时，PPT 讲授，中英文混合。
+- **讲授内容**：介绍进化计算领域的基础（经典）工作和国际最新研究成果；介绍进化算法在实际工程中的应用。
+- **培养目标**：通过本课程培养学生的批判精神、独立思考、解决问题的能力。
+- **编程语言**：Matlab、C++、Python 等。
+- **教材**：自选，以 PPT 为主。
+- **考试方式**：闭卷考试 [p. 25](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%200_%20%E5%BC%80%E7%AF%87.pdf#page=25)。
 
 ## 第 1 章 计算智能与进化算法导论
 
@@ -1836,6 +1951,223 @@ A、B 两算法在 CEC2005 上各跑 25 次，逐题报告 $\bar{E}_A \pm \sigma
 > [!WARNING]
 > **把「无显著差异」说成「两个算法相同」。** Wilcoxon 检验 $p > 0.05$ 只说明在当前样本量下没有足够证据证明它们不同，不等于接受「两者相同」这个原假设。$R$ 增大、换一道问题，显著差异可能就出来了。论文里的 $A \approx B$ 应读作「本测试集与本样本量下未检出显著差异」 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=4)。
 
+### 实证对比：同一个问题上四种算法差了几个数量级
+
+优化某控制器的 $D=10$ 个参数，让一个仿真模型的输出指标最小。同一套预算下换四种算法：
+
+- **GA**：跑 1000 代，误差降到 $10^{-3}$，然后停住；
+- **DE**：同样 1000 代，误差降到 $10^{-6}$；
+- **PSO**：跑到 500 代就停滞，误差停在 $10^{-2}$；
+- **ES**：跑到 2000 代，误差降到 $10^{-5}$。
+
+四种算法都「能用」，代价和精度差了几个数量级。
+
+差别来自算法本身——它们不是同一个算法的不同名字，是四种不同的思想：
+
+- **GA**（genetic algorithm，遗传算法）用二进制串当个体，靠选择 + 交叉 + 变异三步让好片段重组 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=4)。它擅长离散与组合问题，在连续高维问题上精度被串长卡住。
+- **ES/EP**（evolution strategy / evolutionary planning，进化策略/进化规划）用实数当个体，步长也跟着一起进化 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)。它擅长实数连续问题，尤其适合凸 / 单峰地形。
+- **DE**（differential evolution，差分进化）用两个随机个体之差当搜索方向，一对一贪婪比较 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=4)。它擅长实数连续问题，收敛最快但容易早熟。
+- **PSO**（particle swarm optimization，粒子群优化）用速度 + 记忆 + 社会信息移动粒子，谁都不淘汰 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=4)。它擅长实数连续问题，靠拓扑结构（gbest vs lbest）平衡探索与开发。
+
+没有银弹。每种算法都有适用域，选错的代价从「慢几倍」到「根本跑不到好解」。
+
+后面反复要用两个概念：
+
+- **探索 vs 开发**：探索是种群散开、同时覆盖多个候选区域，开发是聚到一处做精细搜索。调大探索强度通常更不容易早熟，但收敛更慢。
+- **种群多样性**：种群中个体越分散，越可能同时覆盖多个候选区域；多样性过早消失就是早熟收敛。
+
+### 手算对比：同一个连续问题上四种算法各跑一代
+
+本章没有新公式，但可以把四种算法放在同一个最小问题上各手算一遍，差异出在哪一步一眼可见。
+
+统一设定：求 $\min f(x) = (x-3)^2$，$x \in [-5, 5]$，真实最优 $x^* = 3$，$f(x^*) = 0$，种群规模 $N = 4$。四种算法共用同一组起点：
+
+$$
+x^{(0)} = \{-2,\ 0,\ 3,\ 5\},\quad f = \{25,\ 9,\ 0,\ 4\}
+$$
+
+#### GA：二进制编码 + 轮盘赌 + 单点交叉 + 位翻转
+
+**设定**：串长 $L = 10$，把 $[-5, 5]$ 切成 $2^{10} = 1024$ 个可取格点，精度 $\Delta = 10/1023 \approx 0.009775$。解码公式 $x = -5 + 10\,\mathrm{bin}/1023$，适应度取 $\mathrm{fit} = 100 - f$（保证所有 $\mathrm{fit} > 0$）。$p_c = 1$，$p_m = 1/L = 0.1$ [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=10) [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=11) [p. 12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=12)。
+
+**Step 1 —— 编码**：按 $\mathrm{bin} = \operatorname{round}((x+5)\times 1023/10)$ 取最近格点：
+
+$$
+-2 \to 0100110011\;(\mathrm{bin}=307,\ x\approx-1.999022),\quad
+0 \to 1000000000\;(\mathrm{bin}=512,\ x\approx0.004888),
+$$
+
+$$
+3 \to 1100110010\;(\mathrm{bin}=818,\ x\approx2.996090),\quad
+5 \to 1111111111\;(\mathrm{bin}=1023,\ x=5).
+$$
+
+前三个目标值不能恰落在格点上，格点误差绝对值不超过 $\Delta/2 \approx 0.004888$。
+
+**Step 2 —— 适应度**：由解码后的 $x$ 计算
+
+$$
+f \approx \{24.990226,\ 8.970698,\ 0.000015,\ 4.000000\},
+$$
+
+$$
+\mathrm{fit} \approx \{75.009774,\ 91.029302,\ 99.999985,\ 96.000000\},\qquad
+\sum \mathrm{fit} \approx 362.039061.
+$$
+
+**Step 3 —— 轮盘赌**：选择概率与累积概率为
+
+$$
+p \approx \{0.207187,\ 0.251435,\ 0.276213,\ 0.265165\},\qquad
+q \approx \{0.207187,\ 0.458622,\ 0.734835,\ 1.000000\}.
+$$
+
+令 $q_0 = 0$，设抽到 $r = (0.31, 0.65, 0.18, 0.92)$，按半开区间 $[q_{k-1}, q_k)$ 选择：
+
+- $r_1 = 0.31 \in [q_1, q_2)$，复制第 2 个（$x \approx 0.004888$，$f \approx 8.970698$）；
+- $r_2 = 0.65 \in [q_2, q_3)$，复制第 3 个（$x \approx 2.996090$，$f \approx 0.000015$）；
+- $r_3 = 0.18 \in [q_0, q_1)$，复制第 1 个（$x \approx -1.999022$，$f \approx 24.990226$）；
+- $r_4 = 0.92 \in [q_3, q_4)$，复制第 4 个（$x = 5$，$f = 4$）。
+
+父代按抽取顺序重排为 $\{0.004888,\ 2.996090,\ -1.999022,\ 5\}$。最优个体的选择概率最大，但轮盘赌只保证统计上的偏好，不保证每次抽样都复制它。
+
+**Step 4 —— 单点交叉**：把重排后的 4 条串两两配对 $\{P_1, P_2\}$ 与 $\{P_3, P_4\}$：
+
+- $P_1 = 1000000000$ 与 $P_2 = 1100110010$，交叉点 $k = 5$。交换后得到 $P_1' = 1000010010$（$x \approx 0.180841$，$f \approx 7.947659$）与 $P_2' = 1100100000$（$x \approx 2.820137$，$f \approx 0.032351$）。
+- $P_3 = 0100110011$ 与 $P_4 = 1111111111$，交叉点 $k = 7$。交换后得到 $P_3' = 0100110111$（$x \approx -1.959922$，$f \approx 24.600824$）与 $P_4' = 1111111011$（$x \approx 4.960899$，$f \approx 3.845126$）。
+
+**Step 5 —— 位翻转变异**：假设仅 $P_1'$ 的第 8 位翻转，$1000010010 \to 1000010110$。该子代变为 $x \approx 0.219941$，$f \approx 7.728726$；其余三条串不变。
+
+**新一代**：未计精英保留的四个子代为 $\{0.219941,\ 2.820137,\ -1.959922,\ 4.960899\}$，对应 $f \approx \{7.728726,\ 0.032351,\ 24.600824,\ 3.845126\}$，其中最优为 $x \approx 2.820137$。若采用精英保留，父代中解码后的最优个体 $x \approx 2.996090$（$f \approx 0.000015$）替换最差子代，故实际保留种群的最优值是 $f \approx 0.000015$，而不是精确的 $0$。
+
+#### ES：$(1{+}1)$-ES + 步长自适应
+
+**设定**：父代 $x = 5$（$f = 4$，取种群里最差的那个，看 ES 能不能救回来），步长 $\delta = 0.5$，$D = 1$，$\tau = (\sqrt{1})^{-1} = 1$，步长更新公式 $\delta' = \delta\exp(N(0,1))$ [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=13)。
+
+**Step 1 —— 变异**：抽两个独立标准正态量 $N_1 = -0.4$（用于 $\delta$ 更新）、$N_2 = 1.2$（用于 $x$ 变异）：
+
+- 新步长 $\delta' = 0.5 \times \exp(-0.4) = 0.5 \times 0.6703 = 0.3352$；
+- 子代 $x' = 5 + 0.3352 \times 1.2 = 5 + 0.4022 = 5.4022$。
+
+$f(5.4022) = (5.4022 - 3)^2 = 2.4022^2 \approx 5.771$。
+
+**Step 2 —— 选择（加号）**：$f(5.4022) \approx 5.771 > f(5) = 4$，不接受。$x \leftarrow 5$，$\delta \leftarrow 0.3352$。
+
+**再走一步**：抽 $N_1 = 0.7$、$N_2 = -2.1$：
+
+- $\delta' = 0.3352 \times \exp(0.7) = 0.3352 \times 2.0138 = 0.6750$；
+- $x' = 5 + 0.6750 \times (-2.1) = 5 - 1.4175 = 3.5825$。
+
+$f(3.5825) = 0.5825^2 \approx 0.339 < 4$，接受。$x \leftarrow 3.5825$，$\delta \leftarrow 0.6750$。
+
+**结果**：2 步后 $x = 3.5825$，$f = 0.339$，离真实最优 $x^* = 3$ 还差一点。ES 直接做实数操作，精度不受 $L$ 限制，但每代只看父代与子代的对比（$(\mu{+}\lambda)$ 也是父子一起比，不像 GA 的整代排序）。
+
+#### DE/rand/1/bin
+
+**设定**：$NP = 4$，$F = 0.8$，$CR = 0.9$，初始种群 $x_{1,G} = 5$，$x_{2,G} = 3$，$x_{3,G} = 0$，$x_{4,G} = -2$。当前最优 $x_{best,G} = 3$ [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5)。
+
+对 $i = 1$（$x_{1,G} = 5$）跑一代更新：
+
+**Step 1 —— 抽下标**：从 $\{2, 3, 4\}$ 中互不相同地抽 $r_1, r_2, r_3$，假设抽到 $r_1 = 2$，$r_2 = 4$，$r_3 = 3$。
+
+**Step 2 —— 变异**：差分向量 $x_{r_2,G} - x_{r_3,G} = -2 - 0 = -2$。
+
+$$
+v_{1,G} = x_{r_1,G} + F\cdot(x_{r_2,G} - x_{r_3,G}) = 3 + 0.8\times(-2) = 3 - 1.6 = 1.4
+$$
+
+**Step 3 —— 二项式交叉**：$D = 1$，$j_{rand} = 1$ 必为强制维，$u_{1,G} = v_{1,G} = 1.4$。
+
+**Step 4 —— 贪婪选择**：$f(1.4) = (1.4-3)^2 = 2.56$，$f(5) = 4$。$2.56 < 4$，接受，$x_{1,G+1} = 1.4$。
+
+**结果**：$x_{1,G+1} = 1.4$，$f = 2.56$。对其他三个个体跑同样的步骤，新一代种群大约会向 $x^* = 3$ 聚拢。DE 的变异方向来自种群差分，选择是一对一贪婪；种群聚拢后差分向量变小，搜索可能停滞。
+
+#### PSO：经典 gbest 版本
+
+**设定**：4 个粒子位置 $x^{(0)} = \{-2,\ 0,\ 3,\ 5\}$，$f = \{25,\ 9,\ 0,\ 4\}$。初始速度 $v^{(0)} = \{-0.5,\ 0.5,\ 0,\ 0.5\}$。$\omega = 0.7$，$c_1 = c_2 = 1.5$。每个粒子的初始 $pbest$ 等于自身位置，全局 $gbest = 3$（$f = 0$，第 3 个粒子） [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
+
+对粒子 1（$x_1 = -2$，$v_1 = -0.5$，$pbest_1 = -2$）做一次更新：
+
+**Step 1 —— 抽随机数**：设本次抽到 $r_1 = 0.4$，$r_2 = 0.7$。
+
+**Step 2 —— 速度更新**：
+
+$$
+v_1 \leftarrow 0.7\times(-0.5) + 1.5\times 0.4\times(pbest_1 - x_1) + 1.5\times 0.7\times(gbest - x_1)
+$$
+
+$$
+= -0.35 + 0.6\times(-2-(-2)) + 1.05\times(3-(-2))
+$$
+
+$$
+= -0.35 + 0 + 1.05\times 5 = -0.35 + 5.25 = 4.90
+$$
+
+**Step 3 —— 位置更新**：
+
+$$
+x_1 \leftarrow x_1 + v_1 = -2 + 4.90 = 2.90
+$$
+
+$f(2.90) = (2.90-3)^2 = 0.01$。
+
+**Step 4 —— 更新 $pbest$**：$f(2.90) = 0.01 < f(-2) = 25$，所以 $pbest_1 \leftarrow 2.90$。
+
+**结果**：粒子 1 一代后从 $x = -2$ 跳到 $x = 2.90$（$f = 0.01$），几乎到位。PSO 不淘汰粒子，靠 $pbest$ 与 $gbest$ 间接「记忆」好解；速度公式的三项把惯性、个人经验、社会信息合成一个方向与步长。
+
+#### 四解对比：中间变量差在哪一步
+
+| 对比项 | GA | ES(1+1) | DE/rand/1/bin | PSO |
+| --- | --- | --- | --- | --- |
+| 新解的来源 | 父代串某段互换 + 位翻转 | 父代 + 高斯扰动 | 基向量 + 差分向量 + 交叉 | 旧位置 + 新算出的速度 |
+| 是否需要编码 | 是 | 否 | 否 | 否 |
+| 选择范围 | 整代 $N$ 个排序 | 父子共 2 个比 | 仅与自己的旧解比 | 无显式选择 |
+| 是否淘汰差解 | 是（轮盘赌 / 锦标赛） | 是（子差就丢） | 是（子差就丢） | **否** |
+| 「步长」参数 | 隐含在 $p_m$ 与串长 $L$ | $\delta$（逐维、自适应） | $F$（种群差分长度） | $v$（速度，逐维） |
+| 新解坐标 | 父代附近（由 $p_c, p_m$ 决定远近） | 父代 $\pm$ 几十倍 $\delta$ | 基向量附近（由 $F$ 决定远近） | 当前位置 $\pm$ 速度 |
+
+四种算法的差异集中在「新解怎么来」和「差解怎么处理」两步，其余的（初始化、终止、迭代代数）在工程上几乎相同 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=7) [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5) [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
+
+### 效率对比：固定评价预算，不固定代数
+
+沿用 $f(x) = (x-3)^2$，固定 $F = 0.5$，$CR = 0.9$。种群规模分别取 $NP = 4$ 与 $NP = 50$，初始种群都在 $[-5, 5]$ 上均匀采样。能不能只凭 $NP$ 判断哪一种设置更快？
+
+不能。$NP$ 变大通常提高初始多样性，但每一代也要多做适应度评价；不同随机初始种群和随机抽样会改变一次运行的轨迹，不能用未做实验的固定代数下结论。
+
+正确的比较口径是：固定适应度评价次数预算，用多个随机种子分别运行两种设置，比较最终误差或达到同一误差所需的评价次数。$NP = 50$ 每代要评价 50 个试验个体，$NP = 4$ 每代只评价 4 个——前者提供更丰富的差分方向，后者在同一预算里迭代更多代。题设不足以推出确定的快慢关系。
+
+### 多峰对比：谁先卡死
+
+把目标函数改成多峰 $f(x) = x^4 - 3x^2 + 1$（$x \in [-3, 3]$）。它在 $x = \pm\sqrt{3/2} \approx \pm 1.225$ 处有两个全局谷底 $f = -1.25$，在 $x = 0$ 处有一个局部极大 $f = 1$。四种算法各跑 100 代（固定 $N = 10$，参数取各章常用值），记录最后 10 代里「全局最优 $f$ 值」的变化。
+
+单点爬山型算法可能停在第一个被发现的谷底附近，能不能跳到另一个谷底取决于多样性维持能力：
+
+- **GA**：位翻转维持多样性，$p_m$ 适中时能跨过小包；但种群一旦快速收敛到某个谷底，模式定理加速同化，剩下的多样性就跨不出去了。中等概率早熟。
+- **ES(1+1)**：单点搜索，没有种群多样性，完全靠高斯扰动够不够大。$|N(0,1)| > 2$ 的概率只有约 5%，而小包高度 $\Delta f \approx 2.25$ 不算太矮，容易卡死。最易早熟。
+- **DE**：贪婪选择让种群迅速聚拢，一旦挤在某个谷底就出不来；$F$ 调到 1.5+ 可以略缓解。易早熟。
+- **PSO**：gbest 拓扑把整个种群拉到同一个最佳位置，社会吸引过强；改成 lbest 拓扑可缓解。在 gbest 下易早熟。
+
+答案：ES(1+1) 最先卡死，DE 与 PSO(gbest) 次之，GA 中等。多峰问题上 ES 选 $(\mu,\lambda)$，避免父代长期占据种群；单峰或单调改进问题通常选 $(\mu{+}\lambda)$。其余算法靠种群多样性、DE 的多策略（CoDE）或 PSO 的 lbest 拓扑延缓早熟。
+
+### 实战选型：三道工程题
+
+三个工程优化问题，特征各不相同。为每个问题选最合适的算法与关键参数，并写出可能的失败模式。
+
+**问题 A（TSP / 离散）**：旅行商问题的路径优化，$N = 30$ 个城市，目标是路径总长度最小，决策变量是 30 个城市的排列顺序。
+
+用 **GA**。理由：决策变量是离散排列，ES/DE/PSO 都假设实数连续，直接套用不合适；PSO 的粒子位置是实数，套 $x \leftarrow x+v$ 得到的位置不是合法解。关键参数：$p_c \approx 0.9$，$p_m \approx 1/L$（$L = N = 30$ 时 $p_m \approx 0.033$）；排列编码应使用保持排列合法性的专用交叉。失败模式：$p_m$ 太小则种群多样性掉光，所有个体很快变成同一条路径，搜索停滞。
+
+**问题 B（$D = 20$ 实数、有强交叉项）**：$f(x) = \sum_{i=1}^{20}(x_i-1)^2 + 0.1\sum_{i<j} x_i x_j$（$x \in [-5,5]^{20}$），可微但有强交叉项。
+
+用 **CMA-ES**。理由：变量间强耦合时，协方差建模能表达变量共同变化；DE 的二项式交叉是逐维操作，是否适合要靠试验比较。关键参数：按 CMA-ES 的种群规模与步长设置初始化，并以验证误差监控停滞。失败模式：误用 GA 的话，串长 $L$ 至少需要 $\log_2(10/10^{-3}) \approx 13$ 位/变量，20 维串长约 260 位，搜索空间 $2^{260}$ 极大；DE 的交叉率设置不当会把强耦合变量拆开，收敛变慢。
+
+**问题 C（$D = 10$ 多峰、预算紧）**：$D = 10$ 维实数目标函数，多峰、非凸，$f$ 评估一次需 5 秒（高保真仿真），预算只允许 1000 次评估。
+
+用 **PSO(lbest 拓扑)** 或 **DE + 周期性重启**。理由：预算只有 1000 次评估，DE 每代算 10 个 $f$、PSO 每代算 10 个 $f$，都只够跑 100 代，没有时间等慢收敛；多峰要求多样性维持，lbest 拓扑（每个粒子只看邻居）比 gbest 更抗早熟。关键参数：PSO 取 $\omega$ 从 0.9 线性递减到 0.4、$c_1 = c_2 = 2$、粒子数 20–30；DE 取 $NP = 30$、$F = 0.5$、$CR = 0.5$，每 20 代注入 5 个随机新个体「重启」。失败模式：PSO 用 gbest 会过早把全群拉到第一个被发现的峰；DE 的贪婪选择会让种群聚拢后停滞。两者都需要显式的多样性维持机制。
+
+答案：A 选 GA（排列专用交叉）；B 选 CMA-ES；C 选 PSO(lbest) 或 DE + 周期性重启。最易出错的选型是把 GA 套到 B，或把 PSO(gbest) 套到 C——这两种「看起来差不多」的搭配都会显著拉低算法效率。
+
 ## 第 8 章 多目标进化算法
 
 ### 目标互相冲突，最优点不是一个点
@@ -2076,7 +2408,7 @@ $$\text{HV}(A) = \lambda\!\left(\bigcup_{a \in A} \text{box}(a, \mathbf{r})\righ
 
 ![HV 指标：非支配解相对参考点支配的目标空间体积，值越大表示解集质量越好](images/fig_065.png)
 
-### 三个容易踩的坑
+### 易错点
 
 > [!WARNING] 把「互不支配」当成「等价」
 > **错误**：$\mathbf{x}_a$ 与 $\mathbf{x}_b$ 互不支配时，认为二者没有区别。
@@ -2090,306 +2422,240 @@ $$\text{HV}(A) = \lambda\!\left(\bigcup_{a \in A} \text{box}(a, \mathbf{r})\righ
 > **错误**：$\alpha_1 = 0.8$、$\alpha_2 = 0.2$ 表示「$f_1$ 比 $f_2$ 重要 4 倍」。
 > **正确**：权重只是标量化工具。$\alpha_1 = 0.8$ 优化 $0.8 f_1 + 0.2 f_2$，得到的解在 $f_1$ 上相对更好、$f_2$ 上相对更差，两个目标都达到各自的平衡。权重向量是前沿上的方向选择。
 
-## 第 9 章 五大算法横向对照与工程选型
+## 第 9 章 单目标约束优化问题的进化算法求解
 
-### 同一个问题上，四种算法差了几个数量级
+### 单目标约束优化问题
 
-优化某控制器的 $D=10$ 个参数，让一个仿真模型的输出指标最小。同一套预算下换四种算法：
+单目标约束优化问题 (single-objective constrained optimization problems, SCOPs) 在决策变量上带约束，目标是最小化一个目标函数 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
 
-- **GA**：跑 1000 代，误差降到 $10^{-3}$，然后停住；
-- **DE**：同样 1000 代，误差降到 $10^{-6}$；
-- **PSO**：跑到 500 代就停滞，误差停在 $10^{-2}$；
-- **ES**：跑到 2000 代，误差降到 $10^{-5}$。
+课件用所有约束上的违反程度来度量一个解离可行有多远 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=5)，并给了三个例子 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=6) [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=7) [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=8)。
 
-四种算法都「能用」，代价和精度差了几个数量级。
+### 用进化算法解 SCOPs
 
-差别来自算法本身——它们不是同一个算法的不同名字，是四种不同的思想：
+进化计算领域越来越关注用进化算法解 SCOPs [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=10)。
 
-- **GA**（genetic algorithm，遗传算法）用二进制串当个体，靠选择 + 交叉 + 变异三步让好片段重组 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=4)。它擅长离散与组合问题，在连续高维问题上精度被串长卡住。
-- **ES/EP**（evolution strategy / evolutionary planning，进化策略/进化规划）用实数当个体，步长也跟着一起进化 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)。它擅长实数连续问题，尤其适合凸 / 单峰地形。
-- **DE**（differential evolution，差分进化）用两个随机个体之差当搜索方向，一对一贪婪比较 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=4)。它擅长实数连续问题，收敛最快但容易早熟。
-- **PSO**（particle swarm optimization，粒子群优化）用速度 + 记忆 + 社会信息移动粒子，谁都不淘汰 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=4)。它擅长实数连续问题，靠拓扑结构（gbest vs lbest）平衡探索与开发。
+这类方法统称约束进化算法 (constraint-handling evolutionary algorithms, COEAs)。它由三部分组成：约束处理技术 (constraint-handling techniques) 加上进化算法本身，两者的组合才构成完整方法 [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=11)。
 
-没有银弹。每种算法都有适用域，选错的代价从「慢几倍」到「根本跑不到好解」。
+COEAs 的目标是找到可行的最优解。有些不可行解携带的信息比可行解更有用 [p. 12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=12)。课件给了完整的优化过程示意 [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=13)。
 
-后面反复要用两个概念：
+### 约束处理技术
 
-- **探索 vs 开发**：探索是种群散开、同时覆盖多个候选区域，开发是聚到一处做精细搜索。调大探索强度通常更不容易早熟，但收敛更慢。
-- **种群多样性**：种群中个体越分散，越可能同时覆盖多个候选区域；多样性过早消失就是早熟收敛。
+约束处理技术的主要任务是确定用什么准则来比较两个解 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=15)。
 
-### 四大机制对照表
+主要有三类 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=16)：基于惩罚函数的方法、基于可行解偏好的方法、基于多目标优化的方法。
 
-四种算法的关键差异一次性摆在下表，每一行都能直接用来做选型判断 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=7) [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5) [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
+### 惩罚函数法
 
-本文用 $N$ 表示通用种群规模；DE 写作 $NP$，ES 的父代数写作 $\mu$，比较父代种群时 $N = NP = \mu$，且 $\lambda \ge \mu$。
+惩罚函数法引入惩罚因子 (penalty factors) [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=17)。它的缺陷是惩罚因子依赖问题本身 [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=17)。
 
-| 维度 | GA | ES / EP | DE | PSO |
-| --- | --- | --- | --- | --- |
-| 个体表示 | 二进制串（实数问题需先编码） | 实数向量 $x$；ES 还含步长 $\delta$ | 实数向量 $x$ | 实数向量 $x$（称「粒子位置」） |
-| 主要算子 | 选择 + 单点交叉 + 位翻转变异 | 高斯变异 $\delta\cdot N(0,1)$；ES 还有交叉 | 差分变异 + 二项式交叉 | 速度更新 + 位置更新 |
-| 新解来源 | 父代串某段互换 + 每一位小概率翻转 | 父代 + 一个正态扰动 | 基向量 + $F$ × 差分向量 + 交叉 | 上一步位置 + 刚算出的速度 |
-| 选择机制 | 轮盘赌 / 锦标赛（整代排序） | $(\mu{+}\lambda)$ 或 $(\mu,\lambda)$（整代排序） | 一对一贪婪（只与自己的旧解比） | **无显式选择**；粒子永不淘汰 |
-| 关键参数 | $p_c$，$p_m$，$L$（串长） | $\mu$，$\lambda$，初始 $\delta$（ES 还含 $\tau$） | $F$，$CR$，$NP$ | $\omega$，$c_1$，$c_2$，$NP$ |
-| 是否需要编码 | 是（连续问题需编码成串） | 否（直接实数） | 否 | 否 |
-| 适合的问题 | 离散 / 组合 / 中低维连续 | 实数连续，可配合 CMA-ES 解强耦合 | 实数连续，参数少、上手快 | 实数连续，有记忆，适合动态 / 带约束 |
-| 不适合的问题 | 高维连续（串长爆炸） | 离散（实数算子无意义） | 离散；强多峰易早熟 | 纯离散（粒子位置本就是实数） |
-| 典型失效模式 | 串长不够精度上不去；$p_m$ 太小早熟 | $\delta$ 不会自适应 → 卡死；$(\mu{+}\lambda)$ 易早熟 | 贪婪选择 + 种群聚拢 → 早熟 | gbest 拓扑 → 社会吸引过强，整个种群跟随一个粒子 |
+课件用六页分析惩罚函数。把惩罚项引入目标函数后 [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=18)：
 
-**怎么读这张表**：先看「主要算子」一行。这是四种算法最本质的分歧，其余各行都是它推出来的。GA 用「位翻转 + 单点交叉」，ES 用「高斯扰动」，DE 用「差分向量 + 交叉」，PSO 用「速度更新」。算子不同决定了参数不同（对应「关键参数」一行）、适用域不同、典型失效模式不同。
+惩罚因子太小时，不可行解会被进化算法继续演化；惩罚因子太大时，进化算法在可行域里找不到足够的搜索方向 [p. 19](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=19)。
 
-### 五处符号与机制清算
+课件给出一个可操作的判断方法：先对 $\lambda$ 个个体排序，再检查相邻对 $i$ 和 $i+1$ [p. 20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=20)。比较结果分两种：被目标函数支配，或不被支配 [p. 21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=21)。
 
-#### 各自的「变异」指什么
+共识是惩罚不足和惩罚过度都不理想 [p. 22](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=22)。而且惩罚因子不是固定的，它们依赖问题 [p. 23](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=23)。
 
-四种算法都有「变异」这一步，机制完全不同：
+### 可行解偏好法
 
-- **GA 的位翻转变异**：以概率 $p_m$ 把某一位的 0 翻成 1（或反之）。离散操作，作用在二进制串上。
-- **ES 的高斯变异**（Gaussian mutation）：$x' = x + \delta\cdot N(0,1)$。连续操作，$\delta$ 决定步长，$N(0,1)$ 决定方向。EP 的柯西变异是同一角色，把高斯换成柯西，尾巴更厚、偶尔跳得很远。
-- **DE 的差分变异**（differential mutation）：$v_{i,G} = x_{r1,G} + F\cdot(x_{r2,G} - x_{r3,G})$。用种群内个体之差当方向，不需要「步长」参数——搜索尺度来自差分向量（difference vector）的长度。
-- **PSO 的「速度更新」**：$v \leftarrow \omega v + c_1 r_1(pbest - x) + c_2 r_2(gbest - x)$。严格说不是变异，它把惯性、个体记忆、社会信息线性组合到一起；PSO 的传统文献不把这一步叫变异。
+可行解偏好法的缺陷是忽略了不可行解携带的重要信息 [p. 24](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=24)。
 
-只有 GA 有位翻转变异。ES 与 DE 的变异也不是一回事：ES 的步长 $\delta$ 是个体自己携带的标量参数（由 1/5 成功法则等机制自适应更新），DE 的「步长」来自两个随机个体之差，是种群的瞬时统计量。
+其中的可行性准则 (feasibility rule) 是：取种群中最差的可行解的目标函数值 [p. 25](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=25)。
 
-#### $p_c$ / $p_m$ vs $F$ / $CR$
+随机排序法 (stochastic ranking, SR) 属于这一类。它在可行域内用概率参数 $P_f$ 做比较 [p. 26](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=26)，实现上是冒泡排序 (bubble ranking) [p. 27](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=27)。
 
-- **GA 的交叉率 $p_c$**（crossover probability）：一对父代是否真的交叉的概率，粒度在「对」。
-- **GA 的变异率 $p_m$**（mutation probability）：每一位是否翻转的概率，粒度在「位」。
-- **DE 的缩放因子 $F$**（scaling factor）：差分向量的缩放倍数，粒度在「整个差分向量」。
-- **DE 的交叉控制参数 $CR$**（crossover control parameter）：每一维是否抄自变异向量的概率，粒度在「维」。二项式交叉强制至少一维来自变异，这是它与 GA 的 $p_c$ 最大的差别——GA 不强制至少一位参与交换。
+### 多目标优化法
 
-四个参数粒度完全不同。$F$ 不是「变异率」，DE 里没有「每一位的变异率」，因为它的搜索方向来自种群差分，不是逐位翻转。
+多目标优化法的缺陷是当约束数量多时会遭受维数灾难 [p. 28](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=28)。
 
-#### DE 的 $v$ vs PSO 的 $v$
+课件列了相关综述文献 [p. 29](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=29)。
 
-两者都叫 $v$，含义完全相反：
+### 标准测试函数
 
-- **DE 的 $v_{i,G}$**：第 $G$ 代第 $i$ 个变异向量（mutant / donor vector），公式 $v_{i,G} = x_{r1,G} + F\cdot(x_{r2,G} - x_{r3,G})$。它是变异算子产出的中间解，是一个候选位置。
-- **PSO 的 $v_{i,j}^{t}$**：第 $t$ 代第 $i$ 个粒子第 $j$ 维的速度（velocity），回答「下一步往哪个方向挪多远」。它是位置的增量。
+课件用了 24 个约束优化的标准测试函数 [p. 30](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=30)。
 
-用法完全相反：DE 里 $v$ 算出来就丢给交叉算子，不再参与位置更新；PSO 里 $v$ 算出来后直接 $x \leftarrow x + v$，是位置更新的核心。同字母、异含义，只能靠章节区分。
+### 作者的工作
 
-#### $x^*$ / $x_{best,G}$ / gbest / pbest
+课件介绍了作者的六组方法 [p. 32](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=32)：CW 与 CMODE、HCOEA 与 DyHF、ATM 与 $(\mu+\lambda)$-CDE、FROFI。
 
-四个都表示「最优解」，角色不同：
+### CW：约束与无约束混合
 
-- **$x^*$**：问题的真实全局最优（true global optimum），一个不依赖算法的固定点。函数误差 $|f(x_{best}) - f(x^*)|$ 用它做参照。
-- **$x_{best,G}$**：DE 的写法，第 $G$ 代整个种群中 $f$ 最小的个体。
-- **gbest**（global best）：PSO 的写法，整个种群到目前为止到过的最好位置。角色上等价于 $x_{best,G}$，只是算法不同、字母不同。
-- **pbest**（personal best）$_i$：第 $i$ 个粒子到目前为止到过的最好位置，是单个粒子的「个人记录」。
+CW 的动机是：现有的约束处理技术通常用有偏的比较准则 [p. 34](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=34)。
 
-错把 $x_{best,G}$ 当成 $x^*$，函数误差就会写错。
+CW 与一般多目标优化问题的区别在于 [p. 35](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=35)：课件用符号标注了父代 (parent)、子代 (offspring) 和种群中的非劣个体 (nondominated individual) [p. 36](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=36)。
 
-#### 谁淘汰差解
+存档和替换 (archiving and replacement) 的动机是 [p. 37](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=37)：约束违反程度最高的不可行解会被归档并替换掉。
 
-- **GA**：轮盘赌或锦标赛挑选下一代父代，弱的被淘汰。
-- **ES/EP**：$(\mu{+}\lambda)$ 或 $(\mu,\lambda)$ 从 $\mu+\lambda$ 个（或仅 $\lambda$ 个）中挑 $\mu$ 个，$(\mu,\lambda)$ 时老父代可能全部被淘汰。
-- **DE**：一对一贪婪选择（greedy selection），新解不比旧解好就丢新解。
-- **PSO**：粒子永不淘汰。差的粒子也留在种群里，只是 $pbest$ 不再更新；靠 $pbest$ 与 $gbest$ 间接「记住」谁是好的。
+重组用的是单形交叉 (simplex crossover, SPX)：$n+1$ 个个体在 $n$ 维搜索空间里构成一个单形 [p. 38](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=38)。
 
-PSO 的「不淘汰」不是说差解不起作用，而是每个粒子都保留在种群中，差解只是不再被引用为 $pbest$ / $gbest$。这跟 GA 的「弱者直接被淘汰」是两种完全不同的策略。
+### CMODE
 
-### 一题四解：同一个连续问题上各跑一代
+CMODE 的动机是 CW 含有一些依赖问题的控制参数，比如膨胀因子 (expanding factor) [p. 39](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=39)。
 
-本章没有新公式，但可以把四种算法放在同一个最小问题上各手算一遍，差异出在哪一步一眼可见。
+它改进了不可行解的替换机制：约束违反程度最低的不可行解进入替换流程 [p. 40](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=40)。
 
-统一设定：求 $\min f(x) = (x-3)^2$，$x \in [-5, 5]$，真实最优 $x^* = 3$，$f(x^*) = 0$，种群规模 $N = 4$。四种算法共用同一组起点：
+替换是确定性的，用强度值 (strength value) 和排名值 (rank value) [p. 41](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=41)，课件给了替换的示例 [p. 42](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=42)。
 
-$$
-x^{(0)} = \{-2,\ 0,\ 3,\ 5\},\quad f = \{25,\ 9,\ 0,\ 4\}
-$$
+### HCOEA 与 DyHF
 
-#### GA：二进制编码 + 轮盘赌 + 单点交叉 + 位翻转
+HCOEA 的动机是 COEAs 可以概括为「约束处理技术 + 进化算法」，也就是一个恰当的约束处理技术需要配套恰当的搜索算法 [p. 44](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=44)。它给出了主框架 [p. 45](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=45)。
 
-**设定**：串长 $L = 10$，把 $[-5, 5]$ 切成 $2^{10} = 1024$ 个可取格点，精度 $\Delta = 10/1023 \approx 0.009775$。解码公式 $x = -5 + 10\,\mathrm{bin}/1023$，适应度取 $\mathrm{fit} = 100 - f$（保证所有 $\mathrm{fit} > 0$）。$p_c = 1$，$p_m = 1/L = 0.1$ [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=10) [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=11) [p. 12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=12)。
+全局搜索模型把规模为 $N$ 的种群随机配成 $N/2$ 对 [p. 46](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=46)。局部搜索模型有专门的示意图 [p. 47](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=48)，它的实现要处理最优不可行个体和子种群 [p. 48](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=48)。
 
-**Step 1 —— 编码**：按 $\mathrm{bin} = \operatorname{round}((x+5)\times 1023/10)$ 取最近格点：
+DyHF 的动机是：进化不同阶段，局部搜索和全局搜索所需的概率可能不同 [p. 49](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=49)。它用 $\mathrm{rand} < N_F / N_P$ 动态决定用哪个模型 [p. 50](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=50)。
 
-$$
--2 \to 0100110011\;(\mathrm{bin}=307,\ x\approx-1.999022),\quad
-0 \to 1000000000\;(\mathrm{bin}=512,\ x\approx0.004888),
-$$
+课件给了三段分析：早期种群的可行比例可能很小甚至为零 [p. 51](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=51)；随着进化，种群可能收敛到可行域附近 [p. 52](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=52)；搜索后期大多数个体都可行 [p. 53](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=53)。
 
-$$
-3 \to 1100110010\;(\mathrm{bin}=818,\ x\approx2.996090),\quad
-5 \to 1111111111\;(\mathrm{bin}=1023,\ x=5).
-$$
+### ATM
 
-前三个目标值不能恰落在格点上，格点误差绝对值不超过 $\Delta/2 \approx 0.004888$。
+ATM 的动机是：进化过程中种群不可避免会遇到三种情形 [p. 55](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=55)。
 
-**Step 2 —— 适应度**：由解码后的 $x$ 计算
+不可行情形的权衡 [p. 56](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=56)：非劣个体代表当前种群的帕累托最优集 [p. 57](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=57)，课件给了权衡的图示 [p. 58](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=58)。
 
-$$
-f \approx \{24.990226,\ 8.970698,\ 0.000015,\ 4.000000\},
-$$
+半可行情形的权衡 [p. 59](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=59)：COEAs 的目标是找到可行的最优解 [p. 60](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=60)。每个目标函数值先做归一化 [p. 61](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=61)，第二个权衡因此具备 [p. 62](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=62)。
 
-$$
-\mathrm{fit} \approx \{75.009774,\ 91.029302,\ 99.999985,\ 96.000000\},\qquad
-\sum \mathrm{fit} \approx 362.039061.
-$$
+可行情形的权衡 [p. 64](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=64)：此时退化成无约束优化。
 
-**Step 3 —— 轮盘赌**：选择概率与累积概率为
+ATM 有一条性质：可行解之间按目标函数值比较，可行解与不可行解之间按 [p. 63](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=63) 比较。
 
-$$
-p \approx \{0.207187,\ 0.251435,\ 0.276213,\ 0.265165\},\qquad
-q \approx \{0.207187,\ 0.458622,\ 0.734835,\ 1.000000\}.
-$$
+### $(\mu+\lambda)$-CDE
 
-令 $q_0 = 0$，设抽到 $r = (0.31, 0.65, 0.18, 0.92)$，按半开区间 $[q_{k-1}, q_k)$ 选择：
+$(\mu+\lambda)$-CDE 的动机是：ATM 用了简单的 $(\mu,\lambda)$-ES 作搜索引擎，改用 $(\mu+\lambda)$-DE [p. 65](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=65)。$(\mu+\lambda)$-DE 用 $\mu$ 个父代产生 $\lambda$ 个子代，再从 $\mu + \lambda$ 个个体里留 $\mu$ 个质量更高的 [p. 66](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=66)。
 
-- $r_1 = 0.31 \in [q_1, q_2)$，复制第 2 个（$x \approx 0.004888$，$f \approx 8.970698$）；
-- $r_2 = 0.65 \in [q_2, q_3)$，复制第 3 个（$x \approx 2.996090$，$f \approx 0.000015$）；
-- $r_3 = 0.18 \in [q_0, q_1)$，复制第 1 个（$x \approx -1.999022$，$f \approx 24.990226$）；
-- $r_4 = 0.92 \in [q_3, q_4)$，复制第 4 个（$x = 5$，$f = 4$）。
+它用两个准则计算个体的约束违反程度 [p. 67](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=67)。
 
-父代按抽取顺序重排为 $\{0.004888,\ 2.996090,\ -1.999022,\ 5\}$。最优个体的选择概率最大，但轮盘赌只保证统计上的偏好，不保证每次抽样都复制它。
+改进的 ATM 分不可行情形 [p. 68](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=68) 和半可行情形 [p. 69](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=69) 两种情形。
 
-**Step 4 —— 单点交叉**：把重排后的 4 条串两两配对 $\{P_1, P_2\}$ 与 $\{P_3, P_4\}$：
+### FROFI
 
-- $P_1 = 1000000000$ 与 $P_2 = 1100110010$，交叉点 $k = 5$。交换后得到 $P_1' = 1000010010$（$x \approx 0.180841$，$f \approx 7.947659$）与 $P_2' = 1100100000$（$x \approx 2.820137$，$f \approx 0.032351$）。
-- $P_3 = 0100110011$ 与 $P_4 = 1111111111$，交叉点 $k = 7$。交换后得到 $P_3' = 0100110111$（$x \approx -1.959922$，$f \approx 24.600824$）与 $P_4' = 1111111011$（$x \approx 4.960899$，$f \approx 3.845126$）。
+FROFI 用的可行性准则是：任何可行解都优于任何不可行解；两个可行解之间按目标函数值比较 [p. 71](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=71)。
 
-**Step 5 —— 位翻转变异**：假设仅 $P_1'$ 的第 8 位翻转，$1000010010 \to 1000010110$。该子代变为 $x \approx 0.219941$，$f \approx 7.728726$；其余三条串不变。
+它的动机是：可行性准则对约束强调过多，忽略了目标函数的信息 [p. 72](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=72)。
 
-**新一代**：未计精英保留的四个子代为 $\{0.219941,\ 2.820137,\ -1.959922,\ 4.960899\}$，对应 $f \approx \{7.728726,\ 0.032351,\ 24.600824,\ 3.845126\}$，其中最优为 $x \approx 2.820137$。若采用精英保留，父代中解码后的最优个体 $x \approx 2.996090$（$f \approx 0.000015$）替换最差子代，故实际保留种群的最优值是 $f \approx 0.000015$，而不是精确的 $0$。
+做法是把目标函数信息并入可行性准则 [p. 73](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=73)：课件列出了父代、子代、可行性判断的组合 [p. 74](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=74)，并把同样的信息并入搜索算法 [p. 75](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=75)。
 
-#### ES：$(1{+}1)$-ES + 步长自适应
+FROFI 的优势是：它是在平衡约束和目标函数的有效方式，改进了 [p. 76](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=76)。
 
-**设定**：父代 $x = 5$（$f = 4$，取种群里最差的那个，看 ES 能不能救回来），步长 $\delta = 0.5$，$D = 1$，$\tau = (\sqrt{1})^{-1} = 1$，步长更新公式 $\delta' = \delta\exp(N(0,1))$ [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=13)。
+### 结论
 
-**Step 1 —— 变异**：抽两个独立标准正态量 $N_1 = -0.4$（用于 $\delta$ 更新）、$N_2 = 1.2$（用于 $x$ 变异）：
+课件的结论是：COEAs 的性能同时取决于约束处理技术和搜索算法 [p. 77](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=77)。
 
-- 新步长 $\delta' = 0.5 \times \exp(-0.4) = 0.5 \times 0.6703 = 0.3352$；
-- 子代 $x' = 5 + 0.3352 \times 1.2 = 5 + 0.4022 = 5.4022$。
+## 第 10 章 多目标优化中多个最优解的定位
 
-$f(5.4022) = (5.4022 - 3)^2 = 2.4022^2 \approx 5.771$。
+这一章讲两类问题：一是非线性方程系统的最优解定位，二是多模态优化问题的多峰定位。两者的共同点是目标不止一个解，而进化算法要一次性把全部解都找出来。
 
-**Step 2 —— 选择（加号）**：$f(5.4022) \approx 5.771 > f(5) = 4$，不接受。$x \leftarrow 5$，$\delta \leftarrow 0.3352$。
+### 非线性方程系统
 
-**再走一步**：抽 $N_1 = 0.7$、$N_2 = -2.1$：
+非线性方程系统 (nonlinear equation systems, NESs) 出现在很多科学与工程领域，比如化工过程、机器人运动学 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=4)。
 
-- $\delta' = 0.3352 \times \exp(0.7) = 0.3352 \times 2.0138 = 0.6750$；
-- $x' = 5 + 0.6750 \times (-2.1) = 5 - 1.4175 = 3.5825$。
+一个 NES 可能有多个最优解 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=5)。1998 年菲尔兹奖得主 Steve Smale 列出了 18 个千年难题挑战，其中就包括方程组的数值求解 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=6)。
 
-$f(3.5825) = 0.5825^2 \approx 0.339 < 4$，接受。$x \leftarrow 3.5825$，$\delta \leftarrow 0.6750$。
+用进化算法解 NESs，目标是定位出全部最优解，而不只是其中一个 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=7)。已有三类方法各有缺陷：
 
-**结果**：2 步后 $x = 3.5825$，$f = 0.339$，离真实最优 $x^* = 3$ 还差一点。ES 直接做实数操作，精度不受 $L$ 限制，但每代只看父代与子代的对比（$(\mu{+}\lambda)$ 也是父子一起比，不像 GA 的整代排序）。
+- **单目标优化方法**：通常只能得到一个解 [p. 8](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=8)
+- **约束优化方法**：同样有类似的缺陷 [p. 9](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=9)
+- **多目标优化方法**：可能不足以覆盖全部最优解 [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=10)
 
-#### DE/rand/1/bin
+### MONES：用多目标优化定位 NESs 的最优解
 
-**设定**：$NP = 4$，$F = 0.8$，$CR = 0.9$，初始种群 $x_{1,G} = 5$，$x_{2,G} = 3$，$x_{3,G} = 0$，$x_{4,G} = -2$。当前最优 $x_{best,G} = 3$ [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5)。
+MONES 的出发点是：用进化算法解 NESs 时，期望定位到多个最优解 [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=11)。
 
-对 $i = 1$（$x_{1,G} = 5$）跑一代更新：
+它的做法是把 NES 变成一个双目标优化问题 [p. 12](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=12)。
 
-**Step 1 —— 抽下标**：从 $\{2, 3, 4\}$ 中互不相同地抽 $r_1, r_2, r_3$，假设抽到 $r_1 = 2$，$r_2 = 4$，$r_3 = 3$。
+第一项的原理是：最优解的像 (images) 落在目标空间的某个特定位置 [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=13)。第二项的原理是让解在决策空间里聚到各组最优解附近 [p. 14](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=14)。
 
-**Step 2 —— 变异**：差分向量 $x_{r_2,G} - x_{r_3,G} = -2 - 0 = -2$。
+两项相加，最优解的像会落在目标空间的特定区域，同时在决策空间里各自成团 [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=15)。
 
-$$
-v_{1,G} = x_{r_1,G} + F\cdot(x_{r_2,G} - x_{r_3,G}) = 3 + 0.8\times(-2) = 3 - 1.6 = 1.4
-$$
+MONES 的总结是：一个 NES 被转换成一个双目标优化问题 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=16)。它与前面提到的多目标方法 (CA) 在几个方面不同，课件用对照表列出 [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=17) [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=18)。
 
-**Step 3 —— 二项式交叉**：$D = 1$，$j_{rand} = 1$ 必为强制维，$u_{1,G} = v_{1,G} = 1.4$。
+### 实验结果
 
-**Step 4 —— 贪婪选择**：$f(1.4) = (1.4-3)^2 = 2.56$，$f(5) = 4$。$2.56 < 4$，接受，$x_{1,G+1} = 1.4$。
+实验用了若干测试实例 [p. 19](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=19)。
 
-**结果**：$x_{1,G+1} = 1.4$，$f = 2.56$。对其他三个个体跑同样的步骤，新一代种群大约会向 $x^* = 3$ 聚拢。DE 的变异方向来自种群差分，选择是一对一贪婪；种群聚拢后差分向量变小，搜索可能停滞。
+评价指标有两个。IGD (Inverted Generational Distance，反向世代距离) 衡量的是找到的解集与真实解集的距离 [p. 20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=20)。NOF (Number of the Optimal Solutions Found) 统计找到的最优解个数 [p. 21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=21)。结果同时给出收敛行为 [p. 22](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=22)。
 
-#### PSO：经典 gbest 版本
+### WeB：加权双目标变换技术
 
-**设定**：4 个粒子位置 $x^{(0)} = \{-2,\ 0,\ 3,\ 5\}$，$f = \{25,\ 9,\ 0,\ 4\}$。初始速度 $v^{(0)} = \{-0.5,\ 0.5,\ 0,\ 0.5\}$。$\omega = 0.7$，$c_1 = c_2 = 1.5$。每个粒子的初始 $pbest$ 等于自身位置，全局 $gbest = 3$（$f = 0$，第 3 个粒子） [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
+MONES 有三个好性质，WeB 就是基于这些做的 [p. 23](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=23)。
 
-对粒子 1（$x_1 = -2$，$v_1 = -0.5$，$pbest_1 = -2$）做一次更新：
+WeB 本身是一个加权双目标变换技术，由 W. Gong、Y. Wang、Z. Cai 和 S. Yang 提出 [p. 24](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=24)。
 
-**Step 1 —— 抽随机数**：设本次抽到 $r_1 = 0.4$，$r_2 = 0.7$。
+WeB 与 MONES 的关系是：只要 $w_1 \ne 0$ 且 $(w_2, \dots, w_n) = (0, \dots, 0)$，WeB 就等价于 MONES [p. 25](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=25)。
 
-**Step 2 —— 速度更新**：
+### 多模态优化问题
 
-$$
-v_1 \leftarrow 0.7\times(-0.5) + 1.5\times 0.4\times(pbest_1 - x_1) + 1.5\times 0.7\times(gbest - x_1)
-$$
+真实应用里很多优化问题有多模态性质 [p. 27](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=27)，课件给了几个例子 [p. 28](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=28)。
 
-$$
-= -0.35 + 0.6\times(-2-(-2)) + 1.05\times(3-(-2))
-$$
+已有工作分两条路线。小生境方法 (niching methods) 里，最早的是 Cavicchio 在 1970 年提出的预选择方法 [p. 29](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=29)。多目标优化方法通常考虑两个目标：第一个目标衡量收敛，第二个目标是别的 [p. 30](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=30)。
 
-$$
-= -0.35 + 0 + 1.05\times 5 = -0.35 + 5.25 = 4.90
-$$
+### MOMMOP：用多目标优化解 MMOPs
 
-**Step 3 —— 位置更新**：
+MOMMOP 把一个 MMOP 转换成双目标优化问题 [p. 32](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=32)。
 
-$$
-x_1 \leftarrow x_1 + v_1 = -2 + 4.90 = 2.90
-$$
+第二项的原理是取当前最优个体的目标函数值 [p. 33](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=33)。两项相加后，最优解的像会落在目标空间的特定区域 [p. 34](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=34)。
 
-$f(2.90) = (2.90-3)^2 = 0.01$。
+MOMMOP 之所以有效，是因为它是一个隐含的小生境方法 (implicit niching method) [p. 35](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=35)。
 
-**Step 4 —— 更新 $pbest$**：$f(2.90) = 0.01 < f(-2) = 25$，所以 $pbest_1 \leftarrow 2.90$。
+### MOMMOP 的两个问题
 
-**结果**：粒子 1 一代后从 $x = -2$ 跳到 $x = 2.90$（$f = 0.01$），几乎到位。PSO 不淘汰粒子，靠 $pbest$ 与 $gbest$ 间接「记忆」好解；速度公式的三项把惯性、个人经验、社会信息合成一个方向与步长。
+第一个问题：有些最优解在若干个决策变量上取值相同 [p. 36](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=36)。
 
-#### 四解对比：中间变量差在哪一步
+第二个问题：某些吸引域 (basins of attraction) 里个体很少，同时另一些吸引域里个体很多 [p. 37](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=37)。课件给出了比较两个个体时的判据 [p. 38](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=38)。
 
-| 对比项 | GA | ES(1+1) | DE/rand/1/bin | PSO |
-| --- | --- | --- | --- | --- |
-| 新解的来源 | 父代串某段互换 + 位翻转 | 父代 + 高斯扰动 | 基向量 + 差分向量 + 交叉 | 旧位置 + 新算出的速度 |
-| 是否需要编码 | 是 | 否 | 否 | 否 |
-| 选择范围 | 整代 $N$ 个排序 | 父子共 2 个比 | 仅与自己的旧解比 | 无显式选择 |
-| 是否淘汰差解 | 是（轮盘赌 / 锦标赛） | 是（子差就丢） | 是（子差就丢） | **否** |
-| 「步长」参数 | 隐含在 $p_m$ 与串长 $L$ | $\delta$（逐维、自适应） | $F$（种群差分长度） | $v$（速度，逐维） |
-| 新解坐标 | 父代附近（由 $p_c, p_m$ 决定远近） | 父代 $\pm$ 几十倍 $\delta$ | 基向量附近（由 $F$ 决定远近） | 当前位置 $\pm$ 速度 |
+### 实验结果
 
-四种算法的差异集中在「新解怎么来」和「差解怎么处理」两步，其余的（初始化、终止、迭代代数）在工程上几乎相同 [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=7) [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5) [p. 7](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
+实验用了 IEEE CEC2013 特别专题与竞赛开发的 20 个标准测试函数 [p. 39](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=39)。
 
-### 比较算法效率：固定评价预算，不固定代数
+对比分三组：与 CEC2013 里四个较新的方法比 [p. 40](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=40)，与四个先进的单目标优化方法比 [p. 41](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=41)，与两个先进的多目标优化方法比 [p. 42](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=42)。最终定位到 216 个最优解 [p. 43](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=43)。
 
-沿用 $f(x) = (x-3)^2$，固定 $F = 0.5$，$CR = 0.9$。种群规模分别取 $NP = 4$ 与 $NP = 50$，初始种群都在 $[-5, 5]$ 上均匀采样。能不能只凭 $NP$ 判断哪一种设置更快？
+课件的结论是：提出了一个面向 NESs 和 MMOPs 的多目标优化通用框架 [p. 45](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=45)。
 
-不能。$NP$ 变大通常提高初始多样性，但每一代也要多做适应度评价；不同随机初始种群和随机抽样会改变一次运行的轨迹，不能用未做实验的固定代数下结论。
+## 第 12 章 多目标约束优化问题的进化算法求解
 
-正确的比较口径是：固定适应度评价次数预算，用多个随机种子分别运行两种设置，比较最终误差或达到同一误差所需的评价次数。$NP = 50$ 每代要评价 50 个试验个体，$NP = 4$ 每代只评价 4 个——前者提供更丰富的差分方向，后者在同一预算里迭代更多代。题设不足以推出确定的快慢关系。
+### 多目标约束优化问题的形式
 
-### 多峰问题上谁先卡死
+多目标约束优化问题 (multiobjective constrained optimization problems, MCOPs) 同时带两类约束：决策空间的约束和目标空间的约束 [p. 2](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=2)。
 
-把目标函数改成多峰 $f(x) = x^4 - 3x^2 + 1$（$x \in [-3, 3]$）。它在 $x = \pm\sqrt{3/2} \approx \pm 1.225$ 处有两个全局谷底 $f = -1.25$，在 $x = 0$ 处有一个局部极大 $f = 1$。四种算法各跑 100 代（固定 $N = 10$，参数取各章常用值），记录最后 10 代里「全局最优 $f$ 值」的变化。
+课件列出了几个用于测试的人工多目标约束函数 [p. 3](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=3)，其中提到 CTP 函数。
 
-单点爬山型算法可能停在第一个被发现的谷底附近，能不能跳到另一个谷底取决于多样性维持能力：
+### 测试套件一：MW
 
-- **GA**：位翻转维持多样性，$p_m$ 适中时能跨过小包；但种群一旦快速收敛到某个谷底，模式定理加速同化，剩下的多样性就跨不出去了。中等概率早熟。
-- **ES(1+1)**：单点搜索，没有种群多样性，完全靠高斯扰动够不够大。$|N(0,1)| > 2$ 的概率只有约 5%，而小包高度 $\Delta f \approx 2.25$ 不算太矮，容易卡死。最易早熟。
-- **DE**：贪婪选择让种群迅速聚拢，一旦挤在某个谷底就出不来；$F$ 调到 1.5+ 可以略缓解。易早熟。
-- **PSO**：gbest 拓扑把整个种群拉到同一个最佳位置，社会吸引过强；改成 lbest 拓扑可缓解。在 gbest 下易早熟。
+MW 包含一个全局控制过程和一个局部调整过程 [p. 4](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=4)。
 
-答案：ES(1+1) 最先卡死，DE 与 PSO(gbest) 次之，GA 中等。多峰问题上 ES 选 $(\mu,\lambda)$，避免父代长期占据种群；单峰或单调改进问题通常选 $(\mu{+}\lambda)$。其余算法靠种群多样性、DE 的多策略（CoDE）或 PSO 的 lbest 拓扑延缓早熟。
+全局控制过程先选出一组解作为种群，局部调整过程再对它们逐个调整 [p. 5](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=5)。
 
-### 实战选型：三道工程题
+MW 的特点是可行率小而可控、约束上有足够的非线性、几何结构多样 [p. 6](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=6)。
 
-三个工程优化问题，特征各不相同。为每个问题选最合适的算法与关键参数，并写出可能的失败模式。
+### 测试套件二：DOC
 
-**问题 A（TSP / 离散）**：旅行商问题的路径优化，$N = 30$ 个城市，目标是路径总长度最小，决策变量是 30 个城市的排列顺序。
+真实世界的 MCOPs 里，决策约束和目标约束通常同时存在，但它们很少被放在一起考虑 [p. 9](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=9)。
 
-用 **GA**。理由：决策变量是离散排列，ES/DE/PSO 都假设实数连续，直接套用不合适；PSO 的粒子位置是实数，套 $x \leftarrow x+v$ 得到的位置不是合法解。关键参数：$p_c \approx 0.9$，$p_m \approx 1/L$（$L = N = 30$ 时 $p_m \approx 0.033$）；排列编码应使用保持排列合法性的专用交叉。失败模式：$p_m$ 太小则种群多样性掉光，所有个体很快变成同一条路径，搜索停滞。
+DOC 由三部分组成 [p. 10](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=10)：
 
-**问题 B（$D = 20$ 实数、有强交叉项）**：$f(x) = \sum_{i=1}^{20}(x_i-1)^2 + 0.1\sum_{i<j} x_i x_j$（$x \in [-5,5]^{20}$），可微但有强交叉项。
+- 一个无约束的多目标优化问题
+- 决策空间的约束 (decision constraints)
+- 目标空间的约束 (objective constraints)
 
-用 **CMA-ES**。理由：变量间强耦合时，协方差建模能表达变量共同变化；DE 的二项式交叉是逐维操作，是否适合要靠试验比较。关键参数：按 CMA-ES 的种群规模与步长设置初始化，并以验证误差监控停滞。失败模式：误用 GA 的话，串长 $L$ 至少需要 $\log_2(10/10^{-3}) \approx 13$ 位/变量，20 维串长约 260 位，搜索空间 $2^{260}$ 极大；DE 的交叉率设置不当会把强耦合变量拆开，收敛变慢。
+三部分的关系是：决策约束划定搜索空间里的可行域，目标约束在目标空间里划定可接受区域 [p. 11](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=11)。
 
-**问题 C（$D = 10$ 多峰、预算紧）**：$D = 10$ 维实数目标函数，多峰、非凸，$f$ 评估一次需 5 秒（高保真仿真），预算只允许 1000 次评估。
+DOC 的约束形式多样：不等式约束、等式约束、线性约束等 [p. 13](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=13)。
 
-用 **PSO(lbest 拓扑)** 或 **DE + 周期性重启**。理由：预算只有 1000 次评估，DE 每代算 10 个 $f$、PSO 每代算 10 个 $f$，都只够跑 100 代，没有时间等慢收敛；多峰要求多样性维持，lbest 拓扑（每个粒子只看邻居）比 gbest 更抗早熟。关键参数：PSO 取 $\omega$ 从 0.9 线性递减到 0.4、$c_1 = c_2 = 2$、粒子数 20–30；DE 取 $NP = 30$、$F = 0.5$、$CR = 0.5$，每 20 代注入 5 个随机新个体「重启」。失败模式：PSO 用 gbest 会过早把全群拉到第一个被发现的峰；DE 的贪婪选择会让种群聚拢后停滞。两者都需要显式的多样性维持机制。
+### ToP：两阶段框架
 
-答案：A 选 GA（排列专用交叉）；B 选 CMA-ES；C 选 PSO(lbest) 或 DE + 周期性重启。最易出错的选型是把 GA 套到 B，或把 PSO(gbest) 套到 C——这两种「看起来差不多」的搭配都会显著拉低算法效率。
+ToP 是一个简单而高效的两阶段框架 [p. 14](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=14)。
 
-### 三个容易踩的坑
+第一阶段忽略目标函数之间的冲突，把 MCOP 转换成单目标约束优化问题 (SCOP) [p. 15](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=15)。
 
-> [!WARNING] 把 DE 的 $F$ 当成 GA 的 $p_m$
-> **错误**：说「DE 的变异率是 $F$」。
-> **正确**：$F$ 是缩放因子，控制差分向量的放大倍数。DE 里没有 GA 意义上的「每一位的变异率」——差分向量整体被 $F$ 缩放后整体进入试验向量，与逐位翻转概率完全不同。
+第二阶段实现一个具体的多目标进化算法得到最终解。原则上任何多目标进化算法都可以用在这里 [p. 16](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=16)。
 
-> [!WARNING] 把 PSO 的 $v$ 当成位置
-> **错误**：把 $v \leftarrow \omega v + c_1 r_1(pbest-x) + c_2 r_2(gbest-x)$ 当作「加在位置上的力」，直接把 $v$ 当成位置。
-> **正确**：$v$ 是速度（位移的增量）；位置更新是另一条公式 $x \leftarrow x+v$。两条公式必须分开用，把 $v$ 当成位置会让整条公式错位。
+### ToR：约束支配原理
 
-> [!WARNING] 把四种算法的早熟收敛说成同一件事
-> **错误**：认为「早熟收敛 = 种群多样性掉光」，对所有算法都这么回答。
-> **正确**：四种算法的成因不同。GA 是模式定理过度发挥加 $p_m$ 太小，好模式指数增长、个体越来越相似；ES 是步长不会自适应加 $(\mu{+}\lambda)$ 保留父代，步长快速收缩；DE 是贪婪选择加种群聚拢，差分向量变小、搜索停滞；PSO 是 gbest 拓扑社会吸引过强，整个种群挤向一个粒子。答「为什么这个算法早熟」必须按各自机制回答。
+ToR 面向约束处理技术。在约束多目标优化里，约束支配原理 (constrained dominance principle) 是其中一类 [p. 17](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=17)。
+
+它的做法是把每个解的适应度定义成两个排名的加权和：一个排名按解在目标上的表现，另一个排名按解的可行性 [p. 18](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=18)。
+
+其中 $P_{fea}$ 是可行解所占的比例，它自适应地反映进化过程中种群的状态 [p. 19](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=19)。
+
+课件给了三个例子，都用非支配排序 (nondominated sorting, NL) 和拥挤度距离 (crowding distance, CD) 做排序 [p. 20](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=20) [p. 21](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=21) [p. 22](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=22)。
+
+ToR 的特点：因为按帕累托支配对种群排序，它能利用目标函数的信息 [p. 23](http://10.188.31.55:5244/hdd/School/Compute-Intelligence/converted/Chapter%2012_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Constrained%20Optimization%20Problems.pdf#page=23)。
