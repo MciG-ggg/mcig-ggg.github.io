@@ -79,6 +79,14 @@
 - 解码 MathType 的 WMF 记录流（记录长度按 16 位字计、`META_EXTTEXTOUT` 紧凑负载、`META_MOVETO` 先行后列），用 `Symbol.ttf` 的 cmap 还原希腊字母与运算符，重画后逐条核对课件 media
 - 修掉 4 处：DOC 目标函数里多出的平方根、MOMMOP 缩放因子 $\eta$ 未声明为自选符号、WeB 加权和"落在 0 与 1 之间"的说法错、MCOP 约束下标被说成课件原文
 
+### vLLM小课堂十八 RL-Kernel 训推一致性
+
+- 按讲者的 slide 顺序重排：14 章，章节边界对着 slide 标题逐帧核对，不按知识结构重排
+- 12 张图全部从 `video.mp4` 按整秒切（1920×1080 原始分辨率），裁掉播放器的摄像头窗口和底部控制条，逐张目视确认内容完整
+- 115 处可点击时间戳，格式统一 `[MM:SS](url?t=秒)`，超过一小时用 `H:MM:SS`
+- ASR 纠错：`VARM`/`WIM`/`威尔姆`/`魏母` → vime；`our kernel` → RL-Kernel；`训退` → 训推；`V0.1.0` → v0.1.0；`MC tr`/`麦克TRO` → Megatron-LM；`rock com` → ROCm；`KA` → CUDA；`LMEL` → lm-eval；`BENCHUART` → benchmark
+- 逐条核对引用的秒数落在字幕行上；只落在画面上的（如 GitHub 面板的 RFC 验收条款）单独标注
+
 ## 下一步
 
 ### 阶段 B：mermaid 修复
