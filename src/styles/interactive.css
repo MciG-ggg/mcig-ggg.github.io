@@ -5,6 +5,7 @@
 @import "./modules/code.css";
 @import "./modules/annotate.css";
 @import "./modules/table.css";
+@import "./modules/quiz.css";
 
 /*
  * Shared tokens for the interactive modules.

@@ -1,0 +1,115 @@
+/* Styles for the quiz module. */
+
+.iw-quiz {
+	display: flex;
+	flex-direction: column;
+	gap: 0.8em;
+	margin-block: 1em;
+	padding: 0.9em 1em;
+	border: 1px solid var(--iw-border);
+	border-radius: var(--iw-radius);
+	background-color: var(--iw-surface);
+}
+
+.iw-quiz-bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.6em;
+}
+
+.iw-quiz-title {
+	font-weight: 600;
+	font-size: 0.95em;
+	color: var(--primary-color);
+	flex: 1 1 auto;
+}
+
+.iw-quiz-q {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5em;
+	padding: 0.7em 0.8em;
+	border: 1px solid var(--iw-border);
+	border-radius: var(--radius-8);
+	background-color: var(--background-color);
+}
+
+.iw-quiz-head {
+	display: flex;
+	align-items: center;
+	gap: 0.4em;
+	flex-wrap: wrap;
+}
+
+.iw-quiz-type {
+	padding: 0.05rem 0.4rem;
+	border: 1px solid var(--surface-16);
+	border-radius: var(--radius-6);
+	background-color: var(--surface-05);
+	font-size: 0.72em;
+	color: var(--secondary-color);
+	white-space: nowrap;
+}
+
+.iw-quiz-points {
+	font-size: 0.72em;
+	color: var(--remark-color);
+	white-space: nowrap;
+}
+
+.iw-quiz-toggle,
+.iw-quiz-show-all {
+	margin-inline-start: auto;
+	padding: 0.15rem 0.6rem;
+	border: 1px solid var(--surface-16);
+	border-radius: var(--radius-8);
+	background-color: var(--surface-05);
+	font-size: 0.78em;
+	color: var(--secondary-color);
+	transition:
+		border-color 0.15s ease-in-out,
+		color 0.15s ease-in-out;
+}
+
+.iw-quiz-toggle:hover,
+.iw-quiz-show-all:hover {
+	border-color: var(--accent-color);
+	color: var(--accent-color);
+}
+
+.iw-quiz-body > :first-child {
+	margin-top: 0;
+}
+
+.iw-quiz-body > :last-child {
+	margin-bottom: 0;
+}
+
+.iw-quiz-answer {
+	padding: 0.6em 0.8em;
+	border-inline-start: 3px solid var(--accent-color);
+	border-radius: var(--radius-6);
+	background-color: var(--surface-05);
+	font-size: 0.95em;
+}
+
+.iw-quiz-answer > :first-child {
+	margin-top: 0;
+}
+
+.iw-quiz-answer > :last-child {
+	margin-bottom: 0;
+}
+
+@media print {
+	.iw-quiz-toggle,
+	.iw-quiz-show-all {
+		display: none;
+	}
+
+	.iw-quiz-answer {
+		display: block !important;
+		border-inline-start-color: var(--shadow-color);
+	}
+}

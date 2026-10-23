@@ -8,6 +8,7 @@ import { escapeHtml } from "./escape";
 import { renderAnnotate } from "./modules/annotate";
 import { renderChart } from "./modules/chart";
 import { renderCompare } from "./modules/compare";
+import { renderQ, renderQuiz } from "./modules/quiz";
 import { renderSlider } from "./modules/slider";
 import { renderSortable } from "./modules/sortable";
 import { renderStep } from "./modules/step";
@@ -72,6 +73,8 @@ const renderers: Record<string, ModuleRenderer> = {
 	annotate: renderAnnotate,
 	chart: renderChart,
 	compare: renderCompare,
+	q: renderQ,
+	quiz: renderQuiz,
 	slider: renderSlider,
 	sortable: renderSortable,
 	step: renderStep,

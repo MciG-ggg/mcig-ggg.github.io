@@ -57,6 +57,7 @@ export const renderXxx = (node: ContainerDirective, context: InteractiveContext)
 | annotate | `src/utils/remark/modules/annotate.ts` | `src/utils/interactive/annotate.ts` | `src/styles/modules/annotate.css` | `docs/interactive-samples/annotate.md` |
 | sortable | `src/utils/remark/modules/sortable.ts` | `src/utils/interactive/table.ts` | `src/styles/modules/table.css` | `docs/interactive-samples/sortable.md` |
 | code | `src/utils/code-chrome.ts` | `src/utils/interactive/code.ts` | `src/styles/modules/code.css` | `docs/interactive-samples/code.md` |
+| quiz | `src/utils/remark/modules/quiz.ts` | `src/utils/interactive/quiz.ts` | `src/styles/modules/quiz.css` | `docs/interactive-samples/quiz.md` |
 
 这些文件不许改：
 
@@ -273,6 +274,50 @@ shiki 的 hook：
 | `pre` | `<pre>` 元素 | `properties.dataLanguage` 是语言名。 |
 | `code` | `<code>` 元素 | |
 | `line` | 行元素 | 第二个参数是行号，从 1 开始。 |
+
+### quiz
+
+一组题，每道题带一个「显示答案」的按钮。
+
+````markdown
+::::quiz{title="第一卷"}
+:::q{type="选择" points="2"}
+题干
+
+1. 选项一
+2. 选项二
+
+---
+
+答案与解析
+:::
+
+:::q{type="程序" points="14"}
+程序题的题干
+
+---
+
+```python
+print("答案")
+```
+
+:::
+::::
+````
+
+- **外层用 4 个冒号，内层用 3 个。** 外层的冒号要比内层多一个，否则内层指令会把外层提前关掉。
+- `type` 是题型，显示在题头的徽标上：选择、填空、程序、解答。
+- `points` 是分值，显示在题型后面。
+- **答案和题干之间用一个 `---` 分隔。** `---` 前后都要空一行，否则 `---` 会被当成上一段的标题下划线。
+- 没有 `---` 的题目没有答案，按钮也不出现。
+
+输出：
+
+- 根节点 `div.iw-quiz`，带标题栏和一个「全部显示答案」按钮。
+- 每道题是 `div.iw-quiz-q`，带 `data-type` 和 `data-points`。
+- 题头是 `div.iw-quiz-head`，里面是题型徽标、分值和「显示答案」按钮。
+- 答案是 `div.iw-quiz-answer`，带 `hidden` 属性，按钮的 `aria-controls` 指向它的 id。
+- 客户端在 `document` 上委托点击：单题按钮切换自己的答案，整卷按钮切换这一卷的所有答案。
 
 ## 5. 自测
 

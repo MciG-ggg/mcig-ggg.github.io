@@ -2,6 +2,7 @@ import { initAnnotate } from "./interactive/annotate";
 import { initChart } from "./interactive/chart";
 import { initCode } from "./interactive/code";
 import { initCompare } from "./interactive/compare";
+import { initQuiz } from "./interactive/quiz";
 import { initSlider } from "./interactive/slider";
 import { initSteps } from "./interactive/steps";
 import { initTable } from "./interactive/table";
@@ -21,4 +22,5 @@ export const initInteractive = (): void => {
 	initCode();
 	initAnnotate();
 	initTable();
+	initQuiz();
 };
