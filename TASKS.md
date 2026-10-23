@@ -109,66 +109,17 @@
 - 裸 URL 紧跟中文时 GFM autolink 会吞掉后面的字（`http://...kitti）和` 一起进 href），改成显式 markdown 链接
 - `lint_note.py` 0 错误；73 张图 alt 齐全、文件都在 `images/`；149 处 KaTeX 公式与 5 个 mermaid 全部解析通过
 
-## 下一步
+### Auto-Drive-Intro 重写
 
-### 阶段 B：mermaid 修复（已完成，见 b5843ef）
+整门《智能驾驶导论》的六讲课件进了 blog，笔记从 3 章变 7 章。
 
-1. `src/layouts/Base.astro` 的 mermaid 判定：读 `pre[data-language="mermaid"]`，删掉 14 词首词猜测
-2. 主题跟 `document.documentElement.dataset.theme`，监听 `theme:change` 重绘
-3. SVG 注入 `pre` 内部，不动容器（现在 `outerHTML` 整块替换删掉了复制按钮）
-4. `await import("mermaid")` 动态加载，Base chunk 从 140KB gzip 降到 3.5KB
-
-### 阶段 C：提交第 10、12 章（已完成，见 b29a157）
-
-1. `git add -A src/content/lecture/zh-cn/计算智能_进化算法与优化方法/index.md && git commit -m "note: expand chapters 10 and 12 with the formulas recovered from the slides"`
-
-### 阶段 D：交互模块库（未提交，`pnpm check` 报 4 个类型错）
-
-1. 修 `scripts/test-interactive.ts:24,26`、`src/utils/remark/directive-text-guard.ts:32`、`src/utils/remark/interactive.ts:117` 的类型错
-2. 落地 7 个模块：chart / slider / compare / steps / annotate / 可排序表格 / 代码块 chrome
-3. 补 `src/styles/` 的 `@media print` 一页 CSS，展开折叠面板、隐藏 range 与排序按钮、图表 `break-inside: avoid`
-
-### 阶段 E：PDF 导出（未开始）
-
-1. 写 `scripts/export-pdf.mjs`，或先定「人从页面打印」这条路要什么 print CSS
-2. 实测两条降级：Chrome headless 的 PDF 无 outline 书签树、CJK 被嵌成 Type3 字体
-3. 实测 headless 打印时 mermaid 是否渲染完成
-
-### 阶段 F：工具链欠账
-
-1. 修 `/opt/homebrew/bin/soffice` 坏 shim，或让 `extract_materials.py` 彻底不走 soffice
-2. 第 9、10、12 章的渲染 PDF 没上传 AList，笔记里 188 处页码链接指向分享上没有的文件
-3. 引用标签统一成 `<文件名> · p.<页码>`，现在 499 处里只有 89 处是这个形状，lint 与 `build_source_manifest.py` 只看得见这 89 处
-
-### 交互模块库（阶段 C）
-
-七个模块，全部走 `remark-directive` 容器指令，构建期改 mdast 节点，客户端事件委托到 `document`。
-
-| 模块 | 语法 | 客户端 |
-|---|---|---|
-| chart | `:::chart{type="line" title="…"}` + 表格 | 无（纯 SVG） |
-| slider | `:::slider{label min max step value unit}` | 写 `--v` / `--value` |
-| compare | `:::compare{leftLabel rightLabel}` + 两图 | 写 `--v` |
-| steps | `::::steps` + `:::step` | 无（radio + `:has()`） |
-| annotate | `:::annotate` + 图 + `:pin{x y label}` | 无（CSS hover/focus） |
-| sortable | `:::sortable` + 表格 | 表头加排序按钮 |
-| code | 自动，围栏 meta `{1,3}` 标行 | 无（shiki transformer） |
-
-- 渲染模型：模块改 mdast 节点并设 `data.hName` / `data.hProperties`，组件里的 markdown 走正常渲染，图片留在 mdast 里让 Astro 继续压缩
-- `docs/interactive-modules.md` 是模块契约
-- `scripts/test-interactive.ts` 1 秒渲出 HTML，是模块的快速自测
-
-### 两门课的讲义
-
-| 笔记 | 规模 |
-|---|---|
-| 自动控制原理_期末复习讲义 | 1957 行，9 章 74 小节 44 图 325 处源页引用 |
-| Auto-Drive-Intro | 799 行，3 章 20 小节 73 图 109 处源页引用 |
-
-- 自动控制原理：旧的 LaTeX 讲义（2460 行）改写成 blog 原生 Markdown，砍掉符号速查、术语索引、考前冲刺清单
-- Auto-Drive-Intro：课程只有第 2 章，讲义 PDF（69 页）+ 激光雷达 pptx（101 张）+ 四份 APOLLO 作业
+- 素材：`/Volumes/dav/Nextcloud/School/Auto-Drive-Intro/《智能驾驶导论》PPT-2020/`，六讲 217 张幻灯片 199 张内嵌图。rar 原件也在上一级目录
+- 笔记：1145 行，7 章 58 小节 93 图 209 处源页引用，lint 0 错误
+- 旧的两章（感知基础 PDF、激光雷达专题）分别并入第 3、4 章
+- 引用统一是 `[第N讲 XXX.pptx · p.幻灯片号](AList 的 percent-encoded 路径)`
 
 ## 下一步
 
-1. 打开 `http://mcig-ggg.github.io/lecture/自动控制原理_期末复习讲义` 肉眼过一遍排版，特别看根轨迹和波特图那几章的图。
-2. 交互模块还没有在真实文章里用过。挑一篇有数据表的笔记，把 `:::sortable` 和 `:::chart` 试一次，确认作者成本可接受。
+1. 打开 https://mcig-ggg.github.io/lecture/Auto-Drive-Intro 看排版，重点看第 4 章的雷达原理图和第 5 章的公式。
+2. `src/content/lecture/zh-cn/Auto-Drive-Intro/images/` 里有 61 张没被引用的旧图（19.8 MB），是旧版笔记留下的。要清掉的话得逐个点名删除。
+3. 交互模块还没有在真实文章里用过。挑一篇有数据表的笔记，把 `:::sortable` 和 `:::chart` 试一次，确认作者成本可接受。
