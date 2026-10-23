@@ -135,8 +135,16 @@
 - 外层指令要用 4 个冒号、内层 3 个，否则内层会把外层提前关掉
 - `src/content/lecture/zh-cn/Auto-Drive-Intro_模拟卷/`：三套卷，每套 100 分 12 题（选择 5、填空 3、程序 2、解答 2），36 道题，22 处源引用
 
+### quiz 模块升级成可作答、可判分
+
+- 选择题的选项列表变成单选框，填空题里的 `{{blank}}` 变成输入框，程序题和解答题给一个文本域
+- 每卷一个「提交答案」按钮：客观题自动判分并标出对错，解答题给出参考答案和「我答对了」的勾选框
+- 判分规则抽成纯函数 `src/utils/interactive/grade.ts`，`scripts/test-quiz-grade.ts` 覆盖 15 个用例
+- 模拟卷的 36 道题都带答案键，选择 15 道、填空 9 道，程序和解答 12 道留给读者自己判
+- **改 remark 插件不会让 Astro 的内容存储失效**，本地验证要用 `pnpm build:clean`（清 `node_modules/.astro/data-store.json`）。CI 的 deploy 工作流已经这么做了
+
 ## 下一步
 
-1. 打开 https://mcig-ggg.github.io/lecture/Auto-Drive-Intro_模拟卷 做一遍，检查题目有没有超纲或者和课件对不上的地方。
+1. 打开 https://mcig-ggg.github.io/lecture/Auto-Drive-Intro_模拟卷 实际做一遍第一卷，试试选完提交的对错判定和分数。
 2. `src/content/lecture/zh-cn/Auto-Drive-Intro/images/` 里有 61 张没被引用的旧图（19.8 MB），是旧版笔记留下的。要清掉的话得逐个点名删除。
-3. quiz 模块只在模拟卷里用过一次。可以把它接到复习资料的「自测题」那 12 道题上，替掉现在的 `<details>` 折叠。
+3. quiz 模块可以接到代码题复习资料的「自测题」那 12 道题上，替掉现在的 `<details>` 折叠。

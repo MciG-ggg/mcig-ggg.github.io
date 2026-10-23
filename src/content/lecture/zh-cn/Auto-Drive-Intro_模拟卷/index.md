@@ -1,6 +1,6 @@
 ---
 title: Auto-Drive-Intro 模拟卷
-timestamp: 2026-10-23T16:00:00+08:00
+timestamp: 2026-10-23T15:05:00+08:00
 series: Auto-Drive-Intro
 tags: [自动驾驶, 期末复习, 模拟卷, OpenCV, Apollo, PID, LQR]
 description: 《智能驾驶导论》期末模拟卷三套，每套一百分，含选择、填空、程序、解答四类题。答案藏在每道题的按钮后面，可以单题展开，也可以整卷展开。
@@ -38,7 +38,7 @@ host: 10.188.31.55:5244
 ### 一、单项选择题
 
 ::::quiz{title="第一卷"}
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="2"}
 `cv2.imread` 读进来的彩色图像，通道顺序是：
 
 1. RGB
@@ -56,7 +56,7 @@ OpenCV 的默认通道序是蓝绿红。转灰度必须写 `cv2.cvtColor(image, 
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="3"}
 Canny 边缘检测的三个步骤中，负责把边缘压成一像素宽的是：
 
 1. Sobel 梯度计算
@@ -74,7 +74,7 @@ Sobel 给出梯度幅值和方向，非极大值抑制沿梯度方向只保留�
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="2"}
 在图像坐标系里（y 轴向下），左侧车道线的斜率符号是：
 
 1. 正
@@ -92,7 +92,7 @@ Sobel 给出梯度幅值和方向，非极大值抑制沿梯度方向只保留�
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="2"}
 毫米波雷达测量目标径向速度的原理是：
 
 1. 飞行时间
@@ -108,7 +108,7 @@ Sobel 给出梯度幅值和方向，非极大值抑制沿梯度方向只保留�
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="2"}
 在概率霍夫变换里，把 `threshold` 调大会导致：
 
 1. 检出的线段变多
@@ -126,8 +126,8 @@ Sobel 给出梯度幅值和方向，非极大值抑制沿梯度方向只保留�
 
 ### 二、填空题
 
-:::q{type="填空" points="4"}
-Canny 的双阈值在代码里写成 `CANNY_LOW, CANNY_HIGH = 50, 150`。这两个阈值分别对应边缘检测的哪两个阶段，它们之间的数值关系通常取多少比？
+:::q{type="填空" points="4" answer="弱边缘候选的门槛|强边缘的门槛|1:3"}
+Canny 的双阈值在代码里写成 `CANNY_LOW, CANNY_HIGH = 50, 150`。低阈值是 {{blank}}，高阈值是 {{blank}}，两者的数值关系通常取 {{blank}}。
 
 ---
 
@@ -137,8 +137,8 @@ Canny 的双阈值在代码里写成 `CANNY_LOW, CANNY_HIGH = 50, 150`。这两�
 
 :::
 
-:::q{type="填空" points="4"}
-概率霍夫变换的三个参数 `HOUGH_THRESHOLD`、`HOUGH_MIN_LEN`、`HOUGH_MAX_GAP` 分别是 30、20、20。请写出这三个参数各自的物理含义。（见 [第二章 无人驾驶感知基础.pdf · p.12](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=12)）
+:::q{type="填空" points="4" answer="累加器投票门槛|线段的最短像素长度|允许的最大断裂"}
+概率霍夫变换的三个参数 `HOUGH_THRESHOLD`、`HOUGH_MIN_LEN`、`HOUGH_MAX_GAP` 分别是 30、20、20。`HOUGH_THRESHOLD` 是 {{blank}}，`HOUGH_MIN_LEN` 是 {{blank}}，`HOUGH_MAX_GAP` 是 {{blank}}。（见 [第二章 无人驾驶感知基础.pdf · p.12](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=12)）
 
 ---
 
@@ -148,8 +148,8 @@ Canny 的双阈值在代码里写成 `CANNY_LOW, CANNY_HIGH = 50, 150`。这两�
 
 :::
 
-:::q{type="填空" points="4"}
-点云有四个特点，请写出其中三个：简单、精确、以及 ____________________ 和 ____________________。
+:::q{type="填空" points="4" answer="稀疏|无序"}
+点云有四个特点，请写出其中三个：简单、精确、{{blank}} 和 {{blank}}。
 
 ---
 
@@ -248,7 +248,7 @@ right_slope, right_intercept = np.average(right_fit, axis=0)
 ### 一、单项选择题
 
 ::::quiz{title="第二卷"}
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="2"}
 启动 Apollo 的 Dreamview 交互界面，正确的命令是：
 
 1. `bash scripts/dreamview.sh`
@@ -266,7 +266,7 @@ right_slope, right_intercept = np.average(right_fit, axis=0)
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="1"}
 回放一个离线数据包并让它循环播放的命令是：
 
 1. `cyber_recorder play -f demo_3.5.record -l`
@@ -282,7 +282,7 @@ right_slope, right_intercept = np.average(right_fit, axis=0)
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="3"}
 要做开放空间规划（泊车），Dreamview 的 Module Controller 里需要启动的模块是：
 
 1. 只启 Planning
@@ -300,7 +300,7 @@ right_slope, right_intercept = np.average(right_fit, axis=0)
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="2"}
 在 ST 图（横轴 $s$ 纵轴 $t$）上，一辆车以速度 $v$ 匀速行驶，它画出来的线斜率是：
 
 1. $v$
@@ -316,7 +316,7 @@ right_slope, right_intercept = np.average(right_fit, axis=0)
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="2"}
 cyber_monitor 和 PNC Monitor 的区别是：
 
 1. 前者看曲线，后者看数据流
@@ -334,8 +334,8 @@ cyber_monitor 看的是 topic 上的消息内容本身，PNC Monitor 看的是�
 
 ### 二、填空题
 
-:::q{type="填空" points="4"}
-Dreamview 左侧有四个常用的 Tab。请写出它们的名称，并说明做「路径规划实践」时要用到哪两个。
+:::q{type="填空" points="4" answer="Module Controller|Profile|Layer Menu|Tasks"}
+Dreamview 左侧有四个常用的 Tab：{{blank}}、{{blank}}、{{blank}}、{{blank}}。做「路径规划实践」时要用到 Module Controller 和 Profile 两个。
 
 ---
 
@@ -345,8 +345,8 @@ Dreamview 左侧有四个常用的 Tab。请写出它们的名称，并说明做
 
 :::
 
-:::q{type="填空" points="4"}
-`course` 场景集里的四个典型场景是：自车道内行驶、____________、____________ 和换道。
+:::q{type="填空" points="4" answer="绕行障碍物|借道绕行"}
+`course` 场景集里的四个典型场景是：自车道内行驶、{{blank}}、{{blank}} 和换道。
 
 ---
 
@@ -356,14 +356,14 @@ Dreamview 左侧有四个常用的 Tab。请写出它们的名称，并说明做
 
 :::
 
-:::q{type="填空" points="4"}
+:::q{type="填空" points="4" answer="planning.INFO 日志文件|时刻（时:分:秒）|DATA RECORDER"}
 取某一时刻的速度规划数据，要跑一个脚本：
 
 ```bash
 run modules/planning/tools/plot_st_nlp.py -f /opt/apollo/neo/data/log/planning.INFO -t 17:19:29
 ```
 
-这个脚本的两个参数 `-f` 和 `-t` 各是什么？`-t` 的那个时刻从哪来？（见 [作业三：基于百度APOLLO平台多场景下的速度规划与数据采集.docx · p.1](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E4%B8%89%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E5%A4%9A%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E9%80%9F%E5%BA%A6%E8%A7%84%E5%88%92%E4%B8%8E%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86.docx)）
+这个脚本的参数 `-f` 指向 {{blank}}，`-t` 是 {{blank}}，这个时刻从 {{blank}} 里读。（见 [作业三：基于百度APOLLO平台多场景下的速度规划与数据采集.docx · p.1](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E4%B8%89%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E5%A4%9A%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E9%80%9F%E5%BA%A6%E8%A7%84%E5%88%92%E4%B8%8E%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86.docx)）
 
 ---
 
@@ -483,7 +483,7 @@ DP 的代价函数大致是三项之和：**障碍物代价**（离障碍物投�
 ### 一、单项选择题
 
 ::::quiz{title="第三卷"}
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="1"}
 横向 LQR 的代价函数是 $J = q_0 e_y^2 + q_1 \dot e_y^2 + q_2 e_\psi^2 + q_3 \dot e_\psi^2$。四个权重分别对应：（见 [作业四：基于百度APOLLO平台的车辆控制结果分析.docx · p.1](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E5%9B%9B%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%BD%A6%E8%BE%86%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90.docx)）
 
 1. 横向位置误差、横向位置误差变化率、航向误差、航向误差变化率
@@ -499,7 +499,7 @@ $e_y$ 是横向位置误差，$\dot e_y$ 是它的变化率，$e_\psi$ 是航向
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="2"}
 作业里的横向控制参数是 `matrix q` 取 0.05、0.0、1.0、0.0。这说明：
 
 1. 横向位置误差的影响最大
@@ -515,7 +515,7 @@ $q_2 = 1.0$ 是 $q_0 = 0.05$ 的二十倍。横向控制主要靠航向误差驱
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="2"}
 纵向控制里设置前视（lookahead）的主要目的是：
 
 1. 让车看得更远
@@ -531,7 +531,7 @@ $q_2 = 1.0$ 是 $q_0 = 0.05$ 的二十倍。横向控制主要靠航向误差驱
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="2"}
 把概率霍夫变换的 `HOUGH_MAX_GAP` 调得太大，最大的风险是：
 
 1. 计算变慢
@@ -547,7 +547,7 @@ $q_2 = 1.0$ 是 $q_0 = 0.05$ 的二十倍。横向控制主要靠航向误差驱
 
 :::
 
-:::q{type="选择" points="2"}
+:::q{type="选择" points="2" answer="1"}
 判断横向控制效果好不好，最先看的曲线是：
 
 1. `cross_track_error`
@@ -565,8 +565,8 @@ $q_2 = 1.0$ 是 $q_0 = 0.05$ 的二十倍。横向控制主要靠航向误差驱
 
 ### 二、填空题
 
-:::q{type="填空" points="4"}
-作业四里给出的两个配置文件路径是什么？一个放纵向控制参数，一个放横向控制参数。（见 [作业四：基于百度APOLLO平台的车辆控制结果分析.docx · p.1](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E5%9B%9B%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%BD%A6%E8%BE%86%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90.docx)）
+:::q{type="填空" points="4" answer="apollo_workspace/modules/control/conf/control_conf.pb.txt|lat_controller_conf"}
+作业四给出的两个配置文件路径是什么？放纵向控制参数的是 {{blank}}，放横向控制参数的在 {{blank}} 里。（见 [作业四：基于百度APOLLO平台的车辆控制结果分析.docx · p.1](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E5%9B%9B%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%BD%A6%E8%BE%86%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90.docx)）
 
 ---
 
@@ -576,8 +576,8 @@ $q_2 = 1.0$ 是 $q_0 = 0.05$ 的二十倍。横向控制主要靠航向误差驱
 
 :::
 
-:::q{type="填空" points="4"}
-作业四用哪个工具画控制误差曲线？启动它要敲哪两条命令？
+:::q{type="填空" points="4" answer="control_info|cd modules/tools/control_info/|jupyter notebook"}
+控制误差曲线用 {{blank}} 工具画，启动它要 {{blank}}，然后 {{blank}}。
 
 ---
 
@@ -587,8 +587,8 @@ $q_2 = 1.0$ 是 $q_0 = 0.05$ 的二十倍。横向控制主要靠航向误差驱
 
 :::
 
-:::q{type="填空" points="4"}
-纵向 PID 里，`kp` 调大会让速度曲线出现什么现象？`kd` 调大会带来什么副作用？
+:::q{type="填空" points="4" answer="kp|kd"}
+纵向 PID 里，{{blank}} 调大会让速度曲线出现超调和振荡；{{blank}} 调大能抑制超调，但会放大噪声。
 
 ---
 

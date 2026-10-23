@@ -31,6 +31,7 @@
 		"dev": "astro dev",
 		"check": "astro check",
 		"build": "astro build",
+		"build:clean": "rm -rf node_modules/.astro/data-store.json .astro && astro build",
 		"preview": "astro preview",
 		"format": "biome format --write",
 		"lint": "biome lint",
