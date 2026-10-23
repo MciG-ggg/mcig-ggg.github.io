@@ -118,8 +118,19 @@
 - 旧的两章（感知基础 PDF、激光雷达专题）分别并入第 3、4 章
 - 引用统一是 `[第N讲 XXX.pptx · p.幻灯片号](AList 的 percent-encoded 路径)`
 
+### 代码题复习资料
+
+老师说要考代码题，把 roadline 的传统车道线检测和四次 APOLLO 作业整理成一篇复习笔记。
+
+- `src/content/lecture/zh-cn/Auto-Drive-Intro_代码题复习/`：5 章 19 小节 17 图 11 段代码 6 张表 12 道自测题
+- 传统车道线检测：六步流水线每一步的代码、参数和「调大调小会怎样」
+- Apollo 工具链：启动命令、四个调试器、Dreamview 四个 Tab
+- 规划：三个子模块、四个场景、速度规划参数、S-T 图的读法
+- 控制：纵向 PID 的结构、横向 LQR 的四个权重、参数到曲线的因果链
+- 自测题的答案折叠在每道题后面
+
 ## 下一步
 
-1. 打开 https://mcig-ggg.github.io/lecture/Auto-Drive-Intro 看排版，重点看第 4 章的雷达原理图和第 5 章的公式。
+1. 打开 https://mcig-ggg.github.io/lecture/Auto-Drive-Intro_代码题复习 过一遍，重点看参数因果表和 S-T 图那两节。
 2. `src/content/lecture/zh-cn/Auto-Drive-Intro/images/` 里有 61 张没被引用的旧图（19.8 MB），是旧版笔记留下的。要清掉的话得逐个点名删除。
 3. 交互模块还没有在真实文章里用过。挑一篇有数据表的笔记，把 `:::sortable` 和 `:::chart` 试一次，确认作者成本可接受。
