@@ -1,1 +1,58 @@
-/* Styles for the code module. */
+/*
+ * Styles for the code module.
+ *
+ * The module gives a code block a label with the language of the block and
+ * marks the lines that the meta of the fence names.
+ */
+
+/*
+ * The label sits in the top left corner of the block. The wrapper does not
+ * scroll, the code inside it does, so the label stays in place while the code
+ * scrolls sideways.
+ */
+.iw-code {
+	position: relative;
+}
+
+.iw-code::before {
+	content: attr(data-language);
+	position: absolute;
+	top: 0.4em;
+	inset-inline-start: 0.6em;
+	z-index: 1;
+	color: var(--remark-color);
+	font-family: var(--font-mono);
+	font-size: 0.65em;
+	line-height: 1;
+	pointer-events: none;
+}
+
+/*
+ * The code leaves a strip at the top for the label, so the label never
+ * covers the first line of the code.
+ */
+.iw-code pre > code {
+	padding-top: 2em;
+}
+
+/*
+ * A marked line becomes a box that fills the width of the block. The box
+ * reaches over the padding of the code on both sides.
+ */
+.iw-code-highlight {
+	box-sizing: border-box;
+	display: inline-block;
+	width: max-content;
+	min-width: calc(100% + 2em);
+	margin-inline: -1em;
+	padding-inline: 1em;
+	background-color: var(--iw-surface-strong);
+}
+
+@media print {
+	/* The band of a marked line has to survive the printer. */
+	.iw-code-highlight {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+}

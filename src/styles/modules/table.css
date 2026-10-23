@@ -1,1 +1,31 @@
-/* Styles for the table module. */
+/* Styles for the sortable table module. */
+
+.iw-sortable-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.5em;
+	height: 1.5em;
+	margin-left: 0.3em;
+	padding: 0;
+	border: 1px solid transparent;
+	border-radius: var(--radius-4);
+	background-color: transparent;
+	color: var(--remark-color);
+	font-size: 0.8em;
+	line-height: 1;
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+.iw-sortable-button:hover {
+	color: var(--primary-color);
+	border-color: var(--iw-border);
+}
+
+/* The sort button is a control, so it does not belong on paper. */
+@media print {
+	.iw-sortable-button {
+		display: none;
+	}
+}

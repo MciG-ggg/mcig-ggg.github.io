@@ -1,1 +1,128 @@
 /* Styles for the chart module. */
+
+/*
+ * The colors of the series come from the site variables, so the chart follows
+ * the light and the dark theme. The class of a series carries the color and
+ * the shapes of the series use `currentColor`.
+ *
+ * The site has one chromatic color, so the first three series are steps of a
+ * ramp from the accent color to the text color. The last three series use the
+ * three text colors of the site. Every series stands apart in both themes,
+ * because the text color of the site follows the theme.
+ */
+.iw-chart-series-1 {
+	color: var(--accent-color);
+}
+
+.iw-chart-series-2 {
+	color: color-mix(in oklab, var(--accent-color) 70%, var(--primary-color));
+}
+
+.iw-chart-series-3 {
+	color: color-mix(in oklab, var(--accent-color) 42%, var(--primary-color));
+}
+
+.iw-chart-series-4 {
+	color: var(--primary-color);
+}
+
+.iw-chart-series-5 {
+	color: var(--secondary-color);
+}
+
+.iw-chart-series-6 {
+	color: var(--remark-color);
+}
+
+/*
+ * The dash patterns tell the series of a line chart apart, also in the print
+ * and for readers who cannot tell the colors apart.
+ */
+.iw-chart-series-2 .iw-chart-line {
+	stroke-dasharray: 7 4;
+}
+
+.iw-chart-series-3 .iw-chart-line {
+	stroke-dasharray: 2 3;
+}
+
+.iw-chart-series-4 .iw-chart-line {
+	stroke-dasharray: 10 3 2 3;
+}
+
+.iw-chart-series-5 .iw-chart-line {
+	stroke-dasharray: 4 3;
+}
+
+.iw-chart-series-6 .iw-chart-line {
+	stroke-dasharray: 12 4;
+}
+
+/*
+ * A figure of the site shrinks to its content when it holds an image. The
+ * chart fills the width of the page instead, like an image.
+ */
+.iw-chart {
+	align-self: stretch;
+	width: 100%;
+}
+
+.iw-chart-svg {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.iw-chart-caption {
+	font-weight: 600;
+	font-size: 0.95em;
+	color: var(--primary-color);
+	text-align: start;
+}
+
+.iw-chart-legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.3em 1em;
+	font-size: 0.85em;
+	color: var(--secondary-color);
+}
+
+.iw-chart-legend-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4em;
+}
+
+.iw-chart-swatch {
+	width: 0.8em;
+	height: 0.8em;
+	border-radius: var(--radius-2);
+	background-color: currentColor;
+}
+
+/* The grid, the axis and the labels of the chart. */
+.iw-chart-grid {
+	color: var(--shadow-color);
+}
+
+.iw-chart-axis {
+	color: var(--secondary-color);
+}
+
+.iw-chart-tick {
+	color: var(--remark-color);
+	font-size: 11px;
+}
+
+.iw-chart-axis-title {
+	color: var(--secondary-color);
+	font-size: 11px;
+}
+
+/* A chart is one picture, so it must not break over two pages. */
+@media print {
+	.iw-chart {
+		break-inside: avoid;
+	}
+}

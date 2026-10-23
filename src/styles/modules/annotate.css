@@ -1,1 +1,122 @@
-/* Styles for the annotate module. */
+/*
+ * Styles for the annotate module.
+ *
+ * The stage holds the base image and the pins. A pin is a small dot on the
+ * image. Hovering or focusing it opens a bubble with the label of the pin.
+ */
+
+.iw-annotate {
+	display: inline-block;
+	vertical-align: top;
+	align-self: flex-start;
+	max-width: 100%;
+	margin-block: 1em;
+}
+
+/*
+ * The stage is as wide as the image, so a pin at 50% sits in the middle of
+ * the image. The image is a block, so the stage has no gap under it.
+ */
+.iw-annotate-stage {
+	position: relative;
+	display: inline-block;
+	max-width: 100%;
+}
+
+.iw-annotate-stage img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+.iw-pin {
+	position: absolute;
+	left: var(--x);
+	top: var(--y);
+	transform: translate(-50%, -50%);
+	width: 0.9em;
+	height: 0.9em;
+	padding: 0;
+	border: 2px solid var(--background-color);
+	border-radius: 50%;
+	background-color: var(--iw-accent);
+	cursor: pointer;
+}
+
+/*
+ * The bubble shows the label of the pin. The text comes from the attribute,
+ * so the module does not need a second copy of the label in the markup.
+ */
+.iw-pin::after {
+	content: attr(data-label);
+	position: absolute;
+	left: 50%;
+	bottom: calc(100% + 0.5em);
+	transform: translateX(-50%);
+	padding: 0.2em 0.6em;
+	border: 1px solid var(--iw-border);
+	border-radius: var(--iw-radius);
+	background-color: var(--background-color);
+	color: var(--primary-color);
+	font-size: 0.85em;
+	line-height: 1.4;
+	white-space: nowrap;
+	opacity: 0;
+	visibility: hidden;
+}
+
+.iw-pin:hover::after,
+.iw-pin:focus-visible::after {
+	opacity: 1;
+	visibility: visible;
+}
+
+/* A pin without a label has no bubble. */
+.iw-pin[data-label=""]::after {
+	display: none;
+}
+
+.iw-annotate-caption {
+	margin-top: 0.5em;
+	font-size: 0.9em;
+	font-weight: normal;
+	color: var(--remark-color);
+	text-align: center;
+}
+
+@media print {
+	.iw-annotate {
+		break-inside: avoid;
+	}
+
+	/*
+	 * A pin shows its label on hover, and paper has no hover. The dot turns
+	 * into its label, so the paper keeps the information of the figure.
+	 */
+	.iw-annotate-stage {
+		display: block;
+	}
+
+	.iw-pin {
+		position: static;
+		transform: none;
+		display: inline-block;
+		width: auto;
+		height: auto;
+		margin: 0.2em 0.8em 0 0;
+		border: 0;
+		background-color: transparent;
+	}
+
+	.iw-pin::after {
+		position: static;
+		transform: none;
+		display: inline;
+		padding: 0;
+		border: 0;
+		background-color: transparent;
+		opacity: 1;
+		visibility: visible;
+		white-space: normal;
+	}
+}

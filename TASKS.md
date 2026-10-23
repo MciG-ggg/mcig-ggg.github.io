@@ -100,6 +100,15 @@
 - 新增「施工过程中发现的问题」一节：Astro content store 撞车发旧版、TOC 的 `scrollIntoView` 顶页、MathType 公式读不出、`extract_materials.py` 走坏 soffice 返回 0 block、AList 从 /hdd 搬到 /Nextcloud
 - 下一件事：交互模块库仍未提交（`pnpm check` 报 4 个类型错），PDF 导出脚本与 `@media print` 未写
 
+### 《智能驾驶导论》讲义（Auto-Drive-Intro）
+
+三份片段（lecture / slides / homework）拼成一篇讲义，落到 `src/content/lecture/zh-cn/Auto-Drive-Intro/index.md`。
+
+- 3 章（第 2 章 无人驾驶感知基础 / 第 2 章 专题：行车环境感知 / 课后实践：APOLLO 平台大作业）、20 个 `###` 小节、73 张图、109 处源页引用、5 个 mermaid、5 张表
+- 拼装时改的两处：slides 的 42 处引用尾部多一个 `]`（`...pptx)]`），会让整段 URL 被当成链接目标；lecture 末尾「四种组织方式怎么解决同一个问题」是跨章速查表，删掉，只留正文
+- 裸 URL 紧跟中文时 GFM autolink 会吞掉后面的字（`http://...kitti）和` 一起进 href），改成显式 markdown 链接
+- `lint_note.py` 0 错误；73 张图 alt 齐全、文件都在 `images/`；149 处 KaTeX 公式与 5 个 mermaid 全部解析通过
+
 ## 下一步
 
 ### 阶段 B：mermaid 修复（已完成，见 b5843ef）
@@ -130,3 +139,36 @@
 1. 修 `/opt/homebrew/bin/soffice` 坏 shim，或让 `extract_materials.py` 彻底不走 soffice
 2. 第 9、10、12 章的渲染 PDF 没上传 AList，笔记里 188 处页码链接指向分享上没有的文件
 3. 引用标签统一成 `<文件名> · p.<页码>`，现在 499 处里只有 89 处是这个形状，lint 与 `build_source_manifest.py` 只看得见这 89 处
+
+### 交互模块库（阶段 C）
+
+七个模块，全部走 `remark-directive` 容器指令，构建期改 mdast 节点，客户端事件委托到 `document`。
+
+| 模块 | 语法 | 客户端 |
+|---|---|---|
+| chart | `:::chart{type="line" title="…"}` + 表格 | 无（纯 SVG） |
+| slider | `:::slider{label min max step value unit}` | 写 `--v` / `--value` |
+| compare | `:::compare{leftLabel rightLabel}` + 两图 | 写 `--v` |
+| steps | `::::steps` + `:::step` | 无（radio + `:has()`） |
+| annotate | `:::annotate` + 图 + `:pin{x y label}` | 无（CSS hover/focus） |
+| sortable | `:::sortable` + 表格 | 表头加排序按钮 |
+| code | 自动，围栏 meta `{1,3}` 标行 | 无（shiki transformer） |
+
+- 渲染模型：模块改 mdast 节点并设 `data.hName` / `data.hProperties`，组件里的 markdown 走正常渲染，图片留在 mdast 里让 Astro 继续压缩
+- `docs/interactive-modules.md` 是模块契约
+- `scripts/test-interactive.ts` 1 秒渲出 HTML，是模块的快速自测
+
+### 两门课的讲义
+
+| 笔记 | 规模 |
+|---|---|
+| 自动控制原理_期末复习讲义 | 1957 行，9 章 74 小节 44 图 325 处源页引用 |
+| Auto-Drive-Intro | 799 行，3 章 20 小节 73 图 109 处源页引用 |
+
+- 自动控制原理：旧的 LaTeX 讲义（2460 行）改写成 blog 原生 Markdown，砍掉符号速查、术语索引、考前冲刺清单
+- Auto-Drive-Intro：课程只有第 2 章，讲义 PDF（69 页）+ 激光雷达 pptx（101 张）+ 四份 APOLLO 作业
+
+## 下一步
+
+1. 打开 `http://mcig-ggg.github.io/lecture/自动控制原理_期末复习讲义` 肉眼过一遍排版，特别看根轨迹和波特图那几章的图。
+2. 交互模块还没有在真实文章里用过。挑一篇有数据表的笔记，把 `:::sortable` 和 `:::chart` 试一次，确认作者成本可接受。

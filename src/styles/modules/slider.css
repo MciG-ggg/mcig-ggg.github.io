@@ -1,1 +1,62 @@
 /* Styles for the slider module. */
+
+.iw-slider-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.5em;
+}
+
+.iw-slider-label {
+	font-weight: 600;
+	color: var(--primary-color);
+}
+
+.iw-slider-readout {
+	font-variant-numeric: tabular-nums;
+	color: var(--secondary-color);
+}
+
+/* The value of the author waits for the printer. */
+.iw-slider-init-readout {
+	display: none;
+}
+
+.iw-slider-range {
+	width: 100%;
+	margin: 0;
+	accent-color: var(--iw-accent);
+	cursor: pointer;
+}
+
+.iw-slider-body > :first-child {
+	margin-top: 0;
+}
+
+.iw-slider-body > :last-child {
+	margin-bottom: 0;
+}
+
+.iw-slider-body img {
+	break-inside: avoid;
+}
+
+@media print {
+	/*
+	 * The control is gone on paper, and the widget shows the value of the
+	 * author. Only that value is the same for every reader.
+	 */
+	.iw-slider-range,
+	.iw-slider-readout {
+		display: none;
+	}
+
+	.iw-slider-init-readout {
+		display: inline;
+	}
+
+	.iw-slider {
+		--v: var(--iw-slider-init-v) !important;
+		--value: var(--iw-slider-init-value) !important;
+	}
+}
