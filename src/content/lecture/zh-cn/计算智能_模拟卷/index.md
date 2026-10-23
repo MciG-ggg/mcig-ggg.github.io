@@ -2,7 +2,7 @@
 title: 计算智能 模拟卷
 timestamp: 2026-10-23T18:00:00+08:00
 series: 计算智能
-tags: [计算智能, 进化算法, GA, ES, DE, PSO, NSGA-II, 约束处理, 期末复习, 模拟卷]
+tags: [课内, 计算智能]
 description: 《计算智能》期末模拟卷三套，每套一百分。题型是判断、填空、编程、大题。编程题给的是完整实现，大题是概念计算题和算法流程模拟题，每处结论都链回课件对应页。
 source_url: http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/
 toc: true

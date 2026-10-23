@@ -2,7 +2,7 @@
 title: Auto-Drive-Intro
 timestamp: 2026-10-23T11:00:00+08:00
 series: Auto-Drive-Intro
-tags: [自动驾驶, 智能驾驶, 环境感知, 视觉感知, 激光雷达, 点云, 路径规划, 地图构建, SLAM, 定位, V2X, Apollo]
+tags: [课内, Auto-Drive-Intro]
 description: 中南大学《智能驾驶导论》全六讲的读书笔记：智能驾驶概述、无人车基本框架、视觉感知、雷达感知、路径规划、地图与定位，附 APOLLO 平台上的四次大作业。每处结论都链回课件的对应幻灯片。
 source_url: http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/《智能驾驶导论》PPT-2020/
 toc: true

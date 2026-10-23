@@ -2,7 +2,7 @@
 title: 计算智能：进化算法与优化方法
 timestamp: 2026-10-21T20:30:00+08:00
 series: 计算智能
-tags: [计算智能, 进化算法, 遗传算法, 差分进化, 粒子群优化, 多目标优化, 约束优化]
+tags: [课内, 计算智能]
 description: 中南大学自动化学院《计算智能》课程课件的中文精读版。按课件的十二个章节讲：进化算法框架、GA、ES/EP、DE、PSO、术语体系、算法比较方法、多目标优化，以及约束优化问题的求解。每处结论都链回课件 PDF 的对应页。
 source_url: http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/
 toc: true

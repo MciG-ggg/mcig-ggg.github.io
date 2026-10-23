@@ -2,7 +2,7 @@
 title: Auto-Drive-Intro 代码题复习
 timestamp: 2026-10-23T15:00:00+08:00
 series: Auto-Drive-Intro
-tags: [自动驾驶, 车道线检测, OpenCV, Apollo, PID, LQR, S-T图, 期末复习]
+tags: [课内, Auto-Drive-Intro]
 description: 《智能驾驶导论》代码题复习资料。传统方法车道线检测的六步流水线，每个参数调大调小的后果，以及四次 APOLLO 作业里的命令、配置文件、规划与控制参数。
 source_url: http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/
 toc: true

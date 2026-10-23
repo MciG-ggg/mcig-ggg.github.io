@@ -2,7 +2,7 @@
 title: Auto-Drive-Intro 模拟卷
 timestamp: 2026-10-23T15:05:00+08:00
 series: Auto-Drive-Intro
-tags: [自动驾驶, 期末复习, 模拟卷, OpenCV, Apollo, PID, LQR]
+tags: [课内, Auto-Drive-Intro]
 description: 《智能驾驶导论》期末模拟卷三套，每套一百分，含选择、填空、程序、解答四类题。答案藏在每道题的按钮后面，可以单题展开，也可以整卷展开。
 source_url: http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/
 toc: true

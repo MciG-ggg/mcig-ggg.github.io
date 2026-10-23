@@ -2,7 +2,7 @@
 title: vLLM小课堂（十八）：RL-Kernel，大模型RL后训练中的训推一致性实践
 timestamp: 2026-09-26 20:00:00+08:00
 series: vLLM小课堂
-tags: [vllm, RL, 训推一致性, kernel]
+tags: [课内, vLLM小课堂]
 description: RL 后训练里推理引擎和训练引擎对同一批 token 算出两个不同的 logprob，RL-Kernel 用一套数值契约把两边对齐，在 CUDA 和 ROCm 上跑完 200 个 RL step，mismatch 全程为 0。
 source_url: https://www.bilibili.com/video/BV1Ech96cEzW/
 toc: true
