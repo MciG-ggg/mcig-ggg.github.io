@@ -36,6 +36,8 @@ check("错一个", gradeFill(["非极大值抑制", "Sobel"], "非极大值抑�
 check("少一个空", gradeFill(["非极大值抑制"], "非极大值抑制|双阈值滞后"), false);
 check("首尾空格不算错", gradeFill([" 非极大值抑制 ", "双阈值滞后"], "非极大值抑制|双阈值滞后"), true);
 check("空里有逗号", gradeFill(["a, b"], "a, b"), true);
+check("写得更长也算对", gradeFill(["最大适应度评估次数 FES_max"], "最大适应度评估次数"), true);
+check("写得太短算错", gradeFill(["最大"], "最大适应度评估次数"), false);
 check("没填", gradeFill(["", "双阈值滞后"], "非极大值抑制|双阈值滞后"), false);
 
 if (failed > 0) {

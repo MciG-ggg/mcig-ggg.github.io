@@ -188,7 +188,18 @@ export const renderQ = (node: ContainerDirectiveNode, context: InteractiveContex
 	let kind: QuestionKind = "none";
 	let inputs: RootContent[] = [];
 
-	if (type === "选择" || type === "多选") {
+	if (type === "判断") {
+		inputs = [1, 2].map(index =>
+			context.element("label", { className: [OPTION_CLASS] }, [
+				{
+					type: "html",
+					value: `<input type="radio" class="iw-quiz-choice" name="${group}" value="${index}">`
+				},
+				{ type: "text", value: ` ${index === 1 ? "正确" : "错误"}` }
+			])
+		);
+		kind = "choice";
+	} else if (type === "选择" || type === "多选") {
 		const picked = extractOptions(context, questionChildren, group, multiple || type === "多选");
 		questionChildren = picked.rest;
 		inputs = picked.inputs;

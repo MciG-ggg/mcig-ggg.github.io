@@ -143,8 +143,16 @@
 - 模拟卷的 36 道题都带答案键，选择 15 道、填空 9 道，程序和解答 12 道留给读者自己判
 - **改 remark 插件不会让 Astro 的内容存储失效**，本地验证要用 `pnpm build:clean`（清 `node_modules/.astro/data-store.json`）。CI 的 deploy 工作流已经这么做了
 
+### 计算智能 模拟卷
+
+- `src/content/lecture/zh-cn/计算智能_模拟卷/`：三套卷，每套 100 分 40 题（判断 16、填空 14、编程 4、大题 6），78 处课件页码引用
+- 取材：课件十二章 + 老师的 wiki 备考备忘录（代码速通、计算智能计算题、计算智能重点）
+- 编程题给的是完整实现：DE/rand/1/bin、NSGA-II 非支配排序与拥挤度、GA 一代、PSO
+- 大题是概念计算题和算法流程模拟题：NSGA-II 非支配排序与拥挤度、DE 单步模拟、约束处理三法、NSGA-II 机制、公平比较
+- quiz 模块加了「判断」题型：自动生成正确/错误两个选项
+
 ## 下一步
 
-1. 打开 https://mcig-ggg.github.io/lecture/Auto-Drive-Intro_模拟卷 实际做一遍第一卷，试试选完提交的对错判定和分数。
-2. `src/content/lecture/zh-cn/Auto-Drive-Intro/images/` 里有 61 张没被引用的旧图（19.8 MB），是旧版笔记留下的。要清掉的话得逐个点名删除。
+1. 打开 https://mcig-ggg.github.io/lecture/计算智能_模拟卷 做一遍第一卷，检查填空题的答案键是否够宽松（现在是「答案包含关键词即算对」）。
+2. `src/content/lecture/zh-cn/Auto-Drive-Intro/images/` 里有 61 张没被引用的旧图（19.8 MB），要清掉的话得逐个点名删除。
 3. quiz 模块可以接到代码题复习资料的「自测题」那 12 道题上，替掉现在的 `<details>` 折叠。

@@ -37,6 +37,23 @@ export const gradeChoice = (picked: string[], key: string): boolean => {
 };
 
 /**
+ * Tell whether one blank matches its key.
+ *
+ * The match is exact after trimming, but a longer answer that contains the
+ * key also counts. A reader who writes the full term is not wrong because
+ * the key holds the short form.
+ *
+ * @param value - What the reader typed.
+ * @param key - The key of the blank.
+ * @returns True when the blank is right.
+ */
+const matchBlank = (value: string, key: string): boolean => {
+	const typed = value.trim();
+	if (typed === key) return true;
+	return typed.includes(key);
+};
+
+/**
  * Grade a fill in the blank question.
  *
  * @param values - The texts the reader typed into the blanks.
@@ -46,5 +63,5 @@ export const gradeChoice = (picked: string[], key: string): boolean => {
 export const gradeFill = (values: string[], key: string): boolean => {
 	const expected = splitKey(key, "|");
 	if (values.length === 0 || values.length !== expected.length) return false;
-	return values.every((value, index) => value.trim() === expected[index]);
+	return values.every((value, index) => matchBlank(value, expected[index]));
 };
