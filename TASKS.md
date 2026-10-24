@@ -182,9 +182,30 @@
 - `review-notes-pdf/SKILL.md` 的产出结构、拓扑、脚本表同步
 - `multi-agent-workflow.md` 的拓扑加了 split 这一步
 
+### Auto-Drive-Intro 换成 2026 版课件
+
+主参考从 2020 版六讲换成 2026 版课件（`/Users/mcig/Downloads/智能驾驶导论课件.rar`，11 份 PDF，486 页）。2020 版降级成辅助材料，在正文里被引用，不单独占章。
+
+- 章节结构照抄 2026 版课件的章号：第 1、2、3、4、5、7、8 章。课件没有第六章，笔记也不补
+- 几个课件文件共用一个章号（第二章有感知基础与点云两份，第四章、第五章、第八章各两份），一章写两个块，块标题写文件自己的名字，块下的标题降一级
+- 2026 版没有路径规划，`第 5 章 路径规划` 改名 `附录 A 路径规划`，正文写明内容取自 2020 版
+- 旧笔记的第 2 章 无人车基本框架、第 3 章 视觉感知、第 4 章 雷达感知、第 6 章 地图与定位被 2026 版章节取代，这四章的原文件移到 `review-notes-20261024/old_pages/`
+- 引用 430 处，全部校验过链接前缀与页码：前缀不符 0 处，页码越界 0 处
+- 每章 lint 0 错误；跨章比对 7 章、11 份课件文件，问题 0 处
+
+### PDF 导出集成进 skill
+
+讲义页面的 PDF 用无头 Chrome 从 blog 构建产物导出，不做二次排版。
+
+- `review-notes-pdf/scripts/export_pdf.py`：在 `127.0.0.1` 起静态服务，让 Chrome 逐页 `--print-to-pdf`。构建产物的资源是绝对路径，`file://` 打开会丢样式，所以必须走 HTTP
+- 打印效果由 blog 的 `src/styles/print.css` 决定：藏掉导航、目录栏、复制按钮，暗色主题下把 `color-scheme` 钉到 light
+- PDF 发布到 AList 的 `讲义/` 目录，目录页的「PDF 版」一节链过去，路径和文件名都百分号编码
+- 目录页自己的 PDF 改名 `Auto-Drive-Intro.pdf`
+
 ## 下一步
 
 1. 打开 https://mcig-ggg.github.io/lecture/计算智能_进化算法与优化方法 从目录页进一章看看翻起来是否顺手。
 2. `Auto-Drive-Intro_代码题复习` 和两套模拟卷没有拆，模拟卷本来就该整卷做，代码题复习 533 行一页还行。要拆说一声。
 3. 交互模块还没在真实文章里用过。挑一篇有数据表的笔记试一次 `:::sortable` 和 `:::chart`。
 4. 《Code Review 教程》已从 draft 改成正式发布。改动它的正文用 `docs/course-drafts/codereview/scripts/integrate.py` 重新生成，不要手改已发布的那页。
+5. `Auto-Drive-Intro` 的 PDF 已发布到 AList `讲义/` 目录，浏览器打开 `http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/讲义/` 看得到列表。

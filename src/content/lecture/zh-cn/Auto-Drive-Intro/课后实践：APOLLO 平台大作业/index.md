@@ -3,7 +3,7 @@ title: 课后实践：APOLLO 平台大作业
 timestamp: 2026-10-23T11:00:00+08:00
 series: Auto-Drive-Intro
 tags: [课内, Auto-Drive-Intro]
-description: 前面六讲讲的是原理，这一章讲的是动手。课程把四次作业挂在 Apollo 平台上，从可视化调试一直到控制参数分析，正好覆盖一条完整的链路：确认…
+description: 前面几章讲的是原理，这一章讲的是动手。课程把四次作业挂在 Apollo 平台上，从可视化调试一直到控制参数分析，正好覆盖一条完整的链路：确认…
 source_url: http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/《智能驾驶导论》PPT-2020/
 toc: true
 draft: false
@@ -19,7 +19,7 @@ host: 10.188.31.55:5244
 
 ## 课后实践：APOLLO 平台大作业
 
-前面六讲讲的是原理，这一章讲的是动手。课程把四次作业挂在 Apollo 平台上，从可视化调试一直到控制参数分析，正好覆盖一条完整的链路：确认数据进得来、算出走哪条线、算出走多快、最后把指令变成方向盘和油门。四次作业不是四个孤立的实验，它们对应课程正文里的具体章节：路径规划和速度规划对应第 5 章的路径规划，车辆控制对应第 2 章的纵向控制与横向控制，作业一用到的 cyber 消息总线与数据流对应第 2 章的软件架构。
+前面几章讲的是原理，这一章讲的是动手。课程把四次作业挂在 Apollo 平台上，从可视化调试一直到控制参数分析，正好覆盖一条完整的链路：确认数据进得来、算出走哪条线、算出走多快、最后把指令变成方向盘和油门。四次作业不是四个孤立的实验，它们对应课程正文里的具体章节：路径规划和速度规划对应附录 A 的路径规划，车辆控制对应第 7 章的 PID 与 LQR，作业一用到的 cyber 消息总线与数据流对应第 1 章的软件栈。
 
 ```mermaid
 flowchart LR
@@ -33,10 +33,10 @@ flowchart LR
 
 | 作业 | Apollo 模块 | 课程章节 | 讲次材料 | 这一环要回答的问题 |
 | --- | --- | --- | --- | --- |
-| 一 | cyber / Dreamview / PNC Monitor | 第 2 章 无人车基本框架（软件架构与数据控制流） | 第 2 讲 [第2讲 无人车基本框架.pptx · p.16](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC2%E8%AE%B2%20%E6%97%A0%E4%BA%BA%E8%BD%A6%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6.pptx) | 数据有没有真的进到模块里 |
-| 二 | Planning 路径规划 / 开放空间规划 | 第 5 章 路径规划 | 第 5 讲 [第5讲 路径规划.pptx · p.9](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC5%E8%AE%B2%20%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92.pptx) | 走哪条线，路边界在哪 |
-| 三 | Planning 速度规划 | 第 5 章 路径规划（轨迹生成与最优轨迹选择） | 第 5 讲 [第5讲 路径规划.pptx · p.11](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC5%E8%AE%B2%20%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92.pptx) | 走多快，为什么慢下来 |
-| 四 | Control（纵向 PID / 横向 LQR） | 第 2 章 无人车基本框架（纵向控制与横向控制） | 第 2 讲 [第2讲 无人车基本框架.pptx · p.49](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC2%E8%AE%B2%20%E6%97%A0%E4%BA%BA%E8%BD%A6%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6.pptx) | 规划指令怎么变成方向盘和油门 |
+| 一 | cyber / Dreamview / PNC Monitor | 第 1 章 智能驾驶概述（软件栈与数据控制流） | 第 2 讲 [第2讲 无人车基本框架.pptx · p.16](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC2%E8%AE%B2%20%E6%97%A0%E4%BA%BA%E8%BD%A6%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6.pptx) | 数据有没有真的进到模块里 |
+| 二 | Planning 路径规划 / 开放空间规划 | 附录 A 路径规划 | 第 5 讲 [第5讲 路径规划.pptx · p.9](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC5%E8%AE%B2%20%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92.pptx) | 走哪条线，路边界在哪 |
+| 三 | Planning 速度规划 | 附录 A 路径规划（轨迹生成与最优轨迹选择） | 第 5 讲 [第5讲 路径规划.pptx · p.11](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC5%E8%AE%B2%20%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92.pptx) | 走多快，为什么慢下来 |
+| 四 | Control（纵向 PID / 横向 LQR） | 第 7 章 控制理论（PID 与 LQR） | 第 2 讲 [第2讲 无人车基本框架.pptx · p.49](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC2%E8%AE%B2%20%E6%97%A0%E4%BA%BA%E8%BD%A6%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6.pptx) | 规划指令怎么变成方向盘和油门 |
 
 作业一是整条链路的入口检查，作业四是出口检查，中间两次作业都在 Planning 内部，一次管横向一次管纵向。
 
