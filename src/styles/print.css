@@ -1,0 +1,71 @@
+/*
+ * Print styles.
+ *
+ * A lecture page printed to PDF is a study handout, so the site chrome goes
+ * away: no navigation, no table of contents, no copy buttons. The article
+ * keeps its own title and metadata, because a handout needs them.
+ */
+
+@media print {
+	@page {
+		size: A4;
+		margin: 18mm 16mm 20mm;
+	}
+
+	html,
+	body {
+		background: #fff !important;
+	}
+
+	/* The palette is `light-dark()`, so a dark theme gives light text. On
+	   paper that text is unreadable, so the print stylesheet pins the light
+	   palette and the article keeps its normal colors. */
+	:root,
+	[data-theme="light"],
+	[data-theme="dark"] {
+		color-scheme: light;
+	}
+
+	/* The site header, the table of contents and the footer are navigation.
+	   The article's own header keeps its title, so only the site one goes. */
+	#body > header,
+	footer,
+	aside,
+	nav,
+	[role="navigation"] {
+		display: none !important;
+	}
+
+	/* The reading-progress bar, the scroll-position widget, the copy buttons. */
+	[aria-hidden="true"].fixed,
+	button[title],
+	button[aria-label],
+	#body header button {
+		display: none !important;
+	}
+
+	.markdown {
+		max-width: none !important;
+		width: 100% !important;
+	}
+
+	.markdown img,
+	.markdown figure {
+		break-inside: avoid;
+	}
+
+	.markdown h2,
+	.markdown h3 {
+		break-after: avoid;
+	}
+
+	.markdown pre {
+		break-inside: avoid;
+		white-space: pre-wrap;
+	}
+
+	.markdown a {
+		color: inherit;
+		text-decoration: none;
+	}
+}
