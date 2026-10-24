@@ -161,6 +161,19 @@
 - 顺手修了计算智能笔记的 410 处短格式引用（`[p. 2]` 改成 `[文件名 · p.2]`），这篇笔记从来没通过过 lint
 - lint 加了 `--index-page`：目录页没有正文，不需要溯源引用
 
+### AI 时代下的 Code Review 教程
+
+三场 B 站视频合成一篇教程，落在 `src/content/lecture/zh-cn/CodeReview教程_AI时代下的CodeReview/`。
+
+- 源：御风大世界《code review 真的有必要吗》（2023-05-07）、码农高天《【Code Review】AI时代的CR还有意义么？一起看一个模板解析库》（2026-10-03）、杜子源源《实习/科研/学习中不用AI干不完》（2026-10-19）
+- 案例库是 temparse（https://github.com/jiang-zhexin/temparse ，Python 3.14 的 t-string 模板解析库），仓库源码抓下来当写作依据
+- 六章：流程位置 / 审查清单与沟通心态 / 读代码 / 设计层分歧 / 工程化收尾 / 判断力
+- 12 张图全部从视频抽帧，逐张目视检查后裁剪；两个标题卡（需要什么人参加、到底要review什么、的心态很重要）和三段能力分级叠图是唯一值得留的文字画面
+- 65 处时间戳溯源，全部回查字幕原文校准秒数
+- 摘要在 `work/AI时代CodeReview教程/`：outline、glossary、6 份 chapter brief、clean.srt、切片、writer 草稿、consistency 报告
+- 审校 agent 报了 26 个问题（8 必须改、11 建议改），自己逐条改完：ASR 错字、切片越界、跨章重复代码块、术语漂移
+- 顺带发现 `astro check` 的 Duplicate id 警告是旧目录名残留导致的缓存问题，`pnpm build:clean` 后消失
+
 ### skill 同步
 
 - 共享契约 §1 写了拆页结构和目录页写法，§2 加了「tags 只放课内和课程名」，§10 检查清单加了拆页和标签两项
@@ -172,3 +185,4 @@
 1. 打开 https://mcig-ggg.github.io/lecture/计算智能_进化算法与优化方法 从目录页进一章看看翻起来是否顺手。
 2. `Auto-Drive-Intro_代码题复习` 和两套模拟卷没有拆，模拟卷本来就该整卷做，代码题复习 533 行一页还行。要拆说一声。
 3. 交互模块还没在真实文章里用过。挑一篇有数据表的笔记试一次 `:::sortable` 和 `:::chart`。
+4. 《Code Review 教程》六章还是 draft，确认后改 `draft: false` 再单独提交一次。
