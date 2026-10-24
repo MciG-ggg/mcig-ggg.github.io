@@ -6,7 +6,7 @@ tags: [课内, CodeReview教程]
 description: code review 在开发流程里的位置：需求、设计评审、编码、提测四个节点之间卡在哪，谁参与，QA 为什么要在场。
 source_url: https://www.bilibili.com/video/BV1Dh4y1J7iG/
 toc: true
-draft: true
+draft: false
 ---
 
 ```cardlink

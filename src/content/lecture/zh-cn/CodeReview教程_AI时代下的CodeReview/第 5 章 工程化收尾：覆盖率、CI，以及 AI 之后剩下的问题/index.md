@@ -6,7 +6,7 @@ tags: [课内, CodeReview教程]
 description: 测试没有 coverage、GitHub workflow 只有一个发布流程；AI 与 linter 消掉琐碎问题之后，design、interface、CI 成为 review 的新战场。
 source_url: https://www.bilibili.com/video/BV1RfaX6sESp/
 toc: true
-draft: true
+draft: false
 ---
 
 ```cardlink

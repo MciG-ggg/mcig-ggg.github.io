@@ -6,7 +6,7 @@ tags: [课内, CodeReview教程]
 description: 把 code review 拆成三个问题来答：流程里它在什么位置、清单上查什么、AI 时代哪些问题消失哪些问题浮出。案例是 temparse 这个模板解析库，结论落在判断力上。
 source_url: https://www.bilibili.com/video/BV1RfaX6sESp/
 toc: false
-draft: true
+draft: false
 ---
 
 

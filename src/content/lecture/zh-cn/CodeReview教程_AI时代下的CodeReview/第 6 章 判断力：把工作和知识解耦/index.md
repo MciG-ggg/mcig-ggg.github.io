@@ -6,7 +6,7 @@ tags: [课内, CodeReview教程]
 description: 实习生用 AI 写算子却看不懂的困境：把工作与知识解耦，以 50 行代码为目标迭代，按能力、基础、导向分三层，各层该练什么。
 source_url: https://www.bilibili.com/video/BV1punn6JEWi/
 toc: true
-draft: true
+draft: false
 ---
 
 ```cardlink

@@ -6,7 +6,7 @@ tags: [课内, CodeReview教程]
 description: 小写 class parse 的 PEP 718 理由、Conversion 与 FormatConversion 装饰器该不该存在、大括号语义的直觉冲突，以及 JSON 分支破坏 interface 一致性。
 source_url: https://www.bilibili.com/video/BV1RfaX6sESp/
 toc: true
-draft: true
+draft: false
 ---
 
 ```cardlink

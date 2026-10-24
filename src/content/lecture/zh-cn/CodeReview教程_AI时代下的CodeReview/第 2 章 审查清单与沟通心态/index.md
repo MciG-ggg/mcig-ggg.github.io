@@ -6,7 +6,7 @@ tags: [课内, CodeReview教程]
 description: 五个维度的审查清单：需求实现、可读性、代码规范、对现有逻辑的影响、文档改动；以及第一次做 review 时的心理落差和沟通分寸。
 source_url: https://www.bilibili.com/video/BV1Dh4y1J7iG/
 toc: true
-draft: true
+draft: false
 ---
 
 ```cardlink
