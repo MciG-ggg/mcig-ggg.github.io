@@ -11,15 +11,6 @@ WORK = Path(__file__).resolve().parent.parent
 REPO = WORK.parents[2]
 BASE = REPO / "src/content/lecture/zh-cn/CodeReview教程_AI时代下的CodeReview"
 
-CH = {
-    1: "第 1 章 Code Review 在流程中的位置",
-    2: "第 2 章 审查清单与沟通心态",
-    3: "第 3 章 读一个模板解析库的代码",
-    4: "第 4 章 设计层的分歧",
-    5: "第 5 章 工程化收尾与 AI 之后的问题",
-    6: "第 6 章 判断力与 AI 的分工",
-}
-
 # (chapter, filename, video, seconds, crop, caption)
 FIGURES = [
     (1, "fig-card-roles.png", "BV1Dh4y1J7iG", 114, None,
@@ -52,7 +43,7 @@ FIGURES = [
 def main() -> None:
     manifest = []
     for chapter, name, video, second, crop, caption in FIGURES:
-        out = BASE / CH[chapter] / "images" / name
+        out = BASE / "images" / name
         out.parent.mkdir(parents=True, exist_ok=True)
         cmd = [
             "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",

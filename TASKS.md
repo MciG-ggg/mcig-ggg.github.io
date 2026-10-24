@@ -163,7 +163,7 @@
 
 ### AI 时代下的 Code Review 教程
 
-三场 B 站视频合成一篇教程，落在 `src/content/lecture/zh-cn/CodeReview教程_AI时代下的CodeReview/`。
+三场 B 站视频合成一篇教程，落在 `src/content/lecture/zh-cn/CodeReview教程_AI时代下的CodeReview/`。**一页**，六章是页内的六个 `##` 小节。
 
 - 源：御风大世界《code review 真的有必要吗》（2023-05-07）、码农高天《【Code Review】AI时代的CR还有意义么？一起看一个模板解析库》（2026-10-03）、杜子源源《实习/科研/学习中不用AI干不完》（2026-10-19）
 - 案例库是 temparse（https://github.com/jiang-zhexin/temparse ，Python 3.14 的 t-string 模板解析库），仓库源码抓下来当写作依据
@@ -174,6 +174,7 @@
 - 审校 agent 报了 26 个问题（8 必须改、11 建议改），自己逐条改完：ASR 错字、切片越界、跨章重复代码块、术语漂移
 - 顺带发现 `astro check` 的 Duplicate id 警告是旧目录名残留导致的缓存问题，`pnpm build:clean` 后消失
 - 顺带把讲义页面的打印样式补上：`src/styles/print.css` 去掉导航、目录、复制按钮，保留标题与元信息；暗色主题打印时把 `color-scheme` 钉到 light，否则白底浅色字打出来看不见
+- 原来拆成目录页加六个章节页，后来合成一页：章标题带 `{#chN}` 显式 id，跨章链接改成页内锚点 `#chN`，12 张图并到一个 `images/`
 
 ### skill 同步
 
@@ -187,4 +188,3 @@
 2. `Auto-Drive-Intro_代码题复习` 和两套模拟卷没有拆，模拟卷本来就该整卷做，代码题复习 533 行一页还行。要拆说一声。
 3. 交互模块还没在真实文章里用过。挑一篇有数据表的笔记试一次 `:::sortable` 和 `:::chart`。
 4. 《Code Review 教程》已从 draft 改成正式发布。改动它的正文用 `docs/course-drafts/codereview/scripts/integrate.py` 重新生成，不要手改已发布的那页。
-4. 《Code Review 教程》六章还是 draft，确认后改 `draft: false` 再单独提交一次。

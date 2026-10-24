@@ -18,7 +18,7 @@ city, year = parse[str, int](
 )
 ```
 
-读法就是调用一个函数。可 Python 当时的版本没法给函数直接加类型参数，于是作者把它做成 class，用 `__new__` 顶替函数入口（源码见[第 3 章 读一个模板解析库的代码](<../第 3 章 读一个模板解析库的代码>)）。
+读法就是调用一个函数。可 Python 当时的版本没法给函数直接加类型参数，于是作者把它做成 class，用 `__new__` 顶替函数入口（源码见[第 3 章 读一个模板解析库的代码](#ch3)）。
 
 `__new__` 的 docstring 把这个取舍写清楚了：等到 PEP 718 被接受，这个 class 就由同名 function 替回去。视频里提到 PEP 718 由 Guido 本人提出，当时尚未被接受。
 
@@ -65,7 +65,7 @@ class FormatConversion[T]:
 
 ![Conversion 与 FormatConversion 两个装饰器类的实现](images/fig-format-conversion.png)
 
-模板侧的分派写在 `_convert` 里，用 match case 逐个匹配：`Conversion` 命中第一个分支，`FormatConversion` 命中第二个分支，完整的分派表在[第 3 章 读一个模板解析库的代码](<../第 3 章 读一个模板解析库的代码>)。
+模板侧的分派写在 `_convert` 里，用 match case 逐个匹配：`Conversion` 命中第一个分支，`FormatConversion` 命中第二个分支，完整的分派表在[第 3 章 读一个模板解析库的代码](#ch3)。
 
 README 里的自定义转换例子把这条路径讲得最清楚。
 

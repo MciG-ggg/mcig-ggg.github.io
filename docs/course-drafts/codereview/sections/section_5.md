@@ -60,7 +60,7 @@ CI 要搭起来，最低的一套是：push 和 pull request 上跑测试、跑 
 
 > 你的代码看起来都是挺靠谱的代码，但是从项目的角度说，我们依然有大量可以 review 的问题。我们的 design，我们的 interface，我们的 CI，有很多东西是我们可以去思考、可以去改进的。
 
-design、interface、CI 三样都摆在那里 [14:51](https://www.bilibili.com/video/BV1RfaX6sESp/?t=891)。代码看着靠谱，项目的骨架还是得有人拍板。[第 4 章 设计层的分歧：装饰器、interface 与一致性](<../第 4 章 设计层的分歧：装饰器、interface 与一致性>)那些设计层面的分歧——装饰器怎么分、哪些类型该在 run time 拦下来——取决于你想要一套什么样的 interface。AI 不会替你把这个问题想清楚。
+design、interface、CI 三样都摆在那里 [14:51](https://www.bilibili.com/video/BV1RfaX6sESp/?t=891)。代码看着靠谱，项目的骨架还是得有人拍板。[第 4 章 设计层的分歧：装饰器、interface 与一致性](#ch4)那些设计层面的分歧——装饰器怎么分、哪些类型该在 run time 拦下来——取决于你想要一套什么样的 interface。AI 不会替你把这个问题想清楚。
 
 ### 这些事 AI 能做吗
 

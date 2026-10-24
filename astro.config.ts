@@ -47,6 +47,19 @@ import { ZeoSevenFonts } from "./src/fonts/config";
 export default defineConfig({
 	site: "https://mcig-ggg.github.io/",
 	trailingSlash: "never",
+	// The code review tutorial was published as a directory page plus one
+	// page per chapter, then merged into a single page. The chapter URLs are
+	// already indexed, so they redirect to the merged page.
+	redirects: {
+		"/lecture/CodeReview教程_AI时代下的CodeReview/第 1 章 Code Review 在流程中的位置": "/lecture/CodeReview教程_AI时代下的CodeReview",
+		"/lecture/CodeReview教程_AI时代下的CodeReview/第 2 章 审查清单与沟通心态": "/lecture/CodeReview教程_AI时代下的CodeReview",
+		"/lecture/CodeReview教程_AI时代下的CodeReview/第 3 章 读一个模板解析库的代码": "/lecture/CodeReview教程_AI时代下的CodeReview",
+		"/lecture/CodeReview教程_AI时代下的CodeReview/第 4 章 设计层的分歧：装饰器、interface 与一致性":
+			"/lecture/CodeReview教程_AI时代下的CodeReview",
+		"/lecture/CodeReview教程_AI时代下的CodeReview/第 5 章 工程化收尾：覆盖率、CI，以及 AI 之后剩下的问题":
+			"/lecture/CodeReview教程_AI时代下的CodeReview",
+		"/lecture/CodeReview教程_AI时代下的CodeReview/第 6 章 判断力：把工作和知识解耦": "/lecture/CodeReview教程_AI时代下的CodeReview"
+	},
 	i18n: {
 		...siteConfig.i18n,
 		routing: {
