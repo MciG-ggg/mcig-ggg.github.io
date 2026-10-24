@@ -58,7 +58,15 @@ export default defineConfig({
 			"/lecture/CodeReview教程_AI时代下的CodeReview",
 		"/lecture/CodeReview教程_AI时代下的CodeReview/第 5 章 工程化收尾：覆盖率、CI，以及 AI 之后剩下的问题":
 			"/lecture/CodeReview教程_AI时代下的CodeReview",
-		"/lecture/CodeReview教程_AI时代下的CodeReview/第 6 章 判断力：把工作和知识解耦": "/lecture/CodeReview教程_AI时代下的CodeReview"
+		"/lecture/CodeReview教程_AI时代下的CodeReview/第 6 章 判断力：把工作和知识解耦": "/lecture/CodeReview教程_AI时代下的CodeReview",
+		// The Auto-Drive-Intro note follows the 2026 courseware now. Five
+		// chapter URLs from the old six-chapter layout are gone, so they
+		// redirect to the chapter that took over their content.
+		"/lecture/Auto-Drive-Intro/第 2 章 无人车基本框架": "/lecture/Auto-Drive-Intro/第 1 章 智能驾驶概述",
+		"/lecture/Auto-Drive-Intro/第 3 章 视觉感知": "/lecture/Auto-Drive-Intro/第 2 章 环境感知",
+		"/lecture/Auto-Drive-Intro/第 4 章 雷达感知": "/lecture/Auto-Drive-Intro/第 2 章 环境感知",
+		"/lecture/Auto-Drive-Intro/第 5 章 路径规划": "/lecture/Auto-Drive-Intro/附录 A 路径规划",
+		"/lecture/Auto-Drive-Intro/第 6 章 地图与定位": "/lecture/Auto-Drive-Intro/第 3 章 高精度地图"
 	},
 	i18n: {
 		...siteConfig.i18n,
