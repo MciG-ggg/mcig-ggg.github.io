@@ -1,0 +1,62 @@
+{
+	"series": "CodeReview教程",
+	"tags": ["课内", "CodeReview教程"],
+	"directory": "CodeReview教程_AI时代下的CodeReview",
+	"chapters": [
+		{
+			"n": 1,
+			"dir": "第 1 章 Code Review 在流程中的位置",
+			"title": "第 1 章 Code Review 在流程中的位置",
+			"video": "BV1Dh4y1J7iG",
+			"timestamp": "2026-10-24T10:30:00+08:00",
+			"description": "code review 在开发流程里的位置：需求、设计评审、编码、提测四个节点之间卡在哪，谁参与，QA 为什么要在场。",
+			"summary": "code review 在开发流程里的位置：什么时候做、谁参与、QA 为什么要在场"
+		},
+		{
+			"n": 2,
+			"dir": "第 2 章 审查清单与沟通心态",
+			"title": "第 2 章 审查清单与沟通心态",
+			"video": "BV1Dh4y1J7iG",
+			"timestamp": "2026-10-24T10:30:00+08:00",
+			"description": "五个维度的审查清单：需求实现、可读性、代码规范、对现有逻辑的影响、文档改动；以及第一次做 review 时的心理落差和沟通分寸。",
+			"summary": "一份能落地的审查清单：需求、可读性、规范、对现有逻辑的影响、文档，外加 review 时的沟通分寸"
+		},
+		{
+			"n": 3,
+			"dir": "第 3 章 读一个模板解析库的代码",
+			"title": "第 3 章 读一个模板解析库的代码",
+			"video": "BV1RfaX6sESp",
+			"timestamp": "2026-10-24T10:30:00+08:00",
+			"description": "以 temparse 为例读一遍代码：t-string 模板、类型参数签名、预编译正则、match case 分派转换，170 行里值得学与值得商量的地方。",
+			"summary": "以 temparse 为例读一遍代码：t-string 模板、泛型签名、预编译正则、match case 分派转换"
+		},
+		{
+			"n": 4,
+			"dir": "第 4 章 设计层的分歧：装饰器、interface 与一致性",
+			"title": "第 4 章 设计层的分歧：装饰器、interface 与一致性",
+			"video": "BV1RfaX6sESp",
+			"timestamp": "2026-10-24T10:30:00+08:00",
+			"description": "小写 class parse 的 PEP 718 理由、Conversion 与 FormatConversion 装饰器该不该存在、大括号语义的直觉冲突，以及 JSON 分支破坏 interface 一致性。",
+			"summary": "三个设计分歧：小写 class parse 的 PEP 718 理由、装饰器该不该存在、JSON 分支破坏 interface 一致性"
+		},
+		{
+			"n": 5,
+			"dir": "第 5 章 工程化收尾：覆盖率、CI，以及 AI 之后剩下的问题",
+			"title": "第 5 章 工程化收尾：覆盖率、CI，以及 AI 之后剩下的问题",
+			"video": "BV1RfaX6sESp",
+			"timestamp": "2026-10-24T10:30:00+08:00",
+			"description": "测试没有 coverage、GitHub workflow 只有一个发布流程；AI 与 linter 消掉琐碎问题之后，design、interface、CI 成为 review 的新战场。",
+			"summary": "测试没有 coverage、workflow 只有一个发布流程；AI 消掉琐碎问题后 design、interface、CI 成为新战场"
+		},
+		{
+			"n": 6,
+			"dir": "第 6 章 判断力：把工作和知识解耦",
+			"title": "第 6 章 判断力：把工作和知识解耦",
+			"video": "BV1punn6JEWi",
+			"timestamp": "2026-10-24T10:30:00+08:00",
+			"description": "实习生用 AI 写算子却看不懂的困境：把工作与知识解耦，以 50 行代码为目标迭代，按能力、基础、导向分三层，各层该练什么。",
+			"summary": "实习生用 AI 写算子却看不懂：把工作与知识解耦，以 50 行代码为目标迭代，按能力、基础、导向分三层"
+		}
+	],
+	"draft": false
+}

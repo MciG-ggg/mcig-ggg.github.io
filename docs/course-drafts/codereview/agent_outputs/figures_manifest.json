@@ -1,0 +1,112 @@
+{
+	"figures": [
+		{
+			"chapter": 1,
+			"id": "1-fig-card-roles",
+			"type": "frame",
+			"path": "images/fig-card-roles.png",
+			"video": "BV1Dh4y1J7iG",
+			"interval": "01:54",
+			"caption": "御风大世界在视频里打出「需要什么人参加？」这一页标题卡"
+		},
+		{
+			"chapter": 2,
+			"id": "2-fig-card-what",
+			"type": "frame",
+			"path": "images/fig-card-what.png",
+			"video": "BV1Dh4y1J7iG",
+			"interval": "02:55",
+			"caption": "标题卡「到底要review什么？」"
+		},
+		{
+			"chapter": 2,
+			"id": "2-fig-card-mindset",
+			"type": "frame",
+			"path": "images/fig-card-mindset.png",
+			"video": "BV1Dh4y1J7iG",
+			"interval": "04:25",
+			"caption": "标题卡「心态很重要！」"
+		},
+		{
+			"chapter": 3,
+			"id": "3-fig-readme-types",
+			"type": "frame",
+			"path": "images/fig-readme-types.png",
+			"video": "BV1RfaX6sESp",
+			"interval": "00:50",
+			"caption": "temparse 的 README：Quick Start 与 Supported Types 表"
+		},
+		{
+			"chapter": 3,
+			"id": "3-fig-parser-generics",
+			"type": "frame",
+			"path": "images/fig-parser-generics.png",
+			"video": "BV1RfaX6sESp",
+			"interval": "02:10",
+			"caption": "Parser 类的源码：类型参数与 cached_property 缓存的正则"
+		},
+		{
+			"chapter": 3,
+			"id": "3-fig-convert-case",
+			"type": "frame",
+			"path": "images/fig-convert-case.png",
+			"video": "BV1RfaX6sESp",
+			"interval": "04:40",
+			"caption": "_convert 用 match case 按 origin 分派类型转换"
+		},
+		{
+			"chapter": 4,
+			"id": "4-fig-parse-class",
+			"type": "frame",
+			"path": "images/fig-parse-class.png",
+			"video": "BV1RfaX6sESp",
+			"interval": "07:00",
+			"caption": "小写 class parse 的源码与 PEP 718 的注释"
+		},
+		{
+			"chapter": 4,
+			"id": "4-fig-format-conversion",
+			"type": "frame",
+			"path": "images/fig-format-conversion.png",
+			"video": "BV1RfaX6sESp",
+			"interval": "08:20",
+			"caption": "Conversion 与 FormatConversion 两个装饰器类的实现"
+		},
+		{
+			"chapter": 4,
+			"id": "4-fig-json-case",
+			"type": "frame",
+			"path": "images/fig-json-case.png",
+			"video": "BV1RfaX6sESp",
+			"interval": "04:40",
+			"caption": "match case 的最后一段：list、dict、json 都交给 json.loads"
+		},
+		{
+			"chapter": 5,
+			"id": "5-fig-repo-tree",
+			"type": "frame",
+			"path": "images/fig-repo-tree.png",
+			"video": "BV1RfaX6sESp",
+			"interval": "14:40",
+			"caption": "temparse 的 GitHub 仓库首页：.github/workflows 只有一个发布流程"
+		},
+		{
+			"chapter": 6,
+			"id": "6-fig-chat-advice",
+			"type": "frame",
+			"path": "images/fig-chat-advice.png",
+			"video": "BV1punn6JEWi",
+			"interval": "05:00",
+			"caption": "杜子源源给出的建议截图：把工作和知识解耦，以 50 行代码为目标迭代"
+		},
+		{
+			"chapter": 6,
+			"id": "6-fig-three-tiers",
+			"type": "frame",
+			"path": "images/fig-three-tiers.png",
+			"video": "BV1punn6JEWi",
+			"interval": "08:00",
+			"caption": "视频里给出的三层能力分级：能力、基础、导向"
+		}
+	]
+}
