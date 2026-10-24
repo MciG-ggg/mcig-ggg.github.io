@@ -34,3 +34,6 @@ wrangler.toml
 # jetbrains setting folder
 .idea/
 .serena/
+
+# note-production working directory
+work/
