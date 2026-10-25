@@ -65,8 +65,14 @@ export default defineConfig({
 		"/lecture/Auto-Drive-Intro/第 2 章 无人车基本框架": "/lecture/Auto-Drive-Intro/第 1 章 智能驾驶概述",
 		"/lecture/Auto-Drive-Intro/第 3 章 视觉感知": "/lecture/Auto-Drive-Intro/第 2 章 环境感知",
 		"/lecture/Auto-Drive-Intro/第 4 章 雷达感知": "/lecture/Auto-Drive-Intro/第 2 章 环境感知",
-		"/lecture/Auto-Drive-Intro/第 5 章 路径规划": "/lecture/Auto-Drive-Intro/附录 A 路径规划",
-		"/lecture/Auto-Drive-Intro/第 6 章 地图与定位": "/lecture/Auto-Drive-Intro/第 3 章 高精度地图"
+		"/lecture/Auto-Drive-Intro/第 5 章 路径规划": "/lecture/Auto-Drive-Intro",
+		"/lecture/Auto-Drive-Intro/第 6 章 地图与定位": "/lecture/Auto-Drive-Intro/第 3 章 高精度地图",
+		// The note now stops at chapter 5. The four pages after it are gone,
+		// so their URLs redirect to the directory page.
+		"/lecture/Auto-Drive-Intro/第 7 章 控制理论": "/lecture/Auto-Drive-Intro",
+		"/lecture/Auto-Drive-Intro/第 8 章 强化学习": "/lecture/Auto-Drive-Intro",
+		"/lecture/Auto-Drive-Intro/附录 A 路径规划": "/lecture/Auto-Drive-Intro",
+		"/lecture/Auto-Drive-Intro/课后实践：APOLLO 平台大作业": "/lecture/Auto-Drive-Intro"
 	},
 	i18n: {
 		...siteConfig.i18n,

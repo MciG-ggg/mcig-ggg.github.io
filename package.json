@@ -35,6 +35,7 @@
 		"preview": "astro preview",
 		"format": "biome format --write",
 		"lint": "biome lint",
+		"lint:images": "python3 scripts/check-note-images.py",
 		"count": "git log --pretty=tformat: --numstat | grep -v package | awk '{ A += $1; S += $2; T += $1 - $2 } END { printf \"+ %s\tLines\\n- %s\tLines\\n= %s\tLines\\n\", A, S, T }'",
 		"prepare": "husky",
 		"preinstall": "npx only-allow pnpm"
@@ -117,6 +118,9 @@
 	"lint-staged": {
 		"*.{js,ts,json,jsonc,css,svelte,astro}": [
 			"biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
+		],
+		"src/content/lecture/**/*.md": [
+			"python3 scripts/check-note-images.py"
 		]
 	}
 }

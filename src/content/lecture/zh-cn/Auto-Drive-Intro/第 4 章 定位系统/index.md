@@ -54,7 +54,7 @@ $$
 
 每颗卫星画出一个半径为 $R$ 的球面，球面交点就是接收机位置，所以至少要 3 个卫星。
 
-](images/fig-04-p08.png)
+![GNSS 三角定位课件页：列出 GPS 与 GNSS 两大系统，说明 TOF 测距得出距离 R 等于传播时间乘光速，每颗卫星画出半径 R 的球面，三球面交点即接收机位置；右侧示意图标出被排除的 Location rejected](images/fig-04-p08.png)
 
 三个软肋，每个都有对应的补丁。
 
@@ -96,7 +96,7 @@ SLAM 是 Simultaneous Localization and Mapping，同时定位和建图。定位�
 
 视觉 SLAM 的框架是四个模块 [第四章 无人驾驶定位系统2.pdf · p.20](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E5%9B%9B%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E5%AE%9A%E4%BD%8D%E7%B3%BB%E7%BB%9F2.pdf#page=20)：前端是视觉里程计（Visual Odometry），估计邻近时刻的相机运动；后端是优化（滤波算法或图优化法），用局部约束关系估计最优轨迹与地图；回环检测（Loop Closing）判断是否形成回环并矫正整圈轨迹；建图产出度量地图、拓扑地图、稀疏地图或稠密地图。
 
-](images/fig-04-p20.png)
+![SLAM 视觉框架课件页：列出前端视觉里程计估计相机运动、后端优化用局部约束估计最优轨迹与地图、回环检测矫正整圈轨迹、建图产出度量拓扑稀疏稠密四类地图；底部流程图为传感器数据经前端视觉里程计、后端非线性优化到建图，另有回环检测旁路](images/fig-04-p20.png)
 
 辅助课件补上了求解手段的谱系 [第6讲 地图与定位.pptx · p.22](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC6%E8%AE%B2%20%E5%9C%B0%E5%9B%BE%E4%B8%8E%E5%AE%9A%E4%BD%8D.pptx)：贝叶斯滤波（高斯滤波 EKF/UKF、粒子滤波）、优化方法（线性方法、非线性最小二乘、松弛）。课件把这一整块称作自主机器人研究的圣杯。SLAM 系统的标准表述是：机器人从未知位置出发，在运动中根据自身位姿估计和传感器感知构建增量式地图，同时用地图更新自己的定位，用动态贝叶斯网络建模 [第6讲 地图与定位.pptx · p.21](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC6%E8%AE%B2%20%E5%9C%B0%E5%9B%BE%E4%B8%8E%E5%AE%9A%E4%BD%8D.pptx)。
 
@@ -115,7 +115,7 @@ $$
 
 结论只有一句：每次移动丢失信息，每次观测增加信息。光靠里程计推，走得越久越糊涂。
 
-](images/fig-04-p22.png)
+![定位融合技术课件页：不同源传感器信息经滤波器 KF EKF UKF PF 融合互补，列出 IMU 加 GNSS、GNSS 加 Lidar-HDmap 与 Camera-marker、VIO、IMU 加 magnetometer 矫正角度](images/fig-04-p22.png)
 
 组合导航的正式说法在辅助课件里：GPS 定位相对精准但更新频率低，惯性传感器的定位误差随时间累积但更新频率高，短时间能提供稳定的实时位置更新，两者用基于卡尔曼滤波的方法融合 [第6讲 地图与定位.pptx · p.20](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC6%E8%AE%B2%20%E5%9C%B0%E5%9B%BE%E4%B8%8E%E5%AE%9A%E4%BD%8D.pptx)。
 
@@ -135,7 +135,7 @@ Apollo 这一节参考的是论文《Robust and Precise Vehicle Localization bas
 
 **整体方案分四块。** 位置获取、机器视觉、地图导航、多源融合，分别往下接室内外高精度位置与室外高精度服务、机器视觉与双目测距、高精度地图采集与高精度导航、机器视觉与导航结合 [第四章-汽车智能驾驶定位解决方案.pdf · p.3](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E6%B1%BD%E8%BD%A6%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AE%9A%E4%BD%8D%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.pdf#page=3)。
 
-](images/fig-04-p04.png)
+![智能驾驶解决方案课件页：四个并列色块自左向右为位置获取、机器视觉、地图导航、多源融合，各自带箭头指向下方深蓝说明框，分别写室内室外高精度位置与室外高精度服务、机器视觉与双目测距、高精度地图采集与高精度导航、机器视觉与导航结合](images/fig-04-p04.png)
 
 **室外高精度服务。** 广州全域提供高精度服务，一个账号走遍广州，还能帮客户完成测试场建设并最终落地 CORS 站建设。两项关键技术：基础建设加网络冗余保证 99.99% 可用性，远高于行业标准的 95%；用网络专线加服务器的 DPDK 技术实现低延时高并发 [第四章-汽车智能驾驶定位解决方案.pdf · p.5](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E6%B1%BD%E8%BD%A6%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AE%9A%E4%BD%8D%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.pdf#page=5)。
 

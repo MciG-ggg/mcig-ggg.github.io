@@ -97,7 +97,7 @@ OpenDRIVE 的坐标系有两套 [第三章 高精度地图.pdf · p.17](http://1
 
 惯性系统给出三个姿态角和三个轴向 [第三章 高精度地图.pdf · p.18](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E9%AB%98%E7%B2%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE.pdf#page=18)：
 
-](images/fig-03-p18.png)
+![OpenDRIVE 惯性坐标系页：表格列出 Inertial system 的三个姿态角 Heading(Yaw) 偏航、Pitch 俯仰、Roll 滚转，轴向为 X 前、Y 左、Z 上；下方三图分别标注绕 Z 轴 heading、绕 Y 轴 pitch、绕 X 轴 roll 旋转](images/fig-03-p18.png)
 
 跟踪坐标系则是三个分量 [第三章 高精度地图.pdf · p.19](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E9%AB%98%E7%B2%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE.pdf#page=19)：S 是沿参考线的位置，T 是横向位置，H 是高度。这两套坐标系的换算，就是把惯性坐标下的一个点投影到参考线的切向与法向：
 
@@ -111,7 +111,7 @@ $$
 
 Apollo 的 HD Map 生产被拆成四个阶段 [第三章 高精度地图.pdf · p.10](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E9%AB%98%E7%B2%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE.pdf#page=10)：
 
-](images/fig-03-p10.png)
+![Apollo HD Map 生产流程页：四个蓝色箭头阶段依次为数据采集、数据处理、元素识别、人工验证，各配道路与限速标志照片、点云拼接与底图灰度图、深度学习点云彩色分类图，以及车道线路沿、信号灯标志牌、虚拟道路逻辑关系三张示例图](images/fig-03-p10.png)
 
 | 阶段 | 具体动作 |
 | --- | --- |
@@ -126,7 +126,7 @@ Apollo 的 HD Map 生产被拆成四个阶段 [第三章 高精度地图.pdf · 
 
 制图过程中用到的技术按模块归成四块 [第三章 高精度地图.pdf · p.13](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E9%AB%98%E7%B2%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE.pdf#page=13)：
 
-](images/fig-03-p13.png)
+![HD Map 技术模块页：点云处理栏串起运动补偿与三维模型、特征提取与点云融合、点云识别；视觉处理栏给出图像识别；多传感器融合栏为 3D-2D 投影、元素跟踪与聚类、过滤补全；底部多传感器定位列出 Lidar、Camera、IMU、GPS](images/fig-03-p13.png)
 
 - **点云处理**：运动补偿、三维模型 → 特征提取、点云融合 → 点云识别。
 - **视觉处理**：图像识别。
@@ -148,7 +148,7 @@ Lidar 和 Image 这一页把融合方案分成三条路 [第三章 高精度地�
 
 V2X 那一页把两类「传感器」放在一起对比 [第三章 高精度地图.pdf · p.27](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%B8%89%E7%AB%A0%20%E9%AB%98%E7%B2%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE.pdf#page=27)：
 
-](images/fig-03-p27.png)
+![V2X 页：左侧列两类传感器，HD Map 对应 Static Perception，V2X 对应 Low latency、High robust、Dynamic network、Beyond visual range；右侧路口三维渲染图中紫色区域标出车辆与路侧单元的感知覆盖范围](images/fig-03-p27.png)
 
 | 传感器 | 特性 |
 | --- | --- |

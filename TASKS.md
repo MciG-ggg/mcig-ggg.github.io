@@ -188,10 +188,38 @@
 
 - 章节结构照抄 2026 版课件的章号：第 1、2、3、4、5、7、8 章。课件没有第六章，笔记也不补
 - 几个课件文件共用一个章号（第二章有感知基础与点云两份，第四章、第五章、第八章各两份），一章写两个块，块标题写文件自己的名字，块下的标题降一级
-- 2026 版没有路径规划，`第 5 章 路径规划` 改名 `附录 A 路径规划`，正文写明内容取自 2020 版
 - 旧笔记的第 2 章 无人车基本框架、第 3 章 视觉感知、第 4 章 雷达感知、第 6 章 地图与定位被 2026 版章节取代，这四章的原文件移到 `review-notes-20261024/old_pages/`
 - 引用 430 处，全部校验过链接前缀与页码：前缀不符 0 处，页码越界 0 处
 - 每章 lint 0 错误；跨章比对 7 章、11 份课件文件，问题 0 处
+
+### Auto-Drive-Intro 只讲到第五章
+
+课程只讲到第五章，后面的四页删掉。
+
+- 删掉 `第 7 章 控制理论`、`第 8 章 强化学习`、`附录 A 路径规划`、`课后实践：APOLLO 平台大作业`
+- 目录页的摘要、章节列表、PDF 列表三处各删四条；frontmatter 的 `description` 与 cardlink 描述改成只提前五章
+- 四个旧 URL 加进 `astro.config.ts` 的 `redirects`，指向目录页 `/lecture/Auto-Drive-Intro`
+- `第 5 章 路径规划` 的旧重定向原本指向 `附录 A 路径规划`，改指目录页
+- APOLLO 四次作业的内容在 `Auto-Drive-Intro_代码题复习` 里讲过一遍，控制理论的内容在模拟卷第三卷里，所以删掉不丢考点
+- AList `讲义/` 目录里那四份 PDF 没有删，只是目录页不再链过去
+
+### 讲义图片的 alt 文本被截断
+
+重建 Auto-Drive-Intro 时，32 处图片引用的 `![alt` 开头整段丢失，只剩 `](images/xxx.png)`。Markdown 不认这种行，页面上 32 张图一张都不渲染，alt 也没了。
+
+- 图本身是对的，课件整页截图，内容与所在小节对得上。缺的只是 alt
+- 逐张目视看图重写 alt，40 到 120 个中文字符，说清图里的关键文字与结构
+- `lint_note.py` 查不出这个坏法：缺 `![` 的行对它来说不是图片。新增 `scripts/check-note-images.py` 专门查，挂在 lint-staged 的 `src/content/lecture/**/*.md` 上
+
+### 概率霍夫变换的原理
+
+`Auto-Drive-Intro_代码题复习` 的第四步只列了参数。补一节讲原理。
+
+- 点线对偶：笛卡尔系的点对应霍夫空间的一条线，变量与参数互换，方程从 $y=mx+b$ 变成 $b=-xm+y$
+- 竖直线斜率无穷大，改极坐标 $d=x\cos\theta+y\sin\theta$，一个点对应一条曲线
+- 累加器投票：曲线交点越多，说明那条线上真有那么多像素，票数过阈值才定一条线
+- 概率版与标准版的差别在投票之后：标准版在整张累加器上找局部极大值，概率版从命中点沿候选方向两侧行走，走过的像素从掩码清掉，所以更快
+- 长度判定是「或」不是「且」：`abs(x2-x1) >= minLineLength` 或 `abs(y2-y1) >= minLineLength`，源码在 `hough.cpp` 的 `HoughLinesProbabilistic`
 
 ### PDF 导出集成进 skill
 
@@ -208,4 +236,5 @@
 2. `Auto-Drive-Intro_代码题复习` 和两套模拟卷没有拆，模拟卷本来就该整卷做，代码题复习 533 行一页还行。要拆说一声。
 3. 交互模块还没在真实文章里用过。挑一篇有数据表的笔记试一次 `:::sortable` 和 `:::chart`。
 4. 《Code Review 教程》已从 draft 改成正式发布。改动它的正文用 `docs/course-drafts/codereview/scripts/integrate.py` 重新生成，不要手改已发布的那页。
-5. `Auto-Drive-Intro` 的 PDF 已发布到 AList `讲义/` 目录，浏览器打开 `http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/讲义/` 看得到列表。
+5. `Auto-Drive-Intro` 的 PDF 已发布到 AList `讲义/` 目录，浏览器打开 `http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/讲义/` 看得到列表。删章后 AList 上还留着第 7、8 章、附录 A、课后实践四份旧 PDF，目录页不再链过去，文件本身没有删。
+6. `Auto-Drive-Intro` 只讲到第五章之后，AList 上的 PDF 需要重导：目录页与五章各一份，跑 `export_pdf.py --route lecture/Auto-Drive-Intro`，再手工拷到 `/Volumes/dav/Nextcloud/School/Auto-Drive-Intro/讲义/`。这一步被权限拦下，没有执行。

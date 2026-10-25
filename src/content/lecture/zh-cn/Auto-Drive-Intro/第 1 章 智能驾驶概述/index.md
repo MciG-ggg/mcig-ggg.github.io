@@ -38,7 +38,7 @@ host: 10.188.31.55:5244
 
 技术演进不是一条指数曲线，而是多条路线共同推动：机械化 → 电动化 → 信息化 → 智能化 → AI 驱动驾驶。当前竞争焦点已从单点算法转向整车智能、数据闭环、算力平台与安全验证体系 [第一章 无人驾驶概述_2026.pdf · p.9](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%A6%82%E8%BF%B0_2026.pdf#page=9)。
 
-](images/fig-01-p10.png)
+![行业发展趋势页：六条路线方块图——量产路线 L2/L2+/NOA、法规路线 L3 准入与 ODD、运营路线 L4 Robotaxi、AI 路线 BEV/Occupancy、新范式 End-to-End/VLA、工程体系 仿真/安全/数据闭环](images/fig-01-p10.png)
 
 课件把当前在跑的路线拆成六条并列推进 [第一章 无人驾驶概述_2026.pdf · p.10](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%A6%82%E8%BF%B0_2026.pdf#page=10)：量产路线（L2 / L2+ / NOA）、法规路线（L3 准入与 ODD）、运营路线（L4 Robotaxi）、AI 路线（BEV / Occupancy）、新范式（End-to-End / VLA）、工程体系（仿真 / 安全 / 数据闭环）。行业的整体判断是：技术走向成熟、成本大幅下降、政策框架成型，共同推动行业迈向规模化发展，未来的竞争是技术、商业、运营与合规的综合较量。
 
@@ -128,7 +128,7 @@ host: 10.188.31.55:5244
 - **4D 毫米波雷达**：同时获取距离、速度、方位和高度信息，恶劣天气鲁棒性较强。
 - **超声波**：近距离障碍检测，常用于泊车与低速安全冗余。
 
-](images/fig-01-p33.png)
+![硬件概述页：摄像头、激光雷达、4D 毫米波雷达、超声波四类感知传感器分工说明，右侧车辆俯视图标注 Vision System、LiDAR System、Radar System 与 Supplemental Sensors 安装位置](images/fig-01-p33.png)
 
 主流方案存在纯视觉、Camera+Radar、Camera+LiDAR+Radar 等多种组合。辅助课件用两页做各类环境感知传感器对比 [第2讲 无人车基本框架.pptx · p.13](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E3%80%8A%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6%E5%AF%BC%E8%AE%BA%E3%80%8BPPT-2020/%E7%AC%AC2%E8%AE%B2%20%E6%97%A0%E4%BA%BA%E8%BD%A6%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6.pptx)。
 
@@ -162,7 +162,7 @@ $$
 
 这个式子里，加速度的微小偏差会被时间积分两次（先积出速度误差，再积出位置误差），误差随时间线性甚至平方级放大，这正是纯惯导不能单独定位置的原因 [第一章 无人驾驶概述_2026.pdf · p.44](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%A6%82%E8%BF%B0_2026.pdf#page=44)。
 
-](images/fig-01-p44.png)
+![定位原理：INS 惯导系统用 IMU 获取加速度与角速度，经状态矩阵推算下一刻位置，无校正信息时误差随时间累积导致位置发散；配图为路口 AI 感知范围示意与 s = s₀ + vt 匀速运动积分图](images/fig-01-p44.png)
 
 RTK 是载波相位差分系统：GNSS 之外多加一个静止基站，它同样能收到定位卫星信号，无人车在与 RTK 相距不远的情况下，把二者之间的干扰信号用差分消除。RTK 通过较低的更新频率提供相对准确的位置信息，INS 以较高频率提供准确性较差的姿态信息，用 Kalman Filter 整合两类数据，合并出高准确性的实时信息 [第一章 无人驾驶概述_2026.pdf · p.45](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%A6%82%E8%BF%B0_2026.pdf#page=45)。
 
@@ -184,7 +184,7 @@ RTK 是载波相位差分系统：GNSS 之外多加一个静止基站，它同�
 
 课件把无人驾驶技术要解决的问题收成四问 [第一章 无人驾驶概述_2026.pdf · p.52](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%A6%82%E8%BF%B0_2026.pdf#page=52)：我在哪、我周围有什么、他们到哪去、我要怎么走。传统模块化把四问拆成四个模块，新范式把它们并进一个模型 [第一章 无人驾驶概述_2026.pdf · p.53](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%A6%82%E8%BF%B0_2026.pdf#page=53)。
 
-](images/fig-01-p53.png)
+![自动驾驶新范式：从四个模块到统一模型，四方块为传统模块化 Localization、统一场景理解 BEV/Occupancy、未来预测 World Model、联合决策与行动 End-to-End/VLA](images/fig-01-p53.png)
 
 ### 安全体系
 

@@ -26,7 +26,7 @@ host: 10.188.31.55:5244
 
 PNC 是 Planning and Control，课件把自动驾驶软件栈按数据流画了出来：感知、定位、HD-Map 产出环境与自车状态，预测模块输出他车与行人的未来轨迹，Routing 给路径，Planning 分决策、路径、速度三层，Control 出控制量，Canbus 执行 [第五章 无人驾驶预测系统.pdf · p.5](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E9%A2%84%E6%B5%8B%E7%B3%BB%E7%BB%9F.pdf#page=5)。
 
-](images/fig-05-p05.png)
+![PNC Overview 幻灯片，左栏列出 Prediction、Routing、Planning（Decision、Path、Speed）、Control，右栏为数据流框图，Perception 与 Prediction、Routing 一起汇入 Planning，Planning 经橙色箭头连到 Control 与 Canbus，Localization 和 HD-Map 装在下方白框内，Simulated Model 为紫色块](images/fig-05-p05.png)
 
 预测的位置是感知和规划之间的那一格：感知给出「现在有什么」，预测给出「下一刻会怎样」，规划据此决定自车怎么走。行业侧的度量是 2022 年 DMV 自动驾驶报告里 Cruise、AutoX、Zoox、WeRide、DIDI 的平均接管里程（MPI）对比 [第五章 无人驾驶预测系统.pdf · p.6](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E9%A2%84%E6%B5%8B%E7%B3%BB%E7%BB%9F.pdf#page=6)。MPI 反映的是预测错了多少、规划因此要接管的频率。
 
@@ -39,7 +39,7 @@ PNC 是 Planning and Control，课件把自动驾驶软件栈按数据流画了�
 - Model-based：结合人类知识，能解 corner case。流程是行为模型给出 Turn Right、Go Straight 这样的模型，各自产生一条轨迹，更新概率，输出预测轨迹集合。
 - Data-driven：机器学习，靠更多数据。流程是观测行为加训练数据进机器学习模型，直接输出预测轨迹。
 
-](images/fig-05-p09.png)
+![Two Methods to Do Prediction 幻灯片，左侧两条路线 Model-based（Combined with human knowledge、Solve corner case）与 Data-driven（Machine learning、More data），右上是带斑马线的 T 型路口俯视图含白车与蓝车转向箭头，右下流程图显示 Model-based 由 Turn Right Model 与 Go Straight model 生成轨迹后经 Update Probabilities 输出 Predicted Trajectories，Data-driven 由 Observed Behavior 与 Training Data 进 Machine Learning 后输出 Predicted Trajectories](images/fig-05-p09.png)
 
 #### 车辆预测：从车道模型到网络结构
 
@@ -109,7 +109,7 @@ $$
 
 模型分四块：行人分组模块、稀疏时空图学习（轨迹预测模块）、轨迹整合模块 [第五章 无人驾驶预测系统实例.pdf · p.19](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E9%A2%84%E6%B5%8B%E7%B3%BB%E7%BB%9F%E5%AE%9E%E4%BE%8B.pdf#page=19)。
 
-](images/fig-05-p20.png)
+![基于群组层次的时空图神经网络行人轨迹预测方法幻灯片，编号 03，顶部两条要点说明空间交互图用自注意力识别人群中的重点行人、时间交互图用自注意力识别影响未来行为的历史轨迹，中部左右两栏展开自注意力、时空融合、非对称卷积网络与 Sparse-Softmax 结构，底部给出 sparse-softmax 公式与不做时空融合的原因](images/fig-05-p20.png)
 
 两个设计决定要记住 [第五章 无人驾驶预测系统实例.pdf · p.20](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E9%A2%84%E6%B5%8B%E7%B3%BB%E7%BB%9F%E5%AE%9E%E4%BE%8B.pdf#page=20)：
 
@@ -206,7 +206,7 @@ $$
 \mathrm{RMI} = \max_{i=1:N_{g}} \frac{2 + v_{bot}\cos(\theta_{rh}) + v_{h,i}\cos(\theta_{hr})}{\left\| p_{O^{i}_{s,i}} - p_{bot} \right\|_2}
 $$
 
-](images/fig-05-p35.png)
+![基于高斯混合模型的移动机器人社会规范化路径规划方法幻灯片，编号 04，左上给出社交群组因子 SGI 与相对运动因子 RMI 的公式，左下三张曲线图依次为 Physical Limits、SGI 与 RMI 随时间变化并对比 Ours、R-CCR、R-RRT，右上 Driving Trajectory 栅格地图绘出 Start 到 bot 的轨迹，右侧为速度 V 从 0 到 1 的彩色标尺](images/fig-05-p35.png)
 
 仿真设置有走廊、商场、展馆三类环境，环境名后的 (a)(b)(c) 表示同一环境下不同配置（不同行人数、不同起终点）。走廊每个配置做十次仿真，商场和展馆分别做了十次行人随机速度行驶和五次行人匀速行驶的仿真 [第五章 无人驾驶预测系统实例.pdf · p.37](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E9%A2%84%E6%B5%8B%E7%B3%BB%E7%BB%9F%E5%AE%9E%E4%BE%8B.pdf#page=37)。场景里紫色是优化后的机器人局部轨迹，蓝色圆周是构建的行人社交空间，同一圆周内的行人属于同一群组 [第五章 无人驾驶预测系统实例.pdf · p.34](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E9%A2%84%E6%B5%8B%E7%B3%BB%E7%BB%9F%E5%AE%9E%E4%BE%8B.pdf#page=34)。
 

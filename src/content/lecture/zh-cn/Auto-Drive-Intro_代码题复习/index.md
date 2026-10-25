@@ -22,7 +22,7 @@ host: 10.188.31.55:5244
 - 控制模块 — 纵向 PID 的结构，横向 LQR 的四个权重，以及参数到曲线的因果链
 - 自测题 — 十二道，答案折叠在每道题后面
 
-本文的引用里，`· p.N` 对 docx 是第几份材料，对代码文件是行号。
+本文的引用里，`· p.N` 对 docx 是第几份材料，对 PDF 是第几页，对代码文件是行号。
 
 ## 传统车道线检测：从灰度到车道线
 
@@ -110,7 +110,7 @@ lines = cv2.HoughLinesP(roi_edges, 1, np.pi / 180, HOUGH_THRESHOLD,
                         minLineLength=HOUGH_MIN_LEN, maxLineGap=HOUGH_MAX_GAP)
 ```
 
-四个参数各管一件事：
+五个参数各管一件事：
 
 - `rho=1`：霍夫空间中 $\rho$ 的分辨率，单位是像素。
 - `theta=np.pi/180`：$\theta$ 的分辨率，1 度。
@@ -118,9 +118,39 @@ lines = cv2.HoughLinesP(roi_edges, 1, np.pi / 180, HOUGH_THRESHOLD,
 - `minLineLength=20`：线段的最短像素长度，短于此的丢弃。
 - `maxLineGap=20`：允许的最大断裂。相距 20 像素以内的两个点算同一条线。
 
-`HoughLinesP` 的 P 是 Probabilistic（概率），它不做完整的投票，而是从随机点出发做梯度方向的爬山，找到一条线段就记一条。所以它比 `HoughLines` 快，代价是结果带随机性（OpenCV 内部有固定随机种子，默认可复现）。
+`HoughLinesP` 的 P 是 Probabilistic（概率）。它和标准霍夫的差别在投票之后怎么把 `(θ, d)` 变回线段，原理在下面那节。
 
 返回值的形状是 `(N, 1, 4)`，每条线段四个数 `(x1, y1, x2, y2)`。`lines.reshape(-1, 4)` 把它压成 `(N, 4)`。
+
+#### 概率霍夫变换的原理
+
+霍夫变换的思路是把「找直线」变成「找点」。笛卡尔系里直线的方程是 $y = mx + b$，变量是 $(x, y)$、参数是 $(m, b)$。把变量和参数互换，方程写成
+
+$$
+b = -xm + y
+$$
+
+笛卡尔系里的一个点 $(x, y)$ 对应霍夫空间里的一条直线，多条经过该点的直线在霍夫空间里交于一点 [第二章 无人驾驶感知基础.pdf · p.12](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=12)。
+
+![课件页：霍夫变换得到车道线，上半部分是笛卡尔坐标系与霍夫空间的变量参数互换表，下半部分是四组散点图，把同一条直线在两个空间里对应的点和线画出来](images/rl-hough-duality.png)
+
+竖直线的斜率是无穷大，$y = mx + b$ 表达不出来，于是改用极坐标表示直线，方程是
+
+$$
+d = x\cos\theta + y\sin\theta
+$$
+
+此时变量是 $(\theta, d)$、参数是 $(x, y)$。笛卡尔系的一个点对应霍夫空间里的一条曲线 $d_i = x\cos\theta_i + y\sin\theta_i$，一条曲线经过 $(\theta_i, d_i)$ [第二章 无人驾驶感知基础.pdf · p.13](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=13)。
+
+每个边缘像素在霍夫空间里划出一条曲线，曲线两两相交。交点表示的线在笛卡尔坐标系里对应的点越多，说明这条线上真的有那么多像素。所以累加器给每个 $(\theta, d)$ 格子记一票，票数超过阈值就确定一条线 [第二章 无人驾驶感知基础.pdf · p.13](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=13)。
+
+**概率版和标准版差在哪。** 投票这一步两者一样：每个边缘像素都对全部采样角度投票，票数达到 `threshold` 的那个角度成为候选方向。差别在投票之后。标准霍夫（`HoughLines`）等所有点投完，再在整张累加器上找局部极大值，返回的是无限长的直线。概率版从命中点沿候选方向向两侧行走，碰到边缘像素就更新端点，连续空白超过 `maxLineGap` 才停下；走过的像素从掩码里清掉，于是同一条线不会被提取两次，第二条线也不会借用第一条的像素。下一个点如果落在已清空的像素上，代码直接跳过它，所以它比标准霍夫快。
+
+点与点的处理顺序是随机的。顺序不同，找到的线段就可能不同。OpenCV 内部把随机数种子固定住，所以同样的输入每次得到同样的结果。
+
+**长度判定是「或」。** `abs(x2 - x1) >= minLineLength` 或 `abs(y2 - y1) >= minLineLength`，满足其一即保留，不是两个都要满足 [OpenCV 源码 `hough.cpp`](https://github.com/opencv/opencv/blob/4.x/modules/imgproc/src/hough.cpp)。一条斜着走的短线段能留下来，靠的是它的横向或纵向跨度够长。
+
+回到代码里的五个参数。`rho=1` 决定累加器沿 $\rho$ 方向有多少格，约为图像对角线长度的两倍；`theta=np.pi/180` 决定有多少个角度，180 个；`threshold` 是票数门槛；`minLineLength` 与 `maxLineGap` 参与上面两个判定。
 
 ### 第五步：按斜率分左右，取均值
 

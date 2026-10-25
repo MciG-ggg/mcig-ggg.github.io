@@ -68,7 +68,7 @@ $$
 
 笛卡尔系里的一个点 $(x, y)$ 对应霍夫空间里的一条直线，多条经过该点的直线在霍夫空间里交于一点 [第二章 无人驾驶感知基础.pdf · p.12](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=12)。
 
-](images/fig-02-p12.png)
+![霍夫变换得到车道线课件页：顶部是 OpenCV 的 HoughLinesP 调用代码，参数 minLineLength 100、maxLineGap 50；中部表格对比笛卡尔坐标系与霍夫空间，笛卡尔的直线 y=mx+b 对应霍夫空间的点 (m,b)；底部三组 Cartesian 与 Hough space 的散点对照图](images/fig-02-p12.png)
 
 线垂直时斜率是无穷大，$y = mx + b$ 表达不出来，于是改用极坐标表示直线，方程是
 
@@ -87,7 +87,7 @@ $$
 
 图片分割分三层。普通分割把属于不同物体的像素区域分开即可，比如前景与背景分割、狗的区域与猫的区域与背景分开；语义分割在普通分割之上还要分类出每一块区域的语义（类别）；实例分割在语义分割之上还要区分同种物体的不同个体 [第二章 无人驾驶感知基础.pdf · p.16](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=16)。
 
-](images/fig-02-p16.png)
+![图片分割的类型课件页：左侧分普通分割、语义分割、实例分割三层，后两层依次在前者基础上补上类别标注和同种物体的个体区分；右侧是 Image classification、Object detection、Semantic segmentation、Instance segmentation 四张示例图；下方对比语义分割与实例分割的人像剪影，并附街景分割结果](images/fig-02-p16.png)
 
 基于深度学习的分割算法有通用框架。前端用全卷积网络做特征提取，经下采样与上采样（Convolution + Deconvolution／Resize）、多尺度特征融合（特征逐点相加或特征拼接），得到像素级的 segmentation map，对每一个像素点判断类别；后端用 CRF（条件随机场）或 MRF（马尔科夫随机场）优化前端输出 [第二章 无人驾驶感知基础.pdf · p.17](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=17)。
 
@@ -136,7 +136,7 @@ $3 \times 3$ 卷积插入一个洞，视野变成 $5 \times 5$。视野变大的
 
 检测相对分类多出两件事：位置，先找到所有的 ROI（region of interest，bounding box may contain object）；位置修正，bounding box regression。类别仍是对每个 ROI 做分类 [第二章 无人驾驶感知基础.pdf · p.30](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=30)。
 
-](images/fig-02-p30.png)
+![基于图像的检测算法课件页：左侧对比 classification 与 detection，检测多出位置这一项；右侧示意从多个候选框中逐一分类再回归出框；下方列出检测三步：位置先找到所有 ROI，类别对每个 ROI 分类，位置修正用 Bounding box Regression](images/fig-02-p30.png)
 
 获取 ROI 有三条路 [第二章 无人驾驶感知基础.pdf · p.31](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=31)。
 
@@ -157,7 +157,7 @@ $3 \times 3$ 卷积插入一个洞，视野变成 $5 \times 5$。视野变大的
 
 RCNN 是这条线的起点：候选框靠 Selective Search，特征与分类靠 CNN 加 SVM，位置靠线性回归修正 [第二章 无人驾驶感知基础.pdf · p.34](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=34)。SPPNet 的贡献是共享卷积，大大降低计算量；SPP 层把不同尺度的特征变成固定尺度的特征，才能接全连接层 [第二章 无人驾驶感知基础.pdf · p.35](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=35)。Fast-RCNN 把分类和回归都用 CNN 实现，两种损失可以反传以实现联动调参（半 end-to-end），SPP 层换成 ROI Pooling 提高计算速度 [第二章 无人驾驶感知基础.pdf · p.36](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=36)。
 
-](images/fig-02-p36.png)
+![基于图片的检测算法-Fast-RCNN 课件页：左侧列出位置用 Selective Search 提候选框、类别与位置修正都用 CNN、SPP 层换成 ROI Pooling 提速；右上是 Deep ConvNet 到 conv5 特征图，经 ROI projection、ROI pooling 层、FCs 后分成 softmax 与 bbox regressor 两个输出的结构图，右下是多任务损失图](images/fig-02-p36.png)
 
 Faster-RCNN 把候选框也交给 CNN：RPN（Region Proposal Net）在 feature 点对应的原图感受野框处生成不同 ratio 与 scale 的 anchor box，再对 anchor box 做二分类加回归 [第二章 无人驾驶感知基础.pdf · p.37](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=37)。
 
@@ -192,7 +192,7 @@ YOLO-v3 的结构图在第 3 讲的 PPT 里单独给了一页：粉色块是 Res
 
 机械式 LiDAR 让发射头持续旋转，同时在竖直方向上排布多束激光，课件给的线数是 4、16、32 或 64。旋转加上多线排布，扫描面就从一个"线"变成一个"面"，一次扫描拿到的是三维信息 [第二章-行车环境感知-激光雷达和点云.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E8%A1%8C%E8%BD%A6%E7%8E%AF%E5%A2%83%E6%84%9F%E7%9F%A5-%E6%BF%80%E5%85%89%E9%9B%B7%E8%BE%BE%E5%92%8C%E7%82%B9%E4%BA%91.pdf#page=7)。
 
-](images/fig-02-p07.png)
+![激光雷达工作原理课件页：讲机械式 LiDAR 靠旋转发射头把激光从线变成面，竖直方向排布 4、16、32 或 64 束激光；左侧框图串起发射系统、目标物体、接收系统与信号处理控制系统的距离、速度、角度、目标图像四路输出；右侧是镜子、圆光栅、伺服电机、激光源与接收器的旋转结构](images/fig-02-p07.png)
 
 这张图解释了这类设备的信号链条：激光器经光束控制打到发射光学天线，出射光打到目标物体；回波由接收光学天线收进探测器，探测器带着制冷模块把光信号转成电信号。电信号再经前置放大、主放大、模数转换和主处理，最后从距离信息、速度信息、角度信息和目标图像信息四路输出。整个旋转机构由伺服系统驱动，镜子在圆光栅上转动 [第二章-行车环境感知-激光雷达和点云.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E8%A1%8C%E8%BD%A6%E7%8E%AF%E5%A2%83%E6%84%9F%E7%9F%A5-%E6%BF%80%E5%85%89%E9%9B%B7%E8%BE%BE%E5%92%8C%E7%82%B9%E4%BA%91.pdf#page=7)。机械件在这条链条上的位置决定了它的可靠性成本。
 
@@ -216,7 +216,7 @@ YOLO-v3 的结构图在第 3 讲的 PPT 里单独给了一页：粉色块是 Res
 
 点云的表示是一个 $N \times 3$ 矩阵，或者带上特征维度的 $N \times (3 + D)$ 矩阵，每一行是一个点的坐标，课件同时给了一幅 64 线 LiDAR 的点云图 [第二章-行车环境感知-激光雷达和点云.pdf · p.19](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E8%A1%8C%E8%BD%A6%E7%8E%AF%E5%A2%83%E6%84%9F%E7%9F%A5-%E6%BF%80%E5%85%89%E9%9B%B7%E8%BE%BE%E5%92%8C%E7%82%B9%E4%BA%91.pdf#page=19)。
 
-](images/fig-02-p19.png)
+![点云的表示课件页：给出 N×3 与 N×(3+D) 两种矩阵形式，每行是一个点的坐标与 D 维特征；右上并列 RGBD 图像与 64 线 LiDAR 点云图；下方依次是 Mesh 三角面片、Voxel Grid 三维体素格与 Octree 八叉树细分结构](images/fig-02-p19.png)
 
 这页图把点云和其他几种空间表示摆在一起对照：RGBD 图像是稠密的规则栅格，Mesh 是三角面片的连接关系，Voxel Grid 是三维体素划分，Octree 是按八叉递归细分的空间索引。点云自身既不是面片也不是体素，它只是采样点的集合。
 
@@ -242,7 +242,7 @@ $$
 
 再解特征方程 $C \vec{v}_j = \lambda_j \vec{v}_j$，其中 $k$ 是 $p_i$ 邻域内考虑的点数，$\bar{p}$ 是最近邻的三维质心，$\lambda_j$ 是协方差矩阵的第 $j$ 个特征值，$\vec{v}_j$ 是对应的特征向量 [第二章-行车环境感知-激光雷达和点云.pdf · p.27](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E8%A1%8C%E8%BD%A6%E7%8E%AF%E5%A2%83%E6%84%9F%E7%9F%A5-%E6%BF%80%E5%85%89%E9%9B%B7%E8%BE%BE%E5%92%8C%E7%82%B9%E4%BA%91.pdf#page=27)。最小特征值对应的方向，就是这片点最"平"的方向，也就是法线。
 
-](images/fig-02-p27.png)
+![点云的基本操作—点云表面法线课件页：说明法线估计等价于最小二乘平面拟合；中部由协方差矩阵的特征方程推出 Ax=λx；下方给出 C 的求和公式与第 j 个特征值特征向量的表达式；右下角点云上插着竖直法线箭头并圈出半径 r](images/fig-02-p27.png)
 
 图里右下角那片点云上插着一圈箭头，就是每个点估出来的法线。取最近邻而不是全部点，是因为远处点的贡献会把这个局部平面拉歪。
 
@@ -270,7 +270,7 @@ $$
 
 解法的核心思想是空间分割：把点云空间切分，只在某个空间内搜索 [第二章-行车环境感知-激光雷达和点云.pdf · p.38](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E8%A1%8C%E8%BD%A6%E7%8E%AF%E5%A2%83%E6%84%9F%E7%9F%A5-%E6%BF%80%E5%85%89%E9%9B%B7%E8%BE%BE%E5%92%8C%E7%82%B9%E4%BA%91.pdf#page=38)。课件给了三种结构。
 
-](images/fig-02-p38.png)
+![点云的基本操作—最近邻课件页：核心思想是空间分割，只在某个空间内搜索；下方并列三张结构图：左侧二叉搜索树的节点树，中间 Kd-tree 用红绿蓝分割平面切开点云，右侧八叉树把立方体递归八分并对应一棵查找树](images/fig-02-p38.png)
 
 二叉搜索树的节点包含 key、左孩子、右孩子等 [第二章-行车环境感知-激光雷达和点云.pdf · p.39](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E8%A1%8C%E8%BD%A6%E7%8E%AF%E5%A2%83%E6%84%9F%E7%9F%A5-%E6%BF%80%E5%85%89%E9%9B%B7%E8%BE%BE%E5%92%8C%E7%82%B9%E4%BA%91.pdf#page=39)。它的复杂度分析课件也给了：最坏情况 $O(n)$，最好情况树高 $h = \log_2 n$ [第二章-行车环境感知-激光雷达和点云.pdf · p.40](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E8%A1%8C%E8%BD%A6%E7%8E%AF%E5%A2%83%E6%84%9F%E7%9F%A5-%E6%BF%80%E5%85%89%E9%9B%B7%E8%BE%BE%E5%92%8C%E7%82%B9%E4%BA%91.pdf#page=40)。点云上没有天然的键，所以 BST 需要额外定义比较规则。
 
