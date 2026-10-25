@@ -237,4 +237,5 @@
 3. 交互模块还没在真实文章里用过。挑一篇有数据表的笔记试一次 `:::sortable` 和 `:::chart`。
 4. 《Code Review 教程》已从 draft 改成正式发布。改动它的正文用 `docs/course-drafts/codereview/scripts/integrate.py` 重新生成，不要手改已发布的那页。
 5. `Auto-Drive-Intro` 的 PDF 已发布到 AList `讲义/` 目录，浏览器打开 `http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/讲义/` 看得到列表。删章后 AList 上还留着第 7、8 章、附录 A、课后实践四份旧 PDF，目录页不再链过去，文件本身没有删。
-6. `Auto-Drive-Intro` 只讲到第五章之后，AList 上的 PDF 需要重导：目录页与五章各一份，跑 `export_pdf.py --route lecture/Auto-Drive-Intro`，再手工拷到 `/Volumes/dav/Nextcloud/School/Auto-Drive-Intro/讲义/`。这一步被权限拦下，没有执行。
+6. AList 上的 PDF 要重导。新 PDF 已经导好在 `/tmp/adx-pdf/`（目录页 `index.pdf` 加五章各一份），拷到 `/Volumes/dav/Nextcloud/School/Auto-Drive-Intro/讲义/` 即可，目录页那份改名 `Auto-Drive-Intro.pdf`。这一步被权限拦下，没有执行。旧 PDF 一个图都没有：那些页面当时图片引用缺 `![` 开头，打印出来是空白；重导后每章 4 到 8 张图。
+7. AList 上那四份旧 PDF（`第 7 章 控制理论.pdf`、`第 8 章 强化学习.pdf`、`附录 A 路径规划.pdf`、`课后实践：APOLLO 平台大作业.pdf`）对应的页面已删，目录页也不再链过去。文件本身没删，要清就手工删。
