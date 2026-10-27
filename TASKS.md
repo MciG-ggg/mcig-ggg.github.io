@@ -230,6 +230,19 @@
 - PDF 发布到 AList 的 `讲义/` 目录，目录页的「PDF 版」一节链过去，路径和文件名都百分号编码
 - 目录页自己的 PDF 改名 `Auto-Drive-Intro.pdf`
 
+### PDF 嵌入模块与三套试卷
+
+blog 能把 PDF 嵌在页面里，试卷不再只挂在文件服务器上。
+
+- 新增 `pdf` 交互模块：`src/utils/remark/modules/pdf.ts` 造 `figure.iw-widget.iw-pdf`，里面是 `iframe.iw-pdf-frame` 加两个链接（新标签页打开、下载 PDF）。样式在 `src/styles/modules/pdf.css`，没有客户端 JS
+- `:::pdf{src="..." title="..." download="..." height="760"}`。文件放在 `public/pdf/` 下
+- `src/styles/markdown.css` 给 `details` 加了折叠块样式。`<details>` 里放 `:::pdf` 和表格都能正常渲染，但 `</details>` 后必须空一行，否则下一个 `##` 标题被吞进折叠块
+- 三套试卷的 PDF 放进 `public/pdf/auto-drive-intro/`：A/B/C 卷各一份试卷一份答案
+- `Auto-Drive-Intro_模拟卷` 那一页重写成 PDF 版：三卷各一个 `##` 小节，试卷直接嵌，答案与题源对照各放一个折叠块
+- 题源对照表由 `scripts/gen-exam-papers-page.py` 从命题蓝图生成。蓝图在 `docs/course-drafts/exam-papers-20261027/build/blueprint.md`，每道题的出处链回课件或作业的对应页
+- 试卷的 LaTeX 源文件、程序答案和自检脚本在 `docs/course-drafts/exam-papers-20261027/`
+- 旧的 quiz 版三套卷子（可作答、可判分）从这一页移走了，还在 git 历史里（`4f2d41d`）
+
 ## 下一步
 
 1. 打开 https://mcig-ggg.github.io/lecture/计算智能_进化算法与优化方法 从目录页进一章看看翻起来是否顺手。
@@ -239,3 +252,4 @@
 5. `Auto-Drive-Intro` 的 PDF 已发布到 AList `讲义/` 目录，浏览器打开 `http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/讲义/` 看得到列表。删章后 AList 上还留着第 7、8 章、附录 A、课后实践四份旧 PDF，目录页不再链过去，文件本身没有删。
 6. AList 上的 PDF 已重导并上传。目录页与五章各一份，每章 4 到 8 张图都进 PDF 了。旧 PDF 一个图都没有：那些页面当时图片引用缺 `![` 开头，打印出来是空白。
 7. AList 上 `第 7 章 控制理论.pdf`、`第 8 章 强化学习.pdf`、`附录 A 路径规划.pdf`、`课后实践：APOLLO 平台大作业.pdf` 四份保留着，目录页不再链过去，文件本身没删。
+8. 三套试卷的 PDF 已进仓库的 `public/pdf/auto-drive-intro/`，部署后 `/lecture/Auto-Drive-Intro_模拟卷` 上能直接读。AList 上还没有这三套卷子的文件，要同步的话用 `review-notes-pdf/scripts/publish_alist.py`。

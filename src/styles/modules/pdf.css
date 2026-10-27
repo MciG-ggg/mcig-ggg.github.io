@@ -1,0 +1,43 @@
+/* Styles for the pdf module. */
+
+/*
+ * The file sits in a frame that fills the width of the article. The frame has
+ * its own border, because the browser draws the page of the file inside it.
+ */
+.iw-pdf {
+	padding: 0.9em 1em 1em;
+}
+
+.iw-pdf-title {
+	font-weight: 600;
+	font-size: 0.95em;
+	color: var(--primary-color);
+}
+
+.iw-pdf-frame {
+	display: block;
+	width: 100%;
+	border: 1px solid var(--iw-border);
+	border-radius: var(--radius-8);
+	background-color: var(--background-color);
+}
+
+.iw-pdf-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.8em;
+	font-size: 0.85em;
+	color: var(--secondary-color);
+}
+
+.iw-pdf-links a {
+	color: var(--accent-color);
+}
+
+@media print {
+	/* A frame of a file prints as an empty box. The links below it give the
+	   reader the address of the file on paper. */
+	.iw-pdf-frame {
+		display: none;
+	}
+}

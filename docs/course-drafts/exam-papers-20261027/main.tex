@@ -1,0 +1,104 @@
+\documentclass[UTF8,zihao=-4,fontset=fandol]{ctexart}
+\PassOptionsToPackage{obeyspaces,spaces}{url}
+% Adapted from exam-paper-latex/assets/chinese-exam-template.tex.
+\usepackage[a4paper,margin=2.2cm,headheight=16pt]{geometry}
+\usepackage{amsmath,amssymb,enumitem,fancyhdr,lastpage,tabularx,xcolor}
+\usepackage{listings,needspace,booktabs,xurl}
+\usepackage[hidelinks]{hyperref}
+\urlstyle{tt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+\setlist{nosep,leftmargin=*}
+\newif\ifanswers
+\ifdefined\ShowAnswers\answerstrue\else\answersfalse\fi
+\providecommand{\Paper}{A}
+\newcommand{\ExamCourse}{智能驾驶导论}
+\newcommand{\ExamTitle}{\Paper 卷\ifanswers 参考答案\else 试卷\fi}
+\newcommand{\ExamTerm}{课程练习}
+\newcommand{\ExamDuration}{120 分钟}
+\newcommand{\ExamTotalPoints}{100 分}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\ExamCourse}
+\chead{\ExamTitle}
+\rhead{第 \thepage 页 / 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\newcounter{question}
+\newcommand{\sectiontitle}[3]{%
+  \ifanswers\ifnum\value{question}>0\clearpage\fi\fi
+  \Needspace{4\baselineskip}\vspace{0.5em}
+  {\large\bfseries #1（共 #2 题，#3 分）}\par
+  \vspace{0.2em}\hrule\vspace{0.5em}}
+\newcommand{\question}[2]{%
+  \Needspace{3\baselineskip}\refstepcounter{question}
+  \textbf{\thequestion.（#1 分）}#2\par}
+\newcommand{\blankline}[1][2.6cm]{%
+  \ifanswers\textbf{[空]}\else\underline{\hspace{#1}}\fi}
+\newcommand{\answerline}[1][1.0cm]{\vspace{#1}\par}
+\newenvironment{choices}{%
+  \begin{enumerate}[label=\Alph*.,itemsep=0.1em,topsep=0.15em]
+}{\end{enumerate}}
+\newenvironment{subquestions}{%
+  \begin{enumerate}[label=(\arabic*),itemsep=0.25em,topsep=0.2em]
+}{\end{enumerate}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\exampagebreak}{\ifanswers\par\else\newpage\fi}
+\newcommand{\mc}[7]{%
+  \begin{minipage}{\linewidth}
+  \question{2}{#1}
+  \ifanswers\textbf{答案：#6。}#7\par
+  \else\begin{choices}
+  \item #2\item #3\item #4\item #5
+  \end{choices}\fi
+  \end{minipage}\par\vspace{0.25em}}
+\newcommand{\fillq}[3]{%
+  \question{2}{#1}
+  \ifanswers\textbf{答案：}#2。#3\par\else\vspace{0.55em}\fi}
+\newcommand{\essay}[2]{%
+  \par\noindent\begin{minipage}{\linewidth}
+  \question{10}{#1}
+  \ifanswers#2\par\else\answerline[1.15cm]\fi
+  \end{minipage}\par}
+\newcommand{\programq}[2]{%
+  \Needspace{8\baselineskip}
+  \question{15}{#1}
+  \ifanswers#2\par\else\par\textit{请在答题纸写出程序及要求的结果。}\fi}
+\newcommand{\codefile}[1]{%
+  \par\nopagebreak[4]\noindent
+  \begin{minipage}{\linewidth}
+  \lstinputlisting{#1}
+  \end{minipage}\par}
+\lstset{
+  language=Python,basicstyle=\ttfamily\footnotesize,
+  numbers=left,numberstyle=\tiny\color{gray},numbersep=7pt,
+  frame=single,rulecolor=\color{gray!50},columns=fullflexible,
+  keepspaces=true,showstringspaces=false,breaklines=true,
+  tabsize=4,xleftmargin=1.5em,framexleftmargin=0.8em,
+  aboveskip=0.6em,belowskip=0.6em
+}
+\begin{document}
+\begin{center}
+  {\zihao{2}\bfseries \ExamCourse\par}
+  \vspace{0.25em}
+  {\zihao{3}\bfseries \ExamTitle\par}
+  \vspace{0.4em}
+  \ExamTerm\qquad 建议用时：\ExamDuration\qquad 满分：\ExamTotalPoints
+\end{center}
+\ifanswers
+\small
+\textbf{评分说明：}每套独立计分。选择题每题仅一个正确选项。问答题按要点给分。
+程序题允许逻辑等价的 Python 3 写法。相同错误不重复扣分。仅写样例输出且未实现算法，
+程序题最多得该题结果分。数值结果允许正常浮点误差。\par
+\else
+\vspace{0.3em}
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
+\hline 姓名 & 学号 & 班级 & 成绩\\\hline
+\rule{0pt}{1.8em} & & &\\\hline
+\end{tabularx}
+\par\vspace{0.7em}
+\textbf{答题说明：}建议闭卷练习。所有答案写在另附答题纸上。选择题每题仅选一项。
+程序题采用 Python 3，可使用题面列出的 NumPy 与 OpenCV API，无需启动 Apollo。
+除另有说明，距离单位为 m，时间单位为 s，速度单位为 m/s。\par
+\fi
+\input{\Paper.tex}
+\end{document}

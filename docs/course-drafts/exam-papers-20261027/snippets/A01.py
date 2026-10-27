@@ -1,0 +1,10 @@
+cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+cv2.GaussianBlur(image, (5, 5), 0)
+cv2.Canny(image, 50, 150)
+cv2.fillPoly(mask, [vertices], 255)
+cv2.bitwise_and(image, mask)
+cv2.HoughLinesP(image, rho, theta, threshold,
+                minLineLength=20, maxLineGap=10)
+np.zeros_like(array)
+np.array(points, dtype=np.int32)
+np.empty((0, 4), dtype=np.int32)

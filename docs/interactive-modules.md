@@ -1,6 +1,6 @@
 # 交互模块契约
 
-blog 的讲义笔记需要交互。当前实现有 7 个模块：chart、slider、compare、steps、annotate、sortable、code。
+blog 的讲义笔记需要交互。当前实现有 9 个模块：chart、slider、compare、steps、annotate、sortable、code、quiz、pdf。
 
 每个模块一个 agent。所有人读这份文档，然后只改自己那几个文件。
 
@@ -58,6 +58,7 @@ export const renderXxx = (node: ContainerDirective, context: InteractiveContext)
 | sortable | `src/utils/remark/modules/sortable.ts` | `src/utils/interactive/table.ts` | `src/styles/modules/table.css` | `docs/interactive-samples/sortable.md` |
 | code | `src/utils/code-chrome.ts` | `src/utils/interactive/code.ts` | `src/styles/modules/code.css` | `docs/interactive-samples/code.md` |
 | quiz | `src/utils/remark/modules/quiz.ts` | `src/utils/interactive/quiz.ts` | `src/styles/modules/quiz.css` | `docs/interactive-samples/quiz.md` |
+| pdf | `src/utils/remark/modules/pdf.ts` | 无 | `src/styles/modules/pdf.css` | `docs/interactive-samples/pdf.md` |
 
 这些文件不许改：
 
@@ -329,6 +330,30 @@ print("答案")
 - 答案是 `div.iw-quiz-answer`，带 `hidden` 属性。
 
 客户端在 `document` 上委托点击：单题按钮切换自己的答案，整卷按钮切换这一卷的所有答案，提交按钮判分。判分规则在 `src/utils/interactive/grade.ts` 里，是纯函数，`scripts/test-quiz-grade.ts` 覆盖了它们。
+
+### pdf
+
+一个 PDF 文件。文件在页面里显示，读者也能在别的标签页打开它或者存下来。
+
+```
+:::pdf{src="/pdf/auto-drive-intro/a-paper.pdf" title="A 卷试卷" download="智能驾驶导论_A卷_试卷.pdf" height="760"}
+:::
+```
+
+- `src` 是文件的地址。文件放在 `public/` 下，地址就是站点根路径加文件名。
+- `title` 是标题，也是无障碍标签。标题可省，省了就没有标题行。
+- `download` 是浏览器给存档文件起的名字。**不写就用地址的最后一段。**
+- `height` 是框的高度，单位是像素。默认 720。
+- 指令里没有正文。
+
+输出：
+
+- 根节点 `figure.iw-widget.iw-pdf`。
+- 有标题时，标题是 `figcaption.iw-pdf-title`。
+- 文件是 `iframe.iw-pdf-frame`，带 `loading="lazy"`。
+- 框下面是 `div.iw-pdf-links`，两个链接：「新标签页打开」和「下载 PDF」。
+
+这个模块没有客户端 JS。打印时隐藏框，链接留着。
 
 ## 5. 自测
 

@@ -238,6 +238,23 @@
 			}
 		}
 
+		/* A folded block. The summary is the button that opens the block. */
+		details {
+			border: 1px solid var(--shadow-color);
+			border-radius: var(--radius-8);
+			padding: 0.6em 0.9em;
+
+			summary {
+				cursor: pointer;
+				font-weight: 600;
+				color: var(--primary-color);
+			}
+
+			> :last-child {
+				margin-bottom: 0;
+			}
+		}
+
 		code {
 			border-radius: 0.3em;
 			padding: 0.25em 0.5em;
