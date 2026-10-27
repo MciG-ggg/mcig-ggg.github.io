@@ -242,12 +242,51 @@
 		details {
 			border: 1px solid var(--shadow-color);
 			border-radius: var(--radius-8);
-			padding: 0.6em 0.9em;
+			background-color: var(--surface-05);
+			overflow: hidden;
 
 			summary {
+				display: flex;
+				align-items: center;
+				gap: 0.5em;
+				padding: 0.6em 0.9em;
 				cursor: pointer;
 				font-weight: 600;
 				color: var(--primary-color);
+				list-style: none;
+				transition: background-color 0.15s ease-in-out;
+			}
+
+			summary::-webkit-details-marker {
+				display: none;
+			}
+
+			summary::before {
+				content: "";
+				flex: 0 0 auto;
+				width: 0;
+				height: 0;
+				border-block: 0.3em solid transparent;
+				border-inline-start: 0.42em solid var(--secondary-color);
+				transition: transform 0.15s ease-in-out;
+			}
+
+			summary:hover {
+				background-color: var(--surface-10);
+			}
+
+			&[open] > summary::before {
+				transform: rotate(90deg);
+			}
+
+			/* The content of the block gets its own padding, so the summary
+			   stays a single row. */
+			> :not(summary) {
+				margin-inline: 0.9em;
+			}
+
+			> :not(summary):first-of-type {
+				margin-top: 0.2em;
 			}
 
 			> :last-child {

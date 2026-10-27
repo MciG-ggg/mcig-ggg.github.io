@@ -349,11 +349,11 @@ print("答案")
 输出：
 
 - 根节点 `figure.iw-widget.iw-pdf`。
-- 有标题时，标题是 `figcaption.iw-pdf-title`。
-- 文件是 `iframe.iw-pdf-frame`，带 `loading="lazy"`。
-- 框下面是 `div.iw-pdf-links`，两个链接：「新标签页打开」和「下载 PDF」。
+- 标题行是 `figcaption.iw-pdf-title`。行里从左到右是 `span.iw-pdf-badge`（「PDF」字样）、标题文字、`span.iw-pdf-links`。
+- `span.iw-pdf-links` 里两个链接：「新标签页打开」和「下载」。
+- 文件是 `iframe.iw-pdf-frame`，带 `loading="lazy"`。框没有自己的边框，外框由 `figure` 给。
 
-这个模块没有客户端 JS。打印时隐藏框，链接留着。
+这个模块没有客户端 JS。打印时隐藏框，标题行留着。
 
 ## 5. 自测
 

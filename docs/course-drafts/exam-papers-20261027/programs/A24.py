@@ -1,24 +1,27 @@
-import cv2
+"""Compute row-wise softmax over active entries only."""
+
 import numpy as np
 
 
-def lane_candidates(bgr):
-    height, width = bgr.shape[:2]
-    gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
-    smooth = cv2.GaussianBlur(gray, (5, 5), 0)
-    edges = cv2.Canny(smooth, 50, 150)
-    mask = np.zeros_like(edges)
-    vertices = np.array([
-        [0, height - 1],
-        [width // 2, int(0.6 * height)],
-        [width - 1, height - 1],
-    ], dtype=np.int32)
-    cv2.fillPoly(mask, [vertices], 255)
-    roi_edges = cv2.bitwise_and(edges, mask)
-    lines = cv2.HoughLinesP(
-        roi_edges, 1, np.pi / 180, 20,
-        minLineLength=20, maxLineGap=10,
-    )
-    if lines is None:
-        return roi_edges, np.empty((0, 4), dtype=np.int32)
-    return roi_edges, lines.reshape(-1, 4)
+def sparse_softmax(logits, active):
+    logits = np.asarray(logits, dtype=float)
+    active = np.asarray(active, dtype=bool)
+    result = np.zeros_like(logits)
+    for row in range(logits.shape[0]):
+        mask = active[row]
+        if not np.any(mask):
+            continue
+        values = logits[row, mask]
+        exp_values = np.exp(values - np.max(values))
+        result[row, mask] = exp_values / np.sum(exp_values)
+    return result
+
+
+if __name__ == "__main__":
+    logits = np.array([[1.0, 3.0, 1000.0], [2.0, -1.0, 4.0]])
+    active = np.array([[True, True, False], [False, False, False]])
+    result = sparse_softmax(logits, active)
+    assert np.allclose(result[0], [0.11920292, 0.88079708, 0.0])
+    assert np.array_equal(result[1], [0.0, 0.0, 0.0])
+    assert np.isclose(result[0].sum(), 1.0)
+    print(result)

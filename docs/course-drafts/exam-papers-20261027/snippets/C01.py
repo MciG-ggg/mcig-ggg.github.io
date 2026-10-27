@@ -1,3 +1,6 @@
-mask = np.zeros((5, 11), dtype=np.uint8)
-mask[2:, 2] = 1
-mask[2:, 7] = 1
+import numpy as np
+
+
+def lane_center(mask: np.ndarray) -> dict[str, float] | None:
+    """Fit left and right lane x positions at the bottom image row."""
+    ...

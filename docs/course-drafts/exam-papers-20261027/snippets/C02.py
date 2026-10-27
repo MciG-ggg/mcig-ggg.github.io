@@ -1,2 +1,3 @@
-{"left_x": 2.0, "right_x": 7.0,
- "center_x": 4.5, "offset_px": 0.5}
+mask = np.zeros((5, 11), dtype=np.uint8)
+mask[2:, 2] = 1
+mask[2:, 7] = 1

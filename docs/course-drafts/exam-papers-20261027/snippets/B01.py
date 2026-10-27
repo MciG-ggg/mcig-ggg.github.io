@@ -1,6 +1,3 @@
-segments = [
-    (20, 100, 40, 60), (22, 100, 42, 60),
-    (80, 100, 60, 60), (78, 100, 58, 60),
-    (0, 0, 10, 1), (50, 100, 50, 60),
-]
-y_bottom, y_top = 100, 60
+cumulative = [0, 4, 9, 15, 22, 30]
+cuts = [2, 4]
+result = evaluate_partition(cumulative, cuts)
