@@ -1,18 +1,23 @@
-"""Select the next node with the ETPP expansion cost."""
+"""Calculate minimum ADE and FDE across candidate trajectories."""
 
 import numpy as np
 
 
-def select_etpp_node(g, information_gains, distances):
-    information_gains = np.asarray(information_gains, dtype=float)
-    distances = np.asarray(distances, dtype=float)
-    costs = g + (1.0 + information_gains) * distances
-    index = int(np.argmin(costs))
-    return index, float(costs[index])
+def trajectory_errors(predicted, target):
+    predicted = np.asarray(predicted, dtype=float)
+    target = np.asarray(target, dtype=float)
+    distances = np.linalg.norm(predicted - target[None, :, :], axis=2)
+    ade = float(np.min(np.mean(distances, axis=1)))
+    fde = float(np.min(distances[:, -1]))
+    return ade, fde
 
 
 def demo():
-    assert select_etpp_node(4.0, [0.2, 0.5], [3.0, 2.0]) == (1, 7.0)
+    predicted = [
+        [[0.0, 0.0], [2.0, 0.0]],
+        [[0.0, 1.0], [1.0, 2.0]],
+    ]
+    assert trajectory_errors(predicted, [[0.0, 0.0], [1.0, 0.0]]) == (0.5, 1.0)
 
 
 if __name__ == "__main__":

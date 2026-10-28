@@ -2,8 +2,8 @@
 
 % B01 ch1P4 S01:28 | 基础
 \mc{下列哪项符合课件给出的自动驾驶软件架构演进顺序？}
-{模块化→BEV→Occupancy→End-to-End→VLA/World Model}{BEV→模块化→VLA→Occupancy→End-to-End}{Occupancy→BEV→模块化→End-to-End→VLA}{模块化→Occupancy→BEV→VLA→End-to-End}
-{A}{S01 p.28 给出的演进顺序为模块化、BEV、Occupancy、End-to-End、VLA/World Model。}
+{BEV→模块化→VLA→Occupancy→End-to-End}{模块化→BEV→Occupancy→End-to-End→VLA/World Model}{Occupancy→BEV→模块化→End-to-End→VLA}{模块化→Occupancy→BEV→VLA→End-to-End}
+{B}{S01 p.28 给出的演进顺序为模块化、BEV、Occupancy、End-to-End、VLA/World Model。}
 
 % B02 ch2P4 S04:28 | 基础
 \mc{课件将图片检测算法按架构分成哪两类？}
@@ -22,8 +22,8 @@
 
 % B05 ch5P6 S06:9 | 基础
 \mc{课件对基于模型的预测与数据驱动预测作何区分？}
-{基于模型的方法结合人类知识，数据驱动方法从数据学习}{两者都只按车道长度选择唯一轨迹}{数据驱动方法不能使用训练数据}{基于模型的方法只在训练后输出概率}
-{A}{S06 p.9 将基于模型的方法与人类知识相连，将数据驱动方法描述为机器学习并使用更多数据。}
+{两者都只按车道长度选择唯一轨迹}{数据驱动方法不能使用训练数据}{基于模型的方法结合人类知识，数据驱动方法从数据学习}{基于模型的方法只在训练后输出概率}
+{C}{S06 p.9 将基于模型的方法与人类知识相连，将数据驱动方法描述为机器学习并使用更多数据。}
 
 % B06 ch6P4 H2:22 | 基础
 \mc{Apollo 泊车规划的场景历史依次出现哪组状态？}
@@ -32,8 +32,8 @@
 
 % B07 ch7P4 S02:27-28 | 基础
 \mc{LQR 的代价函数使用哪两类项？}
-{状态误差项 $x^TQx$ 与控制输入项 $u^TRu$}{道路距离项与车速平方项}{图像像素误差项与点云密度项}{定位误差项与地图更新项}
-{A}{S02 p.27 给出代价函数 $\int_0^\infty(x^TQx+u^TRu)dt$，包含状态误差与控制输入代价。}
+{道路距离项与车速平方项}{图像像素误差项与点云密度项}{定位误差项与地图更新项}{状态误差项 $x^TQx$ 与控制输入项 $u^TRu$}
+{D}{S02 p.27 给出代价函数 $\int_0^\infty(x^TQx+u^TRu)dt$，包含状态误差与控制输入代价。}
 
 % B08 ch8P4 S08:20 | 基础
 \mc{围捕策略采用集中式训练、分布式执行时，哪项输入安排符合课件？}
@@ -42,8 +42,8 @@
 
 % B09 ch5P7 S07:10 | 基础
 \mc{ACXCOOT 算法中，普通个体如何更新边界点遍历顺序？}
-{随机重新生成遍历顺序}{使用循环交叉算子移动}{固定沿当前顺序逆序访问}{删除所有未访问边界点}
-{A}{S07 p.10 说明普通个体重新生成边界点遍历顺序，组长使用循环交叉算子。}
+{使用循环交叉算子移动}{固定沿当前顺序逆序访问}{删除所有未访问边界点}{随机重新生成遍历顺序}
+{D}{S07 p.10 说明普通个体重新生成边界点遍历顺序，组长使用循环交叉算子。}
 
 % B10 ch1P5 S01:38 | 基础
 \mc{课件的软件栈中，Runtime 位于哪两层之间？}
@@ -74,9 +74,9 @@
 \fillq{预测数据流水线中，自动标注之后还需进行标签清理和标签\blankline{}。}
 {平衡}{S06 p.16 列出 Auto labeling、Label cleaning 和 Label balance。}
 
-% B16 ch6P28 H3:12 | 中等
-\fillq{作业指出，减少安全距离会让车辆更\blankline{}其他车辆。}
-{接近}{H3 p.12 说明减少安全距离可能使车辆更接近其他车辆。}
+% B16 ch6P29 H3:12 | 中等
+\fillq{作业指出，增加最小速度限制可能使车辆更积极地\blankline{}。}
+{加速}{H3 p.12 说明增加最小速度限制可能使车辆更积极地加速。}
 
 % B17 ch7P5 S02:17 | 中等
 \fillq{PID 积分环节会使动态响应变慢，并使系统稳定性\blankline{}。}
@@ -125,18 +125,18 @@
 \item GH 表示行人分组模块，TIG 表示时间交互图学习模块，得 2 分；移除 GH 后模型缺少群组层次信息，群组行为特征难以学习，得 1 分。
 \end{subquestions}}
 
-% B23 ch6P6 H3:25-27 | 综合
+% B23 ch6P30 H3:25-27 | 综合
 \essay{Apollo 速度规划实验比较加速超车和减速让行的 S-T 曲线。
 \begin{subquestions}
 \item 说明 S-T 图的两个坐标表示什么，以及曲线可用于观察哪类规划信息。（3 分）
 \item 说明加速超车与减速让行场景的纵向决策标签有何不同。（3 分）
-\item 列出速度规划还要考虑的三项信息，并说明这些信息怎样影响安全决策。（4 分）
+\item 说明实验中如何取得指定时刻的速度规划数据，并指出如何选择该时刻。（4 分）
 \end{subquestions}}
 {\textbf{参考要点与评分：}
 \begin{subquestions}
 \item $s$ 表示沿路径的纵向距离，$t$ 表示时间，得 2 分；可据 ST 曲线或边界观察速度规划与障碍物关系，得 1 分。
 \item 加速超车场景的障碍物标签含 OVERTAKE，得 1.5 分；减速让行场景含 YIELD，得 1.5 分。
-\item 目标速度之外，还要考虑车辆动力学、道路限速、交通情况、安全距离中的任意三项，得 3 分；说明它们约束可行速度并影响碰撞风险或通行效率，得 1 分。
+\item 运行作业提供的 \code{plot_st_nlp.py} 命令并用 \code{-f} 指定 planning.INFO 日志，得 2 分；用 \code{-t} 指定时刻，时间可从 DATA RECORDER 获取，得 2 分。
 \end{subquestions}}
 
 \exampagebreak
@@ -166,17 +166,17 @@
 
 \newpage
 
-% B25 ch5P12 S07:10 | 综合
-\programq{根据两条路径的道路节点代价，使用 ETPP 扩展代价公式选择下一节点。实现函数 \code{select_etpp_node(g, information_gains, distances)}。
+% B25 ch5P11 S07:23 | 综合
+\programq{计算行人轨迹预测的 ADE 和 FDE。实现函数 \code{trajectory_errors(predicted, target)}。
 
-\textbf{输入：}\code{g} 为非负有限数。\code{information_gains} 和 \code{distances} 是等长的一维有限 NumPy 数组，长度 $K\ge1$。信息增益位于 $[0,1]$，距离非负。输入形状有效。
+\textbf{输入：}\code{predicted} 是形状为 $(K,T,2)$ 的有限浮点 NumPy 数组，表示 $K\ge1$ 条候选轨迹，各含 $T\ge1$ 个二维位置。\code{target} 是形状为 $(T,2)$ 的有限浮点 NumPy 数组。预测轨迹与目标轨迹采用相同的时间索引。输入形状有效。
 
-\textbf{计算：}对每个候选节点 $i$，计算 $f_i=g+(1+H_i)D_i$，返回代价最小节点的下标和代价。代价相同时返回较小下标。
+\textbf{计算：}设 $d_{k,t}$ 为第 $k$ 条预测轨迹在时刻 $t$ 的欧氏位置误差。按课件的最小候选轨迹定义，计算 $\mathrm{ADE}=\min_k\frac{1}{T}\sum_{t=1}^{T}d_{k,t}$ 和 $\mathrm{FDE}=\min_k d_{k,T}$，返回两个浮点数。
 
 \begin{subquestions}
-\item 按公式计算每个候选节点的扩展代价。（6 分）
-\item 选出最小代价，并处理代价相同的情况。（5 分）
-\item 对题给样例写出返回值，并在程序中添加自检。（4 分）
+\item 计算每条候选轨迹各时间步的位置误差。（5 分）
+\item 对各轨迹误差计算时间平均值和末时刻误差，再分别取最小值。（6 分）
+\item 返回两个浮点数，并对题给样例添加自检。（4 分）
 \end{subquestions}
 \ifanswers\else
 \codefile{snippets/B03.py}
@@ -185,5 +185,5 @@
 \codefile{programs/B25.py}
 \textbf{样例输入：}\codefile{snippets/B03.py}
 \textbf{样例输出：}\codefile{snippets/B04.py}
-\textbf{样例计算：}当前累计代价 $g=4$。候选节点的信息增益为 $[0.2,0.5]$，距离为 $[3,2]$。扩展代价分别为 $7.6$ 和 $7$，函数返回 \code{(1, 7.0)}。
-\textbf{评分：}扩展代价计算正确得 6 分；最小代价选择和平局规则正确得 5 分；返回值和自检正确得 4 分。}
+\textbf{样例计算：}目标轨迹为 $[(0,0),(1,0)]$。两条预测轨迹分别为 $[(0,0),(2,0)]$ 与 $[(0,1),(1,2)]$。第一条轨迹的 ADE 为 $0.5$、FDE 为 $1$；第二条轨迹的 ADE 为 $1.5$、FDE 为 $2$。函数返回 $(0.5,1.0)$。
+\textbf{评分：}位置误差计算正确得 5 分；时间平均值、末时刻误差和最小值选择正确得 6 分；返回值、样例结果和自检正确得 4 分。}

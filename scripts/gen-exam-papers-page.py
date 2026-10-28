@@ -165,7 +165,7 @@ host: 10.188.31.55:5244
 | 卷 | 章节覆盖 | 主要程序题 |
 |---|---|---|
 | A 卷 | {FOCUS["A"]} | 三维点云最近邻距离、社会空间轨迹平滑与时间联合代价 |
-| B 卷 | {FOCUS["B"]} | 点云半径离群点过滤、ETPP 道路图扩展代价选择 |
+| B 卷 | {FOCUS["B"]} | 点云半径离群点过滤、行人轨迹预测最小 ADE 与 FDE |
 | C 卷 | {FOCUS["C"]} | 二维覆盖路径长度、MPC 预测时域状态跟踪代价 |
 
 配套复习资料在[《Auto-Drive-Intro 代码题复习》](/lecture/Auto-Drive-Intro_代码题复习)。讲义在[《Auto-Drive-Intro》](/lecture/Auto-Drive-Intro)。
