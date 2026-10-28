@@ -1,50 +1,27 @@
-"""Select a sampled path that stays outside Gaussian social spaces."""
+"""Compute weighted trajectory costs."""
 
 import numpy as np
 
 
-def select_social_path(paths, durations, means, sigmas, weights, threshold, rho):
-    paths = np.asarray(paths, dtype=float)
+def social_trajectory_objective(smooth_costs, durations, weights, rho):
+    smooth_costs = np.asarray(smooth_costs, dtype=float)
     durations = np.asarray(durations, dtype=float)
-    means = np.asarray(means, dtype=float)
-    sigmas = np.asarray(sigmas, dtype=float)
     weights = np.asarray(weights, dtype=float)
-    best = None
+    path_costs = smooth_costs + rho * durations
+    weighted_average = float(np.sum(weights * path_costs))
+    return {"path_costs": path_costs, "weighted_average": weighted_average}
 
-    for index, path in enumerate(paths):
-        delta = (path[:, None, :] - means[None, :, :]) / sigmas[None, :, :]
-        exponent = -0.5 * np.sum(delta * delta, axis=2)
-        density = np.sum(
-            weights[None, :] * np.exp(exponent)
-            / (2.0 * np.pi * np.prod(sigmas, axis=1))[None, :],
-            axis=1,
-        )
-        if np.any(density > threshold):
-            continue
 
-        second_diff = path[2:] - 2.0 * path[1:-1] + path[:-2]
-        smooth_cost = np.sum(second_diff * second_diff)
-        cost = float(smooth_cost + rho * durations[index])
-        if best is None or cost < best[1]:
-            best = (index, cost)
-
-    return best
+def demo():
+    result = social_trajectory_objective(
+        smooth_costs=[2.0, 1.0, 3.0],
+        durations=[4.0, 2.0, 1.0],
+        weights=[0.5, 0.3, 0.2],
+        rho=0.5,
+    )
+    assert np.array_equal(result["path_costs"], [4.0, 2.0, 3.5])
+    assert np.isclose(result["weighted_average"], 3.3)
 
 
 if __name__ == "__main__":
-    paths = np.array([
-        [[0.0, 0.0], [1.0, 0.0], [2.0, 0.0]],
-        [[2.0, 0.0], [2.0, 1.0], [2.0, 2.0]],
-        [[3.0, 0.0], [2.0, 0.0], [3.0, 0.0]],
-    ])
-    result = select_social_path(
-        paths=paths,
-        durations=[3.0, 4.0, 2.0],
-        means=[[0.0, 0.0]],
-        sigmas=[[1.0, 1.0]],
-        weights=[1.0],
-        threshold=0.1,
-        rho=1.0,
-    )
-    assert result == (1, 4.0), result
-    print(result)
+    demo()

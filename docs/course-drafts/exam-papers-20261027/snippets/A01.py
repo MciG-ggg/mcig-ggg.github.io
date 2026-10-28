@@ -1,10 +1,2 @@
-import numpy as np
-
-np.asarray(array, dtype=float)
-np.asarray(mask, dtype=bool)
-np.zeros_like(array)
-np.any(boolean_array)
-np.max(array)
-np.exp(array)
-np.sum(array)
-# Also use row slicing, boolean indexing, arithmetic, and assignment.
+query = [0, 0, 0]
+points = [[2, 1, 2], [-1, 0, 0], [0, 0, 2]]
