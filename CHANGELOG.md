@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.33.0](https://github.com/MciG-ggg/mcig-ggg.github.io/compare/v0.32.0...v0.33.0) (2026-10-28)
+
+
+### Features
+
+* **lecture:** embed the mock papers as PDF and replace the quiz papers ([7ce257b](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/7ce257bfa255f295438f04cbe3e27336763afb90))
+
 ## [0.32.0](https://github.com/MciG-ggg/mcig-ggg.github.io/compare/v0.31.4...v0.32.0) (2026-10-24)
 
 
