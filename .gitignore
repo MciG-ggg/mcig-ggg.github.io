@@ -37,3 +37,7 @@ wrangler.toml
 
 # note-production working directory
 work/
+
+# python bytecode
+__pycache__/
+*.pyc
