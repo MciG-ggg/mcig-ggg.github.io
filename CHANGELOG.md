@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.33.0](https://github.com/MciG-ggg/mcig-ggg.github.io/compare/v0.32.0...v0.33.0) (2026-11-07)
+
+
+### Features
+
+* **lecture:** embed the mock papers as PDF and replace the quiz papers ([7ce257b](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/7ce257bfa255f295438f04cbe3e27336763afb90))
+
+
+### Miscellaneous Chores
+
+* 引用链接从 AList 内网地址改为本地磁盘路径 ([935d83c](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/935d83c243334fdba3ce9bfc398eaa60d77fcf04))
+* 忽略 python 字节码 ([4f27a7e](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/4f27a7efdee1ee3d0884099234b7ae8b904b0ce6))
+* 放过自己 对齐 jotting frontmatter ([982b99b](https://github.com/MciG-ggg/mcig-ggg.github.io/commit/982b99bc399f9ce7be9f7a730b18b2fa34279130))
+
 ## [0.32.0](https://github.com/MciG-ggg/mcig-ggg.github.io/compare/v0.31.4...v0.32.0) (2026-10-24)
 
 
