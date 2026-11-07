@@ -19,9 +19,9 @@ ROOT = Path(__file__).resolve().parent.parent
 DRAFTS = ROOT / "docs/course-drafts/exam-papers-20261027/build"
 PAGE = ROOT / "src/content/lecture/zh-cn/Auto-Drive-Intro_模拟卷/index.md"
 
-ALIST = "http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro"
+SOURCE = "file:///Volumes/Nextcloud/School/Auto-Drive-Intro"
 
-# The courseware file of every source code, with the folder of the file server
+# The courseware file of every source code, with the folder on the local disk
 # that holds it.
 COURSEWARE = {
     "S01": ("第一章 无人驾驶概述_2026.pdf", "课件"),
@@ -68,7 +68,7 @@ def source_link(token: str) -> str:
     if code not in COURSEWARE:
         raise ValueError(f"unknown source code: {token}")
     filename, folder = COURSEWARE[code]
-    url = f"{ALIST}/{percent_encode(folder)}/{percent_encode(filename)}"
+    url = f"{SOURCE}/{percent_encode(folder)}/{percent_encode(filename)}"
     first = pages.split(",")[0].split("-")[0]
     return f"[{filename} · p.{pages}]({url}#page={first})"
 
@@ -151,7 +151,7 @@ draft: false
 url: http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/课件/
 title: "Auto-Drive-Intro · 课程课件与作业"
 description: "《智能驾驶导论》的十一份课件与四份 APOLLO 平台作业，模拟卷的取材来源"
-host: 10.188.31.55:5244
+host: /Volumes/Nextcloud/School
 ```
 
 > [!IMPORTANT] 三套卷，每套 100 分 25 题

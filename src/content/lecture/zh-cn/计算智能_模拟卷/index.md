@@ -4,16 +4,16 @@ timestamp: 2026-10-23T18:00:00+08:00
 series: 计算智能
 tags: [课内, 计算智能]
 description: 《计算智能》期末模拟卷三套，每套一百分。题型是判断、填空、编程、大题。编程题给的是完整实现，大题是概念计算题和算法流程模拟题，每处结论都链回课件对应页。
-source_url: http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/
+source_url: file:///Volumes/Nextcloud/School/Compute-Intelligence/
 toc: true
 draft: false
 ---
 
 ```cardlink
-url: http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/
+url: file:///Volumes/Nextcloud/School/Compute-Intelligence/
 title: "计算智能 · 课程课件"
 description: "中南大学自动化学院《计算智能》课程的十二个课件"
-host: 10.188.31.55:5244
+host: /Volumes/Nextcloud/School
 ```
 
 三套卷，每套一百分，题型是**判断、填空、编程、大题**。**答案在每道题右上角的「显示答案」按钮后面。** 做完一整卷再一次性展开对答案，也可以一题一题看。
@@ -49,7 +49,7 @@ host: 10.188.31.55:5244
 
 **错误。**
 
-进化算法**只在概率意义上**给出强搜索，不提供最优性保证。给定有限代数 $G_{max}$ 与有限种群 $N$，搜索范围天然有限；多峰地形上「离最优还差很远但曲线已经平了」是常态 [Chapter 1_ Introduction to EAs.pdf · p.2](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
+进化算法**只在概率意义上**给出强搜索，不提供最优性保证。给定有限代数 $G_{max}$ 与有限种群 $N$，搜索范围天然有限；多峰地形上「离最优还差很远但曲线已经平了」是常态 [Chapter 1_ Introduction to EAs.pdf · p.2](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
 
 它的价值在于**对函数几乎不做假设、不需要梯度、在合理时间内给出足够好的解**，不在于「保证最优」。
 
@@ -62,7 +62,7 @@ host: 10.188.31.55:5244
 
 **正确。**
 
-最小化问题里常常取 $\mathrm{fit} = -f$，正是因为方向相反必须换算。GA 的课件表里 $f$ 与 $\mathrm{fit}$ 是分两列的，正是为了提醒这件事 [Chapter 1_ Introduction to EAs.pdf · p.8](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=8)。
+最小化问题里常常取 $\mathrm{fit} = -f$，正是因为方向相反必须换算。GA 的课件表里 $f$ 与 $\mathrm{fit}$ 是分两列的，正是为了提醒这件事 [Chapter 1_ Introduction to EAs.pdf · p.8](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=8)。
 
 注意这只是常见做法，不是普适规则：有的问题里 $\mathrm{fit}$ 是 $f$ 的某个非线性变换。
 
@@ -75,7 +75,7 @@ host: 10.188.31.55:5244
 
 **正确。**
 
-$FES_{max}$ 是最重要的公平性原则，它代表算法可用的总计算预算。不同算法每代所需的评估次数可能不同，固定代数就等于给了它们不同的预算 [Chapter 7_ Algorithm Comparison.pdf · p.1](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=1)。
+$FES_{max}$ 是最重要的公平性原则，它代表算法可用的总计算预算。不同算法每代所需的评估次数可能不同，固定代数就等于给了它们不同的预算 [Chapter 7_ Algorithm Comparison.pdf · p.1](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=1)。
 
 :::
 
@@ -86,7 +86,7 @@ $FES_{max}$ 是最重要的公平性原则，它代表算法可用的总计算�
 
 **错误。**
 
-种群 $P(t)$ 是**当前一代的全部** $N$ 个个体；父代集 $S(t)$ 是经选择算子挑出来的那**一小批当父母的个体**，规模 $N_p$ 通常 $\le N$ [Chapter 1_ Introduction to EAs.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=7)。
+种群 $P(t)$ 是**当前一代的全部** $N$ 个个体；父代集 $S(t)$ 是经选择算子挑出来的那**一小批当父母的个体**，规模 $N_p$ 通常 $\le N$ [Chapter 1_ Introduction to EAs.pdf · p.7](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=7)。
 
 框架图里「种群」框和「父代集」框必须是两个独立的框，中间有「选择」箭头。ES 更极端：它把父代个数写作 $\mu$、每代子代数写作 $\lambda$，且 $\lambda \ge \mu$、常用 $\lambda \approx 7\mu$，父代集比子代还少。
 
@@ -99,7 +99,7 @@ $FES_{max}$ 是最重要的公平性原则，它代表算法可用的总计算�
 
 **正确。**
 
-变异把个体朝新方向拽一拽，是探索的主要来源；交叉把已有优良解附近的部件重新组合，是开发的核心 [Chapter 1_ Introduction to EAs.pdf · p.3](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
+变异把个体朝新方向拽一拽，是探索的主要来源；交叉把已有优良解附近的部件重新组合，是开发的核心 [Chapter 1_ Introduction to EAs.pdf · p.3](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
 
 交叉这一步**不评价函数值**，只是重组已有信息。
 
@@ -112,7 +112,7 @@ $FES_{max}$ 是最重要的公平性原则，它代表算法可用的总计算�
 
 **错误。**
 
-早熟收敛说明多样性已经丢光，算法太偏向开发、忘了探索。选择的严格度要**调低**——选择太严，适应度高的那一两个个体几乎垄断繁殖权，其他个体全被边缘化，多样性迅速丢光 [Chapter 1_ Introduction to EAs.pdf · p.3](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
+早熟收敛说明多样性已经丢光，算法太偏向开发、忘了探索。选择的严格度要**调低**——选择太严，适应度高的那一两个个体几乎垄断繁殖权，其他个体全被边缘化，多样性迅速丢光 [Chapter 1_ Introduction to EAs.pdf · p.3](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
 
 :::
 
@@ -125,7 +125,7 @@ $FES_{max}$ 是最重要的公平性原则，它代表算法可用的总计算�
 
 **答案：选择、替换。**
 
-完整六步是：初始化 → 计算适应度 → 选择 → 交叉 → 变异 → 替换，然后判断终止条件，不满足就 $t \leftarrow t+1$ 回到第二步 [Chapter 1_ Introduction to EAs.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=7)。
+完整六步是：初始化 → 计算适应度 → 选择 → 交叉 → 变异 → 替换，然后判断终止条件，不满足就 $t \leftarrow t+1$ 回到第二步 [Chapter 1_ Introduction to EAs.pdf · p.7](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=7)。
 
 四问决定它是哪个算法：选择怎么做、交叉怎么做、变异怎么做、替换怎么做。
 
@@ -138,7 +138,7 @@ $FES_{max}$ 是最重要的公平性原则，它代表算法可用的总计算�
 
 **答案：$d(H)$、$o(H)$。**
 
-问「哪个量决定交叉存活概率」答 $d(H)$，问「哪个量决定变异存活概率」答 $o(H)$。两者数学上完全不同：定义长度是这段模式里能被交换的**位置数**，阶是这段模式里**1 的个数** [Chapter 2_ Introduction to GAs.pdf · p.15](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=15)。
+问「哪个量决定交叉存活概率」答 $d(H)$，问「哪个量决定变异存活概率」答 $o(H)$。两者数学上完全不同：定义长度是这段模式里能被交换的**位置数**，阶是这段模式里**1 的个数** [Chapter 2_ Introduction to GAs.pdf · p.15](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=15)。
 
 :::
 
@@ -149,7 +149,7 @@ $FES_{max}$ 是最重要的公平性原则，它代表算法可用的总计算�
 
 **答案：最大适应度评估次数 $FES_{max}$、Wilcoxon 秩和检验。**
 
-不能简单地说平均值小的就一定更好。课件要求用统计检验来判断差异是否在统计学上显著 [Chapter 7_ Algorithm Comparison.pdf · p.1](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=1)。
+不能简单地说平均值小的就一定更好。课件要求用统计检验来判断差异是否在统计学上显著 [Chapter 7_ Algorithm Comparison.pdf · p.1](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=1)。
 
 :::
 
@@ -160,7 +160,7 @@ $FES_{max}$ 是最重要的公平性原则，它代表算法可用的总计算�
 
 **答案：调高、调高、调低。**
 
-三个旋钮都朝「更偏探索」的方向调，但具体方向不同：变异是探索的主要来源，调高；更多个体意味着同时盯着更多山谷，调高；选择太严会让强者垄断繁殖权、多样性迅速丢光，所以调低 [Chapter 1_ Introduction to EAs.pdf · p.3](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
+三个旋钮都朝「更偏探索」的方向调，但具体方向不同：变异是探索的主要来源，调高；更多个体意味着同时盯着更多山谷，调高；选择太严会让强者垄断繁殖权、多样性迅速丢光，所以调低 [Chapter 1_ Introduction to EAs.pdf · p.3](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
 
 :::
 
@@ -255,9 +255,9 @@ if __name__ == "__main__":
 
 **四个容易丢分的细节：**
 
-1. **下标必须互不相同且不等于 $i$。** `np.random.choice(idxs, 3, replace=False)` 里 `idxs` 已经排除了 $i$，`replace=False` 保证三个下标互不相同 [Chapter 4_ Introduction to Differential Evolution.pdf · p.6](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6)。
+1. **下标必须互不相同且不等于 $i$。** `np.random.choice(idxs, 3, replace=False)` 里 `idxs` 已经排除了 $i$，`replace=False` 保证三个下标互不相同 [Chapter 4_ Introduction to Differential Evolution.pdf · p.6](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=6)。
 2. **边界处理。** 变异向量可能飞出 $[-10,10]$，要 `np.clip`。不处理会让目标函数算在界外，破坏比较的前提。
-3. **强制维 $j_{rand}$。** 二项式交叉里必须保证至少一维来自变异向量，否则试验向量完全等于目标向量，交叉这一步等于没做 [Chapter 4_ Introduction to Differential Evolution.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=7)。
+3. **强制维 $j_{rand}$。** 二项式交叉里必须保证至少一维来自变异向量，否则试验向量完全等于目标向量，交叉这一步等于没做 [Chapter 4_ Introduction to Differential Evolution.pdf · p.7](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=7)。
 4. **多次独立运行 + 统计。** 即使题目只要求跑一次，也要写 `run_experiment`，这体现你懂得随机算法必须做多次运行和统计。
 
 :::
@@ -282,7 +282,7 @@ if __name__ == "__main__":
 
 **终止判断**：满足终止条件（达到最大代数、目标值足够小、连续若干代没改进）就输出当前最优个体，否则 $t \leftarrow t+1$ 回到第二步。
 
-**探索与开发的平衡。** 探索是去没去过的地方找新的谷，代价是可能白跑；开发是在已知不错的点附近细挖，代价是可能永远困在这一个谷里。变异和多样性维持主要靠探索，选择压力和交叉主要靠开发。过于偏重探索会难以收敛，过于偏重开发容易陷入局部最优 [Chapter 1_ Introduction to EAs.pdf · p.3](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
+**探索与开发的平衡。** 探索是去没去过的地方找新的谷，代价是可能白跑；开发是在已知不错的点附近细挖，代价是可能永远困在这一个谷里。变异和多样性维持主要靠探索，选择压力和交叉主要靠开发。过于偏重探索会难以收敛，过于偏重开发容易陷入局部最优 [Chapter 1_ Introduction to EAs.pdf · p.3](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
 
 一个优秀的进化算法必须在这两者之间取得平衡。这就是「凡是问某参数调大或调小会怎样，答案几乎都能这样开头」的具体体现。
 
@@ -293,7 +293,7 @@ if __name__ == "__main__":
 
 ---
 
-**一、统一的测试平台。** 必须在**相同的一组标准测试函数**上比较。这些函数要有不同特性（单模/多模、可分/不可分、高维/低维），才能全面考察算法性能 [Chapter 7_ Algorithm Comparison.pdf · p.1](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=1)。
+**一、统一的测试平台。** 必须在**相同的一组标准测试函数**上比较。这些函数要有不同特性（单模/多模、可分/不可分、高维/低维），才能全面考察算法性能 [Chapter 7_ Algorithm Comparison.pdf · p.1](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%207_%20Algorithm%20Comparison.pdf#page=1)。
 
 **二、统一的计算资源。** 固定**最大适应度评估次数** $FES_{max}$，而不是固定迭代代数——不同算法每代所需的评估次数可能不同，固定代数等于给了它们不同的预算。这是最重要的公平性原则。
 
@@ -303,7 +303,7 @@ if __name__ == "__main__":
 
 **五、科学的统计分析。** 不能简单地说平均值小的就一定更好。应该用统计检验（如 Wilcoxon 秩和检验）判断两者的性能差异是否在统计学上显著。
 
-**六、说明比较的到底是代数还是函数评价预算。** 同一个算法改一下 $\lambda$ 就能在相同代数下产生完全不同的试探次数，不说清楚就没有可比性 [Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)。
+**六、说明比较的到底是代数还是函数评价预算。** 同一个算法改一下 $\lambda$ 就能在相同代数下产生完全不同的试探次数，不说清楚就没有可比性 [Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)。
 
 :::
 
@@ -329,7 +329,7 @@ if __name__ == "__main__":
 
 **错误。**
 
-罚因子太小，对不可行解的惩罚不足，算法可能最终收敛到**不可行解**；罚因子太大，会过度惩罚那些虽然不可行但可能包含通往最优解有用信息的「潜力股」个体，导致算法过早收敛到某个次优的可行解 [Chapter 9_ Evolutionary Algorithms for Solving Single-objective Constrained Optimization Problems.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
+罚因子太小，对不可行解的惩罚不足，算法可能最终收敛到**不可行解**；罚因子太大，会过度惩罚那些虽然不可行但可能包含通往最优解有用信息的「潜力股」个体，导致算法过早收敛到某个次优的可行解 [Chapter 9_ Evolutionary Algorithms for Solving Single-objective Constrained Optimization Problems.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
 
 罚因子难以设定，这是罚函数法的致命缺点。
 
@@ -342,7 +342,7 @@ Deb 的可行性准则：可行解永远优于不可行解，即使不可行解�
 
 **正确。**
 
-三条规则的第一条：可行解 $G(A)=0$ 优于不可行解 $G(B)>0$，此时**不比较目标函数值** [Chapter 9_ Evolutionary Algorithms for Solving Single-objective Constrained Optimization Problems.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
+三条规则的第一条：可行解 $G(A)=0$ 优于不可行解 $G(B)>0$，此时**不比较目标函数值** [Chapter 9_ Evolutionary Algorithms for Solving Single-objective Constrained Optimization Problems.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
 
 :::
 
@@ -353,7 +353,7 @@ NSGA-II 里，同一层内每个目标维度上取最大和最小的那两个个
 
 **正确。**
 
-边界点的拥挤度设为 $\infty$，以确保它们被保留，扩大帕累托前沿的范围 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.13](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=13)。
+边界点的拥挤度设为 $\infty$，以确保它们被保留，扩大帕累托前沿的范围 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.13](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=13)。
 
 :::
 
@@ -364,7 +364,7 @@ NSGA-II 的选择策略是先比拥挤度，再比等级。
 
 **错误。**
 
-顺序反了。NSGA-II 是**先比等级，再比密度**：先通过非支配排序保证精英解（等级高的）被保留，再通过拥挤度距离保证在精英解内部的多样性 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.13](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=13)。
+顺序反了。NSGA-II 是**先比等级，再比密度**：先通过非支配排序保证精英解（等级高的）被保留，再通过拥挤度距离保证在精英解内部的多样性 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.13](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=13)。
 
 :::
 
@@ -388,7 +388,7 @@ Deb 的可行性准则三条规则：{{blank}} 优于不可行解；都不可行
 
 **答案：可行解、约束违反度、目标函数值。**
 
-三条规则按优先级排：可行解优于不可行解 → 都不可行则违反度小的获胜 → 都可行则目标函数值更优的获胜 [Chapter 9_ Evolutionary Algorithms for Solving Single-objective Constrained Optimization Problems.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
+三条规则按优先级排：可行解优于不可行解 → 都不可行则违反度小的获胜 → 都可行则目标函数值更优的获胜 [Chapter 9_ Evolutionary Algorithms for Solving Single-objective Constrained Optimization Problems.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
 
 它不需要任何参数，逻辑清晰，实现简单，但过于严格地偏好可行解，可能丢弃一些包含有用信息的不可行解。
 
@@ -401,7 +401,7 @@ NSGA-II 的两个核心机制：快速非支配排序保证 {{blank}}，拥挤�
 
 **答案：收敛性、多样性。**
 
-非支配排序给个体分层，Rank 1 永远优于 Rank 2，强烈的选择压力驱动种群向真实前沿**收敛**；拥挤度距离在同一层内优先保留处于稀疏区域的个体，让解在前沿上**均匀分布** [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.13](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=13)。
+非支配排序给个体分层，Rank 1 永远优于 Rank 2，强烈的选择压力驱动种群向真实前沿**收敛**；拥挤度距离在同一层内优先保留处于稀疏区域的个体，让解在前沿上**均匀分布** [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.13](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=13)。
 
 :::
 
@@ -412,7 +412,7 @@ NSGA-II 的两个核心机制：快速非支配排序保证 {{blank}}，拥挤�
 
 **答案：小于等于、严格小于。**
 
-「都不比 B 差，并且至少在一个目标上严格优于 B」。如果两个目标上的值都相等，则互不支配 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.8](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=8)。
+「都不比 B 差，并且至少在一个目标上严格优于 B」。如果两个目标上的值都相等，则互不支配 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.8](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=8)。
 
 :::
 
@@ -423,7 +423,7 @@ CaR 框架针对混合整数规划的两个策略是 {{blank}} 和 {{blank}}。
 
 **答案：切割、排斥。**
 
-切割提高搜索效率，排斥保证搜索的全局性。排斥的做法是：连续 $T$ 代没有找到更好的解时，判定算法停滞在一个可行块里，对整数部分与已探索块相同的解加一个巨大的约束违反度惩罚，逼算法离开 [Chapter 10_ Multiobjective Optimization for Locating Multiple Optimal Solutions of NESs and MMOPs.pdf · p.10](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=10)。
+切割提高搜索效率，排斥保证搜索的全局性。排斥的做法是：连续 $T$ 代没有找到更好的解时，判定算法停滞在一个可行块里，对整数部分与已探索块相同的解加一个巨大的约束违反度惩罚，逼算法离开 [Chapter 10_ Multiobjective Optimization for Locating Multiple Optimal Solutions of NESs and MMOPs.pdf · p.10](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%2010_Multiobjective%20Optimization%20for%20Locating%20Multiple%20Optimal%20Solutions%20of%20NESs%20and%20MMOPs.pdf#page=10)。
 
 :::
 
@@ -434,7 +434,7 @@ CaR 框架针对混合整数规划的两个策略是 {{blank}} 和 {{blank}}。
 
 **答案：罚因子。**
 
-罚因子太小可能收敛到不可行解，罚因子太大会把「潜力股」全灭掉、过早收敛到次优可行解。这是罚函数法唯一但致命的软肋 [Chapter 9_ Evolutionary Algorithms for Solving Single-objective Constrained Optimization Problems.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
+罚因子太小可能收敛到不可行解，罚因子太大会把「潜力股」全灭掉、过早收敛到次优可行解。这是罚函数法唯一但致命的软肋 [Chapter 9_ Evolutionary Algorithms for Solving Single-objective Constrained Optimization Problems.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
 
 :::
 
@@ -544,7 +544,7 @@ def crowding_distance(F, front):
 
 **三个容易丢分的细节：**
 
-1. **支配的判据是「都不大于」加「至少一个严格小于」。** 只写「都小于」会把互不支配的解错判成支配 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.8](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=8)。
+1. **支配的判据是「都不大于」加「至少一个严格小于」。** 只写「都小于」会把互不支配的解错判成支配 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.8](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=8)。
 2. **边界个体的拥挤度是 $\infty$，不是 0。** 这是为了让前沿两端不丢失。
 3. **每个目标维度各排一次序，累加。** 拥挤度是所有维度上「邻居间距的归一化差值」之和，单个维度算一次是不够的。
 
@@ -557,7 +557,7 @@ def crowding_distance(F, front):
 
 ---
 
-**背景。** 单目标约束优化问题 (SCOP) 要同时最小化 $f(x)$ 并让 $x$ 满足一组约束。除了目标函数值，还要度量一个解违反了约束多少，叫**约束违反度** $G(x)$：不等式约束那支取 $\max\{0, g_j(x)\}$，等式约束那支取 $\max\{0, |h_j(x)| - \delta\}$（$\delta$ 是正容差）。违反度为零的那片区域是可行域 [Chapter 9_ Evolutionary Algorithms for Solving Single-objective Constrained Optimization Problems.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
+**背景。** 单目标约束优化问题 (SCOP) 要同时最小化 $f(x)$ 并让 $x$ 满足一组约束。除了目标函数值，还要度量一个解违反了约束多少，叫**约束违反度** $G(x)$：不等式约束那支取 $\max\{0, g_j(x)\}$，等式约束那支取 $\max\{0, |h_j(x)| - \delta\}$（$\delta$ 是正容差）。违反度为零的那片区域是可行域 [Chapter 9_ Evolutionary Algorithms for Solving Single-objective Constrained Optimization Problems.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%209_Evolutionary%20Algorithms%20for%20Solving%20Single-objective%20Constrained%20Optimization%20Problems.pdf#page=4)。
 
 **技术一：罚函数法。** 把有约束问题转成无约束问题，构造 $F(x) = f(x) + P(G(x))$，不可行时惩罚项为正，可行时为 0。
 
@@ -581,7 +581,7 @@ def crowding_distance(F, front):
 
 ---
 
-**一、帕累托支配。** 对一个同时最小化 $m$ 个目标的问题，如果个体 A 在所有目标上都不比个体 B 差，并且至少在一个目标上严格优于 B，那么称 **A 支配 B**。如果一个解在种群中不被任何其他解所支配，它就是一个**帕累托最优解（非支配解）**。所有帕累托最优解在目标函数空间中的集合是**帕累托前沿**。算法的目标是找到一组尽可能逼近并均匀覆盖真实前沿的解 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.8](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=8)。
+**一、帕累托支配。** 对一个同时最小化 $m$ 个目标的问题，如果个体 A 在所有目标上都不比个体 B 差，并且至少在一个目标上严格优于 B，那么称 **A 支配 B**。如果一个解在种群中不被任何其他解所支配，它就是一个**帕累托最优解（非支配解）**。所有帕累托最优解在目标函数空间中的集合是**帕累托前沿**。算法的目标是找到一组尽可能逼近并均匀覆盖真实前沿的解 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.8](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=8)。
 
 **二、快速非支配排序（保证收敛性）。** 目的是给种群中的个体划分「等级」，优先选择更靠近真实前沿的解。
 
@@ -595,7 +595,7 @@ def crowding_distance(F, front):
 
 作用：两个个体 Rank 相同时，拥挤度更大的获胜。这鼓励解在整个前沿上均匀分布。
 
-**四、一句话概括。** NSGA-II 的选择策略是**先比等级，再比密度**。先通过非支配排序保证精英解被保留，再通过拥挤度距离保证精英解内部的多样性 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.13](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=13)。
+**四、一句话概括。** NSGA-II 的选择策略是**先比等级，再比密度**。先通过非支配排序保证精英解被保留，再通过拥挤度距离保证精英解内部的多样性 [Chapter 8_ Evolutionary Algorithms for Solving Multiobjective Optimization Problems.pdf · p.13](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%208_Evolutionary%20Algorithms%20for%20Solving%20Multiobjective%20Optimization%20Problems.pdf#page=13)。
 
 :::
 
@@ -621,7 +621,7 @@ DE/rand/1/bin 的基向量是当前最优个体。
 
 **错误。**
 
-DE/rand/1/bin 的基向量是**随机挑**的 $x_{r1,G}$；用当前最优做基向量的是 **DE/best/1/bin** [Chapter 4_ Introduction to Differential Evolution.pdf · p.18](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=18)。
+DE/rand/1/bin 的基向量是**随机挑**的 $x_{r1,G}$；用当前最优做基向量的是 **DE/best/1/bin** [Chapter 4_ Introduction to Differential Evolution.pdf · p.18](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=18)。
 
 DE/best/1/bin 收敛更快但多样性更低、容易早熟；DE/rand/1/bin 探索更强、慢一些但不易卡死。
 
@@ -634,7 +634,7 @@ DE 的选择步骤是：试验向量比目标向量好就替换，否则保留�
 
 **正确。**
 
-这是一对一贪婪选择。最小化问题里比的是 $f$，试验向量更小就替换 [Chapter 4_ Introduction to Differential Evolution.pdf · p.5](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5)。
+这是一对一贪婪选择。最小化问题里比的是 $f$，试验向量更小就替换 [Chapter 4_ Introduction to Differential Evolution.pdf · p.5](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5)。
 
 :::
 
@@ -645,7 +645,7 @@ $(1{+}1)$-ES 是逗号策略，子代不参与父代的竞争。
 
 **错误。**
 
-$(1{+}1)$-ES 是**加号策略**：父代和子代一起进选择池，比完留下好的，父代有优先权（精英保留）。逗号策略 $(\mu,\lambda)$ 才是每代淘汰全部父代、只从子代里选 [Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)。
+$(1{+}1)$-ES 是**加号策略**：父代和子代一起进选择池，比完留下好的，父代有优先权（精英保留）。逗号策略 $(\mu,\lambda)$ 才是每代淘汰全部父代、只从子代里选 [Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)。
 
 :::
 
@@ -656,7 +656,7 @@ $(1{+}1)$-ES 是**加号策略**：父代和子代一起进选择池，比完留
 
 **正确。**
 
-单峰问题用加号 $(\mu{+}\lambda)$——精英保留、收敛快；多峰或崎岖地形用逗号 $(\mu,\lambda)$——允许暂时变差、能逃出局部最优 [Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)。
+单峰问题用加号 $(\mu{+}\lambda)$——精英保留、收敛快；多峰或崎岖地形用逗号 $(\mu,\lambda)$——允许暂时变差、能逃出局部最优 [Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)。
 
 问「哪个允许退化」答 $(\mu,\lambda)$，问「多峰用哪个」也答 $(\mu,\lambda)$。
 
@@ -673,7 +673,7 @@ $$
 v_{i}^{t+1} = w \cdot v_{i}^{t} + c_1 r_1 \odot (p_{best,i} - x_{i}^{t}) + c_2 r_2 \odot (g_{best} - x_{i}^{t})
 $$
 
-$w$ 是惯性权重，$c_1$ 是「相信自己的经验」，$c_2$ 是「相信种群意见」[Chapter 5_ Introduction to Particle Swarm Optimization.pdf · p.17](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=17)。
+$w$ 是惯性权重，$c_1$ 是「相信自己的经验」，$c_2$ 是「相信种群意见」[Chapter 5_ Introduction to Particle Swarm Optimization.pdf · p.17](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=17)。
 
 PSO 没有选择算子、没有交叉、没有变异，粒子的永不淘汰。
 
@@ -688,7 +688,7 @@ PSO 的速度更新里，惯性权重 $w$ 常用 0.9 线性递减到 {{blank}}�
 
 **答案：0.4、2。**
 
-$w$ 大 = 冲得猛（偏探索），$w$ 小 = 稳下来（偏开发）。课件给的标准配置是 $w$ 从 0.9 线性递减到 0.4，$c_1 = c_2 = 2$ [Chapter 5_ Introduction to Particle Swarm Optimization.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=4)。
+$w$ 大 = 冲得猛（偏探索），$w$ 小 = 稳下来（偏开发）。课件给的标准配置是 $w$ 从 0.9 线性递减到 0.4，$c_1 = c_2 = 2$ [Chapter 5_ Introduction to Particle Swarm Optimization.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=4)。
 
 :::
 
@@ -699,7 +699,7 @@ GA 的轮盘赌：种群 4 个个体，适应度 $\{2, 4, 4, 6\}$。适应度总
 
 **答案：16、0.625。**
 
-$p = [2/16, 4/16, 4/16, 6/16] = [0.125, 0.25, 0.25, 0.375]$，累积概率 $q = [0.125, 0.375, 0.625, 1.000]$。随机数 $r = 0.45$ 落在 $[0.375, 0.625)$，选中第三个个体 [Chapter 2_ Introduction to GAs.pdf · p.6](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=6)。
+$p = [2/16, 4/16, 4/16, 6/16] = [0.125, 0.25, 0.25, 0.375]$，累积概率 $q = [0.125, 0.375, 0.625, 1.000]$。随机数 $r = 0.45$ 落在 $[0.375, 0.625)$，选中第三个个体 [Chapter 2_ Introduction to GAs.pdf · p.6](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=6)。
 
 :::
 
@@ -710,7 +710,7 @@ $(1{+}1)$-ES 的步长自适应公式是 $\delta' = \delta \cdot \exp(\tau \cdot
 
 **答案：$\tau$、1。**
 
-$\tau = (\sqrt{D})^{-1}$，$D=1$ 时 $\tau = 1$，公式简化为 $\delta' = \delta \exp(N(0,1))$ [Chapter 3_ Introduction to ES and EP.pdf · p.6](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)。
+$\tau = (\sqrt{D})^{-1}$，$D=1$ 时 $\tau = 1$，公式简化为 $\delta' = \delta \exp(N(0,1))$ [Chapter 3_ Introduction to ES and EP.pdf · p.6](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)。
 
 步长也是个体的一部分：子代被拒绝时，步长要和解一起回退。
 
@@ -723,7 +723,7 @@ DE 的二项式交叉里，试验向量至少有一维必须来自变异向量�
 
 **答案：强制维。**
 
-没有强制维的话，当所有维的随机数都大于 $CR$ 时，试验向量会完全等于目标向量，交叉这一步等于没做 [Chapter 4_ Introduction to Differential Evolution.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=7)。
+没有强制维的话，当所有维的随机数都大于 $CR$ 时，试验向量会完全等于目标向量，交叉这一步等于没做 [Chapter 4_ Introduction to Differential Evolution.pdf · p.7](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=7)。
 
 :::
 
@@ -734,7 +734,7 @@ DE 的二项式交叉里，试验向量至少有一维必须来自变异向量�
 
 **答案：$1/L$。**
 
-$p_m$ 统计的是「每一位翻不翻」，$L=10$ 时 $p_m \approx 0.05$，$L=100$ 时 $p_m \approx 0.01$，平均一条串翻不到一位。搞混量级会让 GA 退化成纯随机搜索（$p_m$ 太大），或让变异形同虚设（$p_m$ 太小，易早熟收敛）[Chapter 2_ Introduction to GAs.pdf · p.8](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=8)。
+$p_m$ 统计的是「每一位翻不翻」，$L=10$ 时 $p_m \approx 0.05$，$L=100$ 时 $p_m \approx 0.01$，平均一条串翻不到一位。搞混量级会让 GA 退化成纯随机搜索（$p_m$ 太大），或让变异形同虚设（$p_m$ 太小，易早熟收敛）[Chapter 2_ Introduction to GAs.pdf · p.8](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=8)。
 
 :::
 
@@ -916,7 +916,7 @@ if __name__ == "__main__":
 **细节：**
 
 1. **PSO 没有选择、交叉、变异。** 粒子永不淘汰，「好起来」靠的是它记着 `pbest`。
-2. **个体历史最优只在当前位置更优时才更新。** 当前解变差时 `pbest` 不回退 [Chapter 5_ Introduction to Particle Swarm Optimization.pdf · p.14](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=14)。
+2. **个体历史最优只在当前位置更优时才更新。** 当前解变差时 `pbest` 不回退 [Chapter 5_ Introduction to Particle Swarm Optimization.pdf · p.14](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=14)。
 3. **边界处理用 `np.clip`（修补算子）。** 位置飞出区间要拽回来，否则速度和位置会一路发散。
 4. **`best_positions` 要拷贝。** 用 `position.copy()`，否则 `pbest` 和粒子共用一块内存，粒子一动 `pbest` 就跟着变，历史最优就没了。
 

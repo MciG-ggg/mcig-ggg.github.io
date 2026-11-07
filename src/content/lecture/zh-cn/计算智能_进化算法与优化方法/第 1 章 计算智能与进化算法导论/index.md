@@ -4,15 +4,15 @@ timestamp: 2026-10-21T20:30:00+08:00
 series: 计算智能
 tags: [课内, 计算智能]
 description: 给一条工业生产线调一组工艺参数——温度、压力、流量——让“单位能耗”尽量低。这在数学上就是一个优化问题:选 x,让 f(x) 最小 p. 2…
-source_url: http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/
+source_url: file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/
 toc: true
 draft: false
 ---
 ```cardlink
-url: http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/课件/
+url: file:///Volumes/Nextcloud/School/Compute-Intelligence/课件/
 title: "计算智能 · 课程课件"
 description: "中南大学自动化学院《计算智能》课程的全部课件"
-host: 10.188.31.55:5244
+host: /Volumes/Nextcloud/School
 ```
 
 [← 返回《计算智能：进化算法与优化方法》目录](../)
@@ -21,11 +21,11 @@ host: 10.188.31.55:5244
 
 ### 优化问题需要说清三件事
 
-给一条工业生产线调一组工艺参数——温度、压力、流量——让“单位能耗”尽量低。这在数学上就是一个优化问题:选 $x$,让 $f(x)$ 最小 [Chapter 1_ Introduction to EAs.pdf · p.2](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
+给一条工业生产线调一组工艺参数——温度、压力、流量——让“单位能耗”尽量低。这在数学上就是一个优化问题:选 $x$,让 $f(x)$ 最小 [Chapter 1_ Introduction to EAs.pdf · p.2](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
 
-工程里这样的问题多得吓人:模型参数辨识、控制器参数整定、生产排程、库存优化、图像分割阈值选取、神经网络超参数搜索等等。它们的共同特征是真实问题的目标函数往往写不出干净的公式——要么有噪声、要么不可导、要么形式复杂到连符号表达都嫌长。传统优化方法(梯度下降、牛顿法、穷举)要么必须知道梯度,要么必须把搜索空间挨个点试一遍,在这些问题面前要么走不动、要么跑不完 [Chapter 1_ Introduction to EAs.pdf · p.2](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
+工程里这样的问题多得吓人:模型参数辨识、控制器参数整定、生产排程、库存优化、图像分割阈值选取、神经网络超参数搜索等等。它们的共同特征是真实问题的目标函数往往写不出干净的公式——要么有噪声、要么不可导、要么形式复杂到连符号表达都嫌长。传统优化方法(梯度下降、牛顿法、穷举)要么必须知道梯度,要么必须把搜索空间挨个点试一遍,在这些问题面前要么走不动、要么跑不完 [Chapter 1_ Introduction to EAs.pdf · p.2](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
 
-进化算法(Evolutionary Algorithm, EA)换了一个完全不同的思路:不去算“该往哪边走”,而是同时放一群随机解在空间里跑,让它们“模仿自然选择”——表现好的多复制、随机地小改、互相杂交——一代代改进。它对函数本身几乎不做假设:不要求可导,不要求光滑,不要求连续,只要能给出“这个解多少分”就行 [Chapter 1_ Introduction to EAs.pdf · p.8](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=8)。
+进化算法(Evolutionary Algorithm, EA)换了一个完全不同的思路:不去算“该往哪边走”,而是同时放一群随机解在空间里跑,让它们“模仿自然选择”——表现好的多复制、随机地小改、互相杂交——一代代改进。它对函数本身几乎不做假设:不要求可导,不要求光滑,不要求连续,只要能给出“这个解多少分”就行 [Chapter 1_ Introduction to EAs.pdf · p.8](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=8)。
 
 任何优化问题都由三件套组成:
 
@@ -55,13 +55,13 @@ $$
 x^* = \arg\min_{x\in S} f(x)
 $$
 
-这个 $x^*$ 称为**全局最优 (global optimum)**——整个搜索空间里 $f$ 最小的那一个 [Chapter 1_ Introduction to EAs.pdf · p.2](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
+这个 $x^*$ 称为**全局最优 (global optimum)**——整个搜索空间里 $f$ 最小的那一个 [Chapter 1_ Introduction to EAs.pdf · p.2](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
 
 问题在于,地形往往不止一个谷底。
 
 ![单峰地形上从一点出发总能到达唯一最优解(左);多峰地形上同一条下降路径会停在局部最优而非全局最优(右)](images/fig_002.png)
 
-**单峰 (unimodal)** 地形像一只碗,只有一个谷底;**多峰 (multimodal)** 地形像一片丘陵,谷底有好几个,深浅不一。传统优化方法大多从“一个点”出发、按“下坡方向”走,这种策略叫**爬山法 (hill climbing)**——它**保证能走到最近的谷底,但保证不了那是全局最深的谷底**。这里的“下坡方向”只需要直觉:梯度就是函数“上升最快的方向”,梯度下降是朝反方向走 [Chapter 1_ Introduction to EAs.pdf · p.2](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
+**单峰 (unimodal)** 地形像一只碗,只有一个谷底;**多峰 (multimodal)** 地形像一片丘陵,谷底有好几个,深浅不一。传统优化方法大多从“一个点”出发、按“下坡方向”走,这种策略叫**爬山法 (hill climbing)**——它**保证能走到最近的谷底,但保证不了那是全局最深的谷底**。这里的“下坡方向”只需要直觉:梯度就是函数“上升最快的方向”,梯度下降是朝反方向走 [Chapter 1_ Introduction to EAs.pdf · p.2](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
 
 梯度法在多峰地形上必然失效,一句话就能说清:梯度只给出当前位置的下坡方向,一旦滑进某个谷底,谷底处梯度为零或极小,再也走不出去;而这个谷底有多深,取决于当初从哪个坡上滚下来。
 
@@ -75,29 +75,29 @@ $$
 - 万一某个点掉进了浅坑,其它点不会跟着陷进去;
 - 已经找到的“好区域”可以通过“种群之间交换信息”扩散出去。
 
-这就是**多点搜索 (multi-point search)** 相对**单点搜索 (single-point search)** 的根本优势 [Chapter 1_ Introduction to EAs.pdf · p.3](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
+这就是**多点搜索 (multi-point search)** 相对**单点搜索 (single-point search)** 的根本优势 [Chapter 1_ Introduction to EAs.pdf · p.3](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
 
-但单纯的“多点爬山”还不够——多个爬山者之间不互相通报,谁也帮不了谁。进化算法又加了第二招:**下一步往哪走不是由确定性公式算出来的,而是由随机抽样决定的**——这就是 PPT 里讲的“随机概率转变准则”。它意味着即使当前解看起来不错,算法也愿意接受一小步“看起来变差”的试探,从而**跳出当前的谷底去别处看看** [Chapter 1_ Introduction to EAs.pdf · p.8](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=8)。这里的“随机”是**伪随机数 (pseudo-random number)**:计算机用确定公式算出的“看起来随机”的数,随机种子相同则序列完全相同 [Chapter 1_ Introduction to EAs.pdf · p.8](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=8)。
+但单纯的“多点爬山”还不够——多个爬山者之间不互相通报,谁也帮不了谁。进化算法又加了第二招:**下一步往哪走不是由确定性公式算出来的,而是由随机抽样决定的**——这就是 PPT 里讲的“随机概率转变准则”。它意味着即使当前解看起来不错,算法也愿意接受一小步“看起来变差”的试探,从而**跳出当前的谷底去别处看看** [Chapter 1_ Introduction to EAs.pdf · p.8](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=8)。这里的“随机”是**伪随机数 (pseudo-random number)**:计算机用确定公式算出的“看起来随机”的数,随机种子相同则序列完全相同 [Chapter 1_ Introduction to EAs.pdf · p.8](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=8)。
 
-一个最小的例子。在整数点上定义 $f(0)=5,\ f(1)=2,\ f(2)=7,\ f(3)=1,\ f(4)=9$。只允许看相邻两格的“单点爬山”:从 $x=0$ 出发,$x=1$ 的 $f=2$ 比 $f(0)=5$ 好,走过去;再看 $x=1$ 的邻居,$f(0)=5$ 差、$f(2)=7$ 也差,四面都不如它,停在 $x=1$,**永远发现不了 $x=3$ 处那个 1** [Chapter 1_ Introduction to EAs.pdf · p.2](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。但如果**除了“走下坡”,每一步还允许以小概率“跳到任意一格”**:这次跳到 $x=3$,立即看到 $f(3)=1$ 是全局最优,后面的搜索就都朝它靠拢了。这就是“随机试探”的价值——它**给了算法第二次机会,允许暂时的“恶化”以换取全局视野** [Chapter 1_ Introduction to EAs.pdf · p.3](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
+一个最小的例子。在整数点上定义 $f(0)=5,\ f(1)=2,\ f(2)=7,\ f(3)=1,\ f(4)=9$。只允许看相邻两格的“单点爬山”:从 $x=0$ 出发,$x=1$ 的 $f=2$ 比 $f(0)=5$ 好,走过去;再看 $x=1$ 的邻居,$f(0)=5$ 差、$f(2)=7$ 也差,四面都不如它,停在 $x=1$,**永远发现不了 $x=3$ 处那个 1** [Chapter 1_ Introduction to EAs.pdf · p.2](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。但如果**除了“走下坡”,每一步还允许以小概率“跳到任意一格”**:这次跳到 $x=3$,立即看到 $f(3)=1$ 是全局最优,后面的搜索就都朝它靠拢了。这就是“随机试探”的价值——它**给了算法第二次机会,允许暂时的“恶化”以换取全局视野** [Chapter 1_ Introduction to EAs.pdf · p.3](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
 
 多点并行 + 随机概率转变,这两条加在一起就构成了进化算法的灵魂。
 
 ### 进化算法这一族
 
-这门课研究的核心对象是**进化算法**:留一群解、让它们“选优、交配、随机小改”、一代代改进 [Chapter 1_ Introduction to EAs.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=7)。
+这门课研究的核心对象是**进化算法**:留一群解、让它们“选优、交配、随机小改”、一代代改进 [Chapter 1_ Introduction to EAs.pdf · p.7](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=7)。
 
 ![进化算法向自然学习的三条脉络:达尔文的自然选择对应遗传算法,鸟群对应粒子群优化,蚁群对应蚁群算法](images/fig_005.png)
 
-三条自然隐喻各对应一个算法:GA 对应达尔文的自然选择,PSO 对应鸟群与鱼群,蚁群算法 (ant colony optimization, ACO) 模仿蚂蚁用**信息素 (pheromone)** 标记路径、逐步逼近最短路径,是另一个不靠梯度的范例 [Chapter 1_ Introduction to EAs.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=4)。
+三条自然隐喻各对应一个算法:GA 对应达尔文的自然选择,PSO 对应鸟群与鱼群,蚁群算法 (ant colony optimization, ACO) 模仿蚂蚁用**信息素 (pheromone)** 标记路径、逐步逼近最短路径,是另一个不靠梯度的范例 [Chapter 1_ Introduction to EAs.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=4)。
 
-两个容易混的词:**进化计算 (evolutionary computation)** 是“进化算法”这个研究领域的总称(学术圈子、期刊、会议),不是某个具体算法;**范例 (paradigm)** 是某个家族里最具代表性的款式——GA 是一个范例,PSO 是另一个,共 6 大范例 [Chapter 1_ Introduction to EAs.pdf · p.9](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=9)。
+两个容易混的词:**进化计算 (evolutionary computation)** 是“进化算法”这个研究领域的总称(学术圈子、期刊、会议),不是某个具体算法;**范例 (paradigm)** 是某个家族里最具代表性的款式——GA 是一个范例,PSO 是另一个,共 6 大范例 [Chapter 1_ Introduction to EAs.pdf · p.9](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=9)。
 
 ### EA 通用框架:六步闭环
 
 ![进化算法的通用框架:群体经选择得到父代集,父代集经交叉与变异产生新解,新解再由替换送回群体,构成闭环](images/fig_001.png)
 
-这张图是全书主干:后面四章讲的 GA、ES/EP、DE、PSO,**全都是这张图里某个或某几个步骤的换一种实现**。区别只落在“选择怎么做、交叉怎么做、变异怎么做、替换怎么做”这四问上 [Chapter 1_ Introduction to EAs.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=7)。
+这张图是全书主干:后面四章讲的 GA、ES/EP、DE、PSO,**全都是这张图里某个或某几个步骤的换一种实现**。区别只落在“选择怎么做、交叉怎么做、变异怎么做、替换怎么做”这四问上 [Chapter 1_ Introduction to EAs.pdf · p.7](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=7)。
 
 六步闭环:
 
@@ -121,7 +121,7 @@ $$
 
 **探索 (exploration)**:去没去过的地方试试——可能找到更深的谷,也可能白跑一趟。**开发 (exploitation)**:在已知不错的点附近细挖——能把解算得更精确,但可能永远困在这一个谷里。
 
-凡是问某参数调大或调小会怎样,答案几乎都能这样开头——**调大 = 更偏探索 = 更不容易早熟,但收敛更慢**。这两个词贯穿第 1–5 章所有参数:GA 的 $p_m$、ES 的步长 $\delta$、DE 的 $F$ 与 $CR$、PSO 的 $\omega$ 与 $c_1$/$c_2$ [Chapter 1_ Introduction to EAs.pdf · p.3](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
+凡是问某参数调大或调小会怎样,答案几乎都能这样开头——**调大 = 更偏探索 = 更不容易早熟,但收敛更慢**。这两个词贯穿第 1–5 章所有参数:GA 的 $p_m$、ES 的步长 $\delta$、DE 的 $F$ 与 $CR$、PSO 的 $\omega$ 与 $c_1$/$c_2$ [Chapter 1_ Introduction to EAs.pdf · p.3](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
 
 变异率就是最直观的例子。$p_m$ 太大:每代产生大量随机扰动,好不容易积累的好模式被全部打碎——探索过度、开发为零,算法等价于随机游走,根本收不住。$p_m$ 太小:几乎不变异,种群很快变得一模一样(多样性丢光),只能在一个浅谷里打转——开发过度、探索为零,发生早熟收敛。平衡点落在“与编码串长度成反比的量级”上:既能让好模式存活下来,又能保证偶尔产生一点新模式。
 
@@ -154,7 +154,7 @@ $$
 | 爬山法 (hill climbing) | 从一个起点出发,每一步只往“邻居里更好的方向”走,走不动就停。它不用梯度公式,但只能到达**最近**的那个局部最优。 |
 | 搜索空间 (search space) | $x$ 允许取值的那个区域,$S=\prod_{j=1}^{D}[L_j,U_j]$。 |
 | 维度灾难 (curse of dimensionality) | 变量个数 $D$ 增加时,搜索空间的“体积”按指数增长,固定数量的采样点越来越稀疏,根本覆盖不住整个空间。2 维 100 个点能覆盖住,20 维 $10^{20}$ 个点根本试不完。这是“穷举不行”的定量理由。 |
-| 鲁棒性 (robustness) | 算法“换个问题、换组参数也还能用”的耐折腾程度。进化算法只靠 $f$ 值不靠梯度,所以被认为鲁棒性好 [Chapter 1_ Introduction to EAs.pdf · p.12](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=12)。 |
+| 鲁棒性 (robustness) | 算法“换个问题、换组参数也还能用”的耐折腾程度。进化算法只靠 $f$ 值不靠梯度,所以被认为鲁棒性好 [Chapter 1_ Introduction to EAs.pdf · p.12](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=12)。 |
 
 ### 阶梯例题
 
@@ -170,7 +170,7 @@ $$
 
 (c) 搜索空间 $S=[0,10]\times[-5,5]$,共 $10\times 10=100$ 单位的二维平面。
 
-$f(3,1)=2 < f(5,2)=4$,按“最小化”约定,$x=(3,1)$ 比 $x=(5,2)$ 更好 [Chapter 1_ Introduction to EAs.pdf · p.2](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
+$f(3,1)=2 < f(5,2)=4$,按“最小化”约定,$x=(3,1)$ 比 $x=(5,2)$ 更好 [Chapter 1_ Introduction to EAs.pdf · p.2](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
 
 #### 例 1.2 单峰 vs 多峰——为什么传统方法对多峰失效
 
@@ -189,7 +189,7 @@ $$
 
 (a) $f_A(x)=(x-3)^2$ 是单峰地形,在 $[0,6]$ 上唯一谷底是 $x=3$ 处 $f=0$。从 $x=0$ 出发,$x=1$ 的 $f=4$ 比 $f(0)=9$ 好,走过去;$x=2$ 的 $f=1$ 比 $f(1)=4$ 好,再走过去;$x=3$ 的 $f=0$ 比 $f(2)=1$ 好,再走过去;$x=4$ 的 $f=1$ 比 $f(3)=0$ 差,反向;$x=3$ 两侧都没它好,停在 $x=3$。找到了全局最优。
 
-(b) $f_B'(x)=4x^3-6x=2x(2x^2-3)=0$ 得 $x=0$ 与 $x=\pm\sqrt{3/2}\approx\pm 1.2247$。$f_B(0)=1$,$f_B(\pm 1.2247)=-1.25$。地形是“两个谷 $x=\pm 1.2247$、中间一个小土包 $x=0$”。从 $x=0$ 出发:看 $x=-0.1$、$f=0.99$ 比 $f(0)=1$ 略小,走过去;一步一步,会向 $x=-1.2247$ 那个谷滑过去,最终停在 $x=-1.2247$、$f=-1.25$。**但是**,对称的那个谷 $x=+1.2247$ 处 $f$ 也是 $-1.25$,所以从 $x=0$ 出发既可能停在左、也可能停在右(取决于先看到哪边)。如果初始点就在 $x=0$ 附近,它**永远发现不了另一个对称的谷底是不是比这个深**——这是单点爬山在多峰地形上的典型失败。这个例子恰好两个谷一样深;若深度不同,则一定停在较浅的那个 [Chapter 1_ Introduction to EAs.pdf · p.2](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
+(b) $f_B'(x)=4x^3-6x=2x(2x^2-3)=0$ 得 $x=0$ 与 $x=\pm\sqrt{3/2}\approx\pm 1.2247$。$f_B(0)=1$,$f_B(\pm 1.2247)=-1.25$。地形是“两个谷 $x=\pm 1.2247$、中间一个小土包 $x=0$”。从 $x=0$ 出发:看 $x=-0.1$、$f=0.99$ 比 $f(0)=1$ 略小,走过去;一步一步,会向 $x=-1.2247$ 那个谷滑过去,最终停在 $x=-1.2247$、$f=-1.25$。**但是**,对称的那个谷 $x=+1.2247$ 处 $f$ 也是 $-1.25$,所以从 $x=0$ 出发既可能停在左、也可能停在右(取决于先看到哪边)。如果初始点就在 $x=0$ 附近,它**永远发现不了另一个对称的谷底是不是比这个深**——这是单点爬山在多峰地形上的典型失败。这个例子恰好两个谷一样深;若深度不同,则一定停在较浅的那个 [Chapter 1_ Introduction to EAs.pdf · p.2](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
 
 #### 例 1.3 把“探索 vs 开发”翻译成算法决策
 
@@ -199,7 +199,7 @@ $$
 
 - **(i) 变异强度**:调**高**。变异是“探索”的主要来源——它把个体朝新方向拽一拽;变异率太低,谁也出不了当前的浅坑。
 - **(ii) 种群规模 $N$**:调**高**。更多个体意味着空间里同时“盯着”的山谷更多;太小则种群里几个个体挤在一起,多样性天然差。
-- **(iii) 选择的严格度**:调**低**。选择太严,适应度高的那 1–2 个个体几乎垄断繁殖权,其他个体全被边缘化、多样性迅速丢光;让强者不强、弱者不弱,种群里能保留更多“与众不同的解” [Chapter 1_ Introduction to EAs.pdf · p.3](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
+- **(iii) 选择的严格度**:调**低**。选择太严,适应度高的那 1–2 个个体几乎垄断繁殖权,其他个体全被边缘化、多样性迅速丢光;让强者不强、弱者不弱,种群里能保留更多“与众不同的解” [Chapter 1_ Introduction to EAs.pdf · p.3](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=3)。
 
 共通逻辑:三个旋钮都朝“更偏探索 = 更不容易早熟”的方向调,但“调大还是调小”的具体方向不同。这就是“凡是问某参数调大或调小会怎样,答案几乎都能这样开头”这条在算法参数上的具体体现。
 
@@ -207,12 +207,12 @@ $$
 
 > [!WARNING]
 > **陷阱 1:把“目标函数”和“适应度”当成同一个东西**
-> 目标函数 $f$ 默认**越小越好**;适应度 $\mathrm{fit}$ 默认**越大越好**。两者方向相反,简单问题里常取 $\mathrm{fit}=-f$,但**这不是普适规则**——有的问题里 $\mathrm{fit}$ 是 $f$ 的某个非线性变换。GA 的 PPT 表里 $f$ 与 $\mathrm{fit}$ 是分两列的,正是为了提醒这件事。写“用 $f$ 值做轮盘赌选择”时,若原题是求最大值可以算对;若原题是求最小化,要用 $\mathrm{fit}$ 而不是 $f$ [Chapter 1_ Introduction to EAs.pdf · p.8](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=8)。
+> 目标函数 $f$ 默认**越小越好**;适应度 $\mathrm{fit}$ 默认**越大越好**。两者方向相反,简单问题里常取 $\mathrm{fit}=-f$,但**这不是普适规则**——有的问题里 $\mathrm{fit}$ 是 $f$ 的某个非线性变换。GA 的 PPT 表里 $f$ 与 $\mathrm{fit}$ 是分两列的,正是为了提醒这件事。写“用 $f$ 值做轮盘赌选择”时,若原题是求最大值可以算对;若原题是求最小化,要用 $\mathrm{fit}$ 而不是 $f$ [Chapter 1_ Introduction to EAs.pdf · p.8](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=8)。
 
 > [!WARNING]
 > **陷阱 2:把“种群”和“父代集”混为一谈**
-> 种群 $P(t)$(PPT 图里写作 Population/群体)是**当前一代全部** $N$ 个个体;父代集 $S(t)$ 是经选择算子挑出来的那**一小批当父母的个体**,其规模 $N_p$ 通常 $\le N$,即它**不大于**种群。这里最容易搞反的是 ES:它把父代个数写作 $\mu$、每代产生的子代个数写作 $\lambda$,且 $\lambda \ge \mu$、常用 $\lambda \approx 7\mu$——也就是说 ES 的父代集**比子代少**,更不会比种群大。常见错误是把框架图中的“种群”框与“父代集”框画成同一个框;正确画法是两个独立的框,中间有“选择”箭头。框架图里多出来的这一步**就是选择算子真正做的事** [Chapter 1_ Introduction to EAs.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=7)。
+> 种群 $P(t)$(PPT 图里写作 Population/群体)是**当前一代全部** $N$ 个个体;父代集 $S(t)$ 是经选择算子挑出来的那**一小批当父母的个体**,其规模 $N_p$ 通常 $\le N$,即它**不大于**种群。这里最容易搞反的是 ES:它把父代个数写作 $\mu$、每代产生的子代个数写作 $\lambda$,且 $\lambda \ge \mu$、常用 $\lambda \approx 7\mu$——也就是说 ES 的父代集**比子代少**,更不会比种群大。常见错误是把框架图中的“种群”框与“父代集”框画成同一个框;正确画法是两个独立的框,中间有“选择”箭头。框架图里多出来的这一步**就是选择算子真正做的事** [Chapter 1_ Introduction to EAs.pdf · p.7](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=7)。
 
 > [!WARNING]
 > **陷阱 3:以为进化算法“保证找到全局最优”**
-> 错。进化算法**只在概率意义上**给出强搜索,不提供最优性保证。给定有限代数 $G_{\max}$ 与有限种群 $N$,搜索范围天然有限——多峰地形上“离最优还差很远但曲线已经平了”是常态。它的价值在于**对函数几乎不做假设、不需要梯度、在合理时间内给出足够好的解**,不在于“保证最优” [Chapter 1_ Introduction to EAs.pdf · p.2](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。
+> 错。进化算法**只在概率意义上**给出强搜索,不提供最优性保证。给定有限代数 $G_{\max}$ 与有限种群 $N$,搜索范围天然有限——多峰地形上“离最优还差很远但曲线已经平了”是常态。它的价值在于**对函数几乎不做假设、不需要梯度、在合理时间内给出足够好的解**,不在于“保证最优” [Chapter 1_ Introduction to EAs.pdf · p.2](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%201_%20Introduction%20to%20EAs.pdf#page=2)。

@@ -4,16 +4,16 @@ timestamp: 2026-10-23T15:00:00+08:00
 series: Auto-Drive-Intro
 tags: [课内, Auto-Drive-Intro]
 description: 《智能驾驶导论》代码题复习资料。传统方法车道线检测的六步流水线，每个参数调大调小的后果，以及四次 APOLLO 作业里的命令、配置文件、规划与控制参数。
-source_url: http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/
+source_url: file:///Volumes/Nextcloud/School/Auto-Drive-Intro/
 toc: true
 draft: false
 ---
 
 ```cardlink
-url: http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/
+url: file:///Volumes/Nextcloud/School/Auto-Drive-Intro/
 title: "Auto-Drive-Intro · 课程课件与作业"
 description: "《智能驾驶导论》的六讲课件、感知基础讲义与四次 APOLLO 平台作业"
-host: 10.188.31.55:5244
+host: /Volumes/Nextcloud/School
 ```
 
 - 传统车道线检测 — 灰度、高斯、Canny、三角 ROI、概率霍夫、按斜率分左右取均值。附每个参数调大调小会发生什么
@@ -130,7 +130,7 @@ $$
 b = -xm + y
 $$
 
-笛卡尔系里的一个点 $(x, y)$ 对应霍夫空间里的一条直线，多条经过该点的直线在霍夫空间里交于一点 [第二章 无人驾驶感知基础.pdf · p.12](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=12)。
+笛卡尔系里的一个点 $(x, y)$ 对应霍夫空间里的一条直线，多条经过该点的直线在霍夫空间里交于一点 [第二章 无人驾驶感知基础.pdf · p.12](file:///Volumes/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=12)。
 
 ![课件页：霍夫变换得到车道线，上半部分是笛卡尔坐标系与霍夫空间的变量参数互换表，下半部分是四组散点图，把同一条直线在两个空间里对应的点和线画出来](images/rl-hough-duality.png)
 
@@ -140,9 +140,9 @@ $$
 d = x\cos\theta + y\sin\theta
 $$
 
-此时变量是 $(\theta, d)$、参数是 $(x, y)$。笛卡尔系的一个点对应霍夫空间里的一条曲线 $d_i = x\cos\theta_i + y\sin\theta_i$，一条曲线经过 $(\theta_i, d_i)$ [第二章 无人驾驶感知基础.pdf · p.13](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=13)。
+此时变量是 $(\theta, d)$、参数是 $(x, y)$。笛卡尔系的一个点对应霍夫空间里的一条曲线 $d_i = x\cos\theta_i + y\sin\theta_i$，一条曲线经过 $(\theta_i, d_i)$ [第二章 无人驾驶感知基础.pdf · p.13](file:///Volumes/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=13)。
 
-每个边缘像素在霍夫空间里划出一条曲线，曲线两两相交。交点表示的线在笛卡尔坐标系里对应的点越多，说明这条线上真的有那么多像素。所以累加器给每个 $(\theta, d)$ 格子记一票，票数超过阈值就确定一条线 [第二章 无人驾驶感知基础.pdf · p.13](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=13)。
+每个边缘像素在霍夫空间里划出一条曲线，曲线两两相交。交点表示的线在笛卡尔坐标系里对应的点越多，说明这条线上真的有那么多像素。所以累加器给每个 $(\theta, d)$ 格子记一票，票数超过阈值就确定一条线 [第二章 无人驾驶感知基础.pdf · p.13](file:///Volumes/Nextcloud/School/Auto-Drive-Intro/%E8%AF%BE%E4%BB%B6/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%84%9F%E7%9F%A5%E5%9F%BA%E7%A1%80.pdf#page=13)。
 
 **概率版和标准版差在哪。** 投票这一步两者一样：每个边缘像素都对全部采样角度投票，票数达到 `threshold` 的那个角度成为候选方向。差别在投票之后。标准霍夫（`HoughLines`）等所有点投完，再在整张累加器上找局部极大值，返回的是无限长的直线。概率版从命中点沿候选方向向两侧行走，碰到边缘像素就更新端点，连续空白超过 `maxLineGap` 才停下；走过的像素从掩码里清掉，于是同一条线不会被提取两次，第二条线也不会借用第一条的像素。下一个点如果落在已清空的像素上，代码直接跳过它，所以它比标准霍夫快。
 
@@ -267,7 +267,7 @@ def build_steps_canvas(panels, panel_width=480):
 
 ## Apollo 工具链：命令、通道与调试器
 
-四次作业全都围绕同一套东西：一键启动、回放数据包、用调试器看通道和曲线、改配置再回放看变化 [作业一：基于百度APOLLO自动驾驶平台的车辆规划可视化与调试.docx · p.1](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E4%B8%80%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%BD%A6%E8%BE%86%E8%A7%84%E5%88%92%E5%8F%AF%E8%A7%86%E5%8C%96%E4%B8%8E%E8%B0%83%E8%AF%95.docx)。
+四次作业全都围绕同一套东西：一键启动、回放数据包、用调试器看通道和曲线、改配置再回放看变化 [作业一：基于百度APOLLO自动驾驶平台的车辆规划可视化与调试.docx · p.1](file:///Volumes/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E4%B8%80%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%BD%A6%E8%BE%86%E8%A7%84%E5%88%92%E5%8F%AF%E8%A7%86%E5%8C%96%E4%B8%8E%E8%B0%83%E8%AF%95.docx)。
 
 ### 启动与回放
 
@@ -315,7 +315,7 @@ cyber_recorder play -f demo_3.5.record -l
 
 ## 规划模块：场景、参数与 S-T 图
 
-作业二和作业三都在 Planning 模块里 [作业二：基于百度apollo平台的多场景下路径规划.docx · p.1](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E4%BA%8C%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6apollo%E5%B9%B3%E5%8F%B0%E7%9A%84%E5%A4%9A%E5%9C%BA%E6%99%AF%E4%B8%8B%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92.docx)。
+作业二和作业三都在 Planning 模块里 [作业二：基于百度apollo平台的多场景下路径规划.docx · p.1](file:///Volumes/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E4%BA%8C%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6apollo%E5%B9%B3%E5%8F%B0%E7%9A%84%E5%A4%9A%E5%9C%BA%E6%99%AF%E4%B8%8B%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92.docx)。
 
 ### Planning 的三个子模块
 
@@ -356,7 +356,7 @@ cyber_recorder play -f demo_3.5.record -l
 
 ### 速度规划的参数
 
-作业三要改参数看曲线变化 [作业三：基于百度APOLLO平台多场景下的速度规划与数据采集.docx · p.1](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E4%B8%89%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E5%A4%9A%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E9%80%9F%E5%BA%A6%E8%A7%84%E5%88%92%E4%B8%8E%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86.docx)。
+作业三要改参数看曲线变化 [作业三：基于百度APOLLO平台多场景下的速度规划与数据采集.docx · p.1](file:///Volumes/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E4%B8%89%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E5%A4%9A%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E9%80%9F%E5%BA%A6%E8%A7%84%E5%88%92%E4%B8%8E%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86.docx)。
 
 | 参数 | 管什么 | 调大的后果 | 调小的后果 |
 |---|---|---|---|
@@ -368,7 +368,7 @@ cyber_recorder play -f demo_3.5.record -l
 | 安全距离 | 跟车时留多少 | 跟得更远，通行效率低 | 跟得更近，容易被加塞，也更容易追尾 |
 | 速度权重（speed_weight） | 超过目标速度的惩罚 | 更严格守目标速度 | 允许稍微超一点 |
 
-「增加最小速度限制会导致车辆更积极地加速，减少安全距离会导致车辆更接近其他车辆」——作业三原文这么写 [作业三：基于百度APOLLO平台多场景下的速度规划与数据采集.docx · p.1](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E4%B8%89%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E5%A4%9A%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E9%80%9F%E5%BA%A6%E8%A7%84%E5%88%92%E4%B8%8E%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86.docx)。
+「增加最小速度限制会导致车辆更积极地加速，减少安全距离会导致车辆更接近其他车辆」——作业三原文这么写 [作业三：基于百度APOLLO平台多场景下的速度规划与数据采集.docx · p.1](file:///Volumes/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E4%B8%89%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E5%A4%9A%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E9%80%9F%E5%BA%A6%E8%A7%84%E5%88%92%E4%B8%8E%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86.docx)。
 
 ### S-T 图：把时空冲突画成一张图
 
@@ -403,7 +403,7 @@ run modules/planning/tools/plot_st_nlp.py \
 
 ## 控制模块：纵向 PID 与横向 LQR
 
-作业四用实测数据包看控制效果 [作业四：基于百度APOLLO平台的车辆控制结果分析.docx · p.1](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E5%9B%9B%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%BD%A6%E8%BE%86%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90.docx)。
+作业四用实测数据包看控制效果 [作业四：基于百度APOLLO平台的车辆控制结果分析.docx · p.1](file:///Volumes/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E5%9B%9B%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%BD%A6%E8%BE%86%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90.docx)。
 
 控制模块的职责是消除「理论模型」和「车辆实际」之间的偏差。纵向用 PID，横向用 LQR。
 
@@ -411,7 +411,7 @@ run modules/planning/tools/plot_st_nlp.py \
 
 纵向控制要跟的是速度。Apollo 的做法不是直接对速度误差做 PID，而是先把速度误差积分成「位置误差」，再对位置误差做 PID。这样做的好处是起步和停车都更稳。
 
-配置文件是 `apollo_workspace/modules/control/conf/control_conf.pb.txt` [作业四：基于百度APOLLO平台的车辆控制结果分析.docx · p.1](http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E5%9B%9B%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%BD%A6%E8%BE%86%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90.docx)。里面要看的项：
+配置文件是 `apollo_workspace/modules/control/conf/control_conf.pb.txt` [作业四：基于百度APOLLO平台的车辆控制结果分析.docx · p.1](file:///Volumes/Nextcloud/School/Auto-Drive-Intro/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A%E5%9B%9B%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%99%BE%E5%BA%A6APOLLO%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%BD%A6%E8%BE%86%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90.docx)。里面要看的项：
 
 - **前视**：`lookahead_time` 和 `lookahead_distance`（预瞄）。控制用「前方一小段路」而不是「当前位置」来算误差，纯跟踪的滞后会小很多。
 - **误差项**：`station_error` 和 `speed_error`，分别给位置误差项和速度误差项配的滤波时间常数。

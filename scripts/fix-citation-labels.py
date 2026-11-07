@@ -3,7 +3,7 @@
 
 The contract says a citation looks like
 
-    [第3章_回归.pptx · p.14](http://alist/.../第3章_回归.pdf#page=14)
+    [第3章_回归.pptx · p.14](file:///Volumes/Nextcloud/School/.../第3章_回归.pdf#page=14)
 
 Some notes were written with the short form `[p. 14](url)`. The file name is
 in the URL, so the label can be rebuilt from it.

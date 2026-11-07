@@ -4,16 +4,16 @@ timestamp: 2026-10-22T21:00:00+08:00
 series: 自动控制原理
 tags: [课内, 自动控制原理]
 description: 中南大学自动化学院《自动控制原理》的期末复习讲义。按教材八章讲：控制的一般概念、数学模型、时域分析、根轨迹法、频域分析法、系统校正、线性离散系统、非线性控制。每处结论都链回课件或教材的对应页。
-source_url: http://10.188.31.55:5244/Nextcloud/School/自动控制原理/
+source_url: file:///Volumes/Nextcloud/School/自动控制原理/
 toc: false
 draft: false
 ---
 
 ```cardlink
-url: http://10.188.31.55:5244/Nextcloud/School/自动控制原理/
+url: file:///Volumes/Nextcloud/School/自动控制原理/
 title: "自动控制原理 · 课程课件与复习笔记"
 description: "中南大学自动化学院《自动控制原理》的课件、教材与复习笔记"
-host: 10.188.31.55:5244
+host: /Volumes/Nextcloud/School
 ```
 
 - 第 0 章 前置知识 — 拉普拉斯变换、复数与 s 平面、传递函数、矩阵与代数工具

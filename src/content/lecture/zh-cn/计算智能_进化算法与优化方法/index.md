@@ -4,16 +4,16 @@ timestamp: 2026-10-21T20:30:00+08:00
 series: 计算智能
 tags: [课内, 计算智能]
 description: 中南大学自动化学院《计算智能》课程课件的中文精读版。按课件的十二个章节讲：进化算法框架、GA、ES/EP、DE、PSO、术语体系、算法比较方法、多目标优化，以及约束优化问题的求解。每处结论都链回课件 PDF 的对应页。
-source_url: http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/
+source_url: file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/
 toc: false
 draft: false
 ---
 
 ```cardlink
-url: http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/课件/
+url: file:///Volumes/Nextcloud/School/Compute-Intelligence/课件/
 title: "计算智能 · 课程课件"
 description: "中南大学自动化学院《计算智能》课程的全部课件"
-host: 10.188.31.55:5244
+host: /Volumes/Nextcloud/School
 ```
 
 - 第 0 章 开篇 — 课程信息与提纲、计算智能的定义与应用范围、课程主线、九个研究方向、重要性与现状、讲授方式与考试方式
@@ -31,7 +31,7 @@ host: 10.188.31.55:5244
 
 ### 四大机制对照表
 
-四种算法的关键差异一次性摆在下表，每一行都能直接用来做选型判断 [Chapter 2_ Introduction to GAs.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=7) [Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) [Chapter 4_ Introduction to Differential Evolution.pdf · p.5](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5) [Chapter 5_ Introduction to Particle Swarm Optimization.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
+四种算法的关键差异一次性摆在下表，每一行都能直接用来做选型判断 [Chapter 2_ Introduction to GAs.pdf · p.7](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%202_%20Introduction%20to%20GAs.pdf#page=7) [Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) [Chapter 4_ Introduction to Differential Evolution.pdf · p.5](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%204_%20Introduction%20to%20Differential%20Evolution.pdf#page=5) [Chapter 5_ Introduction to Particle Swarm Optimization.pdf · p.7](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%205_%20Introduction%20to%20Particle%20Swarm%20Optimization.pdf#page=7)。
 
 本文用 $N$ 表示通用种群规模；DE 写作 $NP$，ES 的父代数写作 $\mu$，比较父代种群时 $N = NP = \mu$，且 $\lambda \ge \mu$。
 

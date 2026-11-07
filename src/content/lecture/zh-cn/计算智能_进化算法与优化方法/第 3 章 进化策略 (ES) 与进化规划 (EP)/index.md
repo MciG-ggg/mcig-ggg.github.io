@@ -4,15 +4,15 @@ timestamp: 2026-10-21T20:30:00+08:00
 series: 计算智能
 tags: [课内, 计算智能]
 description: 第 2 章的遗传算法 (GA) 在连续优化问题上有两个硬伤。
-source_url: http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/
+source_url: file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/
 toc: true
 draft: false
 ---
 ```cardlink
-url: http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/课件/
+url: file:///Volumes/Nextcloud/School/Compute-Intelligence/课件/
 title: "计算智能 · 课程课件"
 description: "中南大学自动化学院《计算智能》课程的全部课件"
-host: 10.188.31.55:5244
+host: /Volumes/Nextcloud/School
 ```
 
 [← 返回《计算智能：进化算法与优化方法》目录](../)
@@ -23,27 +23,27 @@ host: 10.188.31.55:5244
 
 第 2 章的遗传算法 (GA) 在连续优化问题上有两个硬伤。
 
-**硬伤一:精度被串长卡死。** GA 必须先把实数 $x\in[L_x,U_x]$ 编码成 $L$ 位二进制串。$L$ 越长能刻的格子越细,但串长随维数线性增长、格子数 $2^L$ 随 $L$ 指数增长——连续问题的真实最优解精度完全取决于 $L$ 这一个数。精度不够的话,解看起来"已经收敛",其实还离最优很远。[Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
+**硬伤一:精度被串长卡死。** GA 必须先把实数 $x\in[L_x,U_x]$ 编码成 $L$ 位二进制串。$L$ 越长能刻的格子越细,但串长随维数线性增长、格子数 $2^L$ 随 $L$ 指数增长——连续问题的真实最优解精度完全取决于 $L$ 这一个数。精度不够的话,解看起来"已经收敛",其实还离最优很远。[Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
-**硬伤二:维度爆炸。** $D=2$ 个变量、每维 10 个格子,共 100 个点,手算都行;$D=20$ 个变量时是 $10^{20}$ 个点,根本试不完。这就是维度灾难:变量个数 $D$ 增加时,搜索空间的体积按指数增长。GA 的"编码 + 交叉 + 位翻转"是为离散串设计的,搬到高维连续空间要么精度不够、要么算不动。[Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
+**硬伤二:维度爆炸。** $D=2$ 个变量、每维 10 个格子,共 100 个点,手算都行;$D=20$ 个变量时是 $10^{20}$ 个点,根本试不完。这就是维度灾难:变量个数 $D$ 增加时,搜索空间的体积按指数增长。GA 的"编码 + 交叉 + 位翻转"是为离散串设计的,搬到高维连续空间要么精度不够、要么算不动。[Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
 决策变量取实数值(可精确到任意小数位)叫连续优化,只能取有限多个值(整数、0/1、枚举)叫离散优化。GA 处理连续问题要编码,ES/EP 直接在实数上做——这是本章存在的根本理由。本章默认 $D\ge 2$,例题为手算方便取 $D=1$,但所有公式都按任意 $D$ 写。
 
-**ES/EP 的解法:直接在实数空间做,不让步长固定。** 进化策略 (ES) 在 1963 年由 Rechenberg 和 Schwefel 提出,进化规划 (EP) 在 1966 年由 Fogel 提出。它们的共同特点是:① 个体**直接**是一个实数向量 $x$,不需要编码;② 变异是"加一个小量",不是"翻一位";③ **步长 $\delta$ 本身也参与进化**,表现好的个体其步长会被遗传下去,步长自动变大变小,不需要人调。[Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) [Chapter 3_ Introduction to ES and EP.pdf · p.13](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=13)
+**ES/EP 的解法:直接在实数空间做,不让步长固定。** 进化策略 (ES) 在 1963 年由 Rechenberg 和 Schwefel 提出,进化规划 (EP) 在 1966 年由 Fogel 提出。它们的共同特点是:① 个体**直接**是一个实数向量 $x$,不需要编码;② 变异是"加一个小量",不是"翻一位";③ **步长 $\delta$ 本身也参与进化**,表现好的个体其步长会被遗传下去,步长自动变大变小,不需要人调。[Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4) [Chapter 3_ Introduction to ES and EP.pdf · p.13](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=13)
 
 ### (1+1)-ES:一个父亲,一个孩子,选好的留下
 
-**进化策略 (Evolution Strategy, ES)** 是 1963 年由 Rechenberg 和 Schwefel 提出的一类算法。它不用 0/1 串,而是把每个个体表示为一个实数向量 $x=(x_1,\ldots,x_D)$。[Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
+**进化策略 (Evolution Strategy, ES)** 是 1963 年由 Rechenberg 和 Schwefel 提出的一类算法。它不用 0/1 串,而是把每个个体表示为一个实数向量 $x=(x_1,\ldots,x_D)$。[Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
-最简单的一款叫 **$(1+1)$-ES**:每代只保留 1 个父代、生成 1 个子代,子代更好就替换父代,否则父代保留。"1+1" 里的加号就是**加号策略 (plus-selection)**。[Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
+最简单的一款叫 **$(1+1)$-ES**:每代只保留 1 个父代、生成 1 个子代,子代更好就替换父代,否则父代保留。"1+1" 里的加号就是**加号策略 (plus-selection)**。[Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
 大白话:想象你在夜里蒙着眼走山路,每一步往脚踩的方向挪一个随机的距离;如果这一步让你比刚才低(目标函数更小),就承认这一步;否则退回来、保留原位。$(1{+}1)$-ES 就是在实数上做这件事:每代走"一步",好就认、差就退。
 
-最小例子:$\min f(x)=x^2$,当前 $x=2$、$f(2)=4$。抽 $N(0,1)=0.4$、步长 $\delta=0.5$,得 $x' = 2 + 0.5\times 0.4 = 2.2$,$f(2.2)=4.84$,比 4 还大,不接受,保留 $x=2$。再抽 $N(0,1)=-1.8$、$\delta=0.5$,得 $x'=2+0.5\times(-1.8)=1.1$,$f(1.1)=1.21<4$,接受,$x\leftarrow 1.1$。[Chapter 3_ Introduction to ES and EP.pdf · p.6](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
+最小例子:$\min f(x)=x^2$,当前 $x=2$、$f(2)=4$。抽 $N(0,1)=0.4$、步长 $\delta=0.5$,得 $x' = 2 + 0.5\times 0.4 = 2.2$,$f(2.2)=4.84$,比 4 还大,不接受,保留 $x=2$。再抽 $N(0,1)=-1.8$、$\delta=0.5$,得 $x'=2+0.5\times(-1.8)=1.1$,$f(1.1)=1.21<4$,接受,$x\leftarrow 1.1$。[Chapter 3_ Introduction to ES and EP.pdf · p.6](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
 
 #### 一步怎么走:五步伪代码
 
-$(1{+}1)$-ES 是 ES 家族最简的版本,由 slide 5 的 $(\mu,\lambda)$ 框架退化到 $\mu=1,\lambda=1$ 得到。[Chapter 3_ Introduction to ES and EP.pdf · p.5](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=5)
+$(1{+}1)$-ES 是 ES 家族最简的版本,由 slide 5 的 $(\mu,\lambda)$ 框架退化到 $\mu=1,\lambda=1$ 得到。[Chapter 3_ Introduction to ES and EP.pdf · p.5](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=5)
 
 1. **初始化**:随机选父代 $x=(x_1,\ldots,x_D)$ 与初始步长 $\delta=(\delta_1,\ldots,\delta_D)$,算 $f(x)$。步长也随机,是因为我们不知道目标函数的尺度;起点也随机,是为了别落在某个特殊位置。
 2. **变异**:对每维 $j=1,\ldots,D$ 独立抽一个标准正态量 $N_j(0,1)$,先算出变异后的步长
@@ -54,16 +54,16 @@ $(1{+}1)$-ES 是 ES 家族最简的版本,由 slide 5 的 $(\mu,\lambda)$ 框架
 4. **选择 (加号策略)**:若 $f(x')<f(x)$,则 $x\leftarrow x'$、$\delta\leftarrow\delta'$;否则 $(x,\delta)$ 一起保留原值——步长也是个体的一部分,子代被拒绝时它的步长跟着一起回退,不能只留步长、扔掉解。
 5. **循环**:回到第 2 步,直到达到最大代数或目标精度。
 
-$N_j(0,1)$ 决定"挪向哪边"(正或负),$\delta'_j$ 决定"挪多远"。第 4 步的"加号"= **父代可以参与竞争**;这里 $\mu=1$,候选池就是 $x$ 与 $x'$ 两个,谁好留谁。$\delta$ 跟着 $x$ 走这件事是 ES 与 GA 最大的不同:GA 的变异率 $p_m$ 是固定超参数,ES 的 $\delta$ 是**个体的一部分**。[Chapter 3_ Introduction to ES and EP.pdf · p.5](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=5) [Chapter 3_ Introduction to ES and EP.pdf · p.6](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
+$N_j(0,1)$ 决定"挪向哪边"(正或负),$\delta'_j$ 决定"挪多远"。第 4 步的"加号"= **父代可以参与竞争**;这里 $\mu=1$,候选池就是 $x$ 与 $x'$ 两个,谁好留谁。$\delta$ 跟着 $x$ 走这件事是 ES 与 GA 最大的不同:GA 的变异率 $p_m$ 是固定超参数,ES 的 $\delta$ 是**个体的一部分**。[Chapter 3_ Introduction to ES and EP.pdf · p.5](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=5) [Chapter 3_ Introduction to ES and EP.pdf · p.6](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
 
 ### (μ+λ) 与 (μ,λ):候选池里有没有父代
 
 ES 里有两个常用版本,第一步都是"复制 $\mu$ 个父代、变异出 $\lambda$ 个子代",差别在最后一步"选谁进入下一代":
 
 - **$(\mu{+}\lambda)$-ES(加号策略)**:从 $\mu$ 个父代 + $\lambda$ 个子代中,挑适应度最好的 $\mu$ 个进入下一代。优点:父代中最优那个永远不会丢(**精英保留 (elitist)**);收敛快。缺点:好解会一直霸占种群,差的解永远进不来,因此**容易早熟**。
-- **$(\mu,\lambda)$-ES(逗号策略)**:只看 $\lambda$ 个子代,从中挑 $\mu$ 个进入下一代,父代全部淘汰(写成逗号就是"只取逗号右边那一半")。代价:本代最优可能比上一代差。好处:允许暂时退化,因此**能逃出局部最优**。[Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
+- **$(\mu,\lambda)$-ES(逗号策略)**:只看 $\lambda$ 个子代,从中挑 $\mu$ 个进入下一代,父代全部淘汰(写成逗号就是"只取逗号右边那一半")。代价:本代最优可能比上一代差。好处:允许暂时退化,因此**能逃出局部最优**。[Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
-本章的 $\mu$ 是父代个数、$\lambda$ 是子代个数。第 1 章的种群规模 $N$ 在本章写作 $\mu$——它们是同一个量的两种记号(全书统一记作 $N=NP=\mu$,$NP$ 是第 4 章 DE 的写法)。$\lambda$ 与 $\mu$ 相互独立,只需 $\lambda\ge\mu$(否则从 $\lambda$ 个子代里挑不出 $\mu$ 个),经验上常取 $\lambda\approx 7\mu$。所以"父代集比种群小"在本章的正确写法是 $\mu\le\lambda$,不要把 $\lambda$ 误当成新的种群规模。[Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
+本章的 $\mu$ 是父代个数、$\lambda$ 是子代个数。第 1 章的种群规模 $N$ 在本章写作 $\mu$——它们是同一个量的两种记号(全书统一记作 $N=NP=\mu$,$NP$ 是第 4 章 DE 的写法)。$\lambda$ 与 $\mu$ 相互独立,只需 $\lambda\ge\mu$(否则从 $\lambda$ 个子代里挑不出 $\mu$ 个),经验上常取 $\lambda\approx 7\mu$。所以"父代集比种群小"在本章的正确写法是 $\mu\le\lambda$,不要把 $\lambda$ 误当成新的种群规模。[Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
 ![$(\mu,\lambda)$-ES 与 $(\mu+\lambda)$-ES 的候选池对比:$(\mu,\lambda)$-ES 只从 $\lambda$ 个子代中选出 $\mu$ 个作为下一代父代;$(\mu+\lambda)$-ES 把 $\mu$ 个父代与 $\lambda$ 个子代放在一起竞争](images/fig_020.png)
 
@@ -86,7 +86,7 @@ ES 里有两个常用版本,第一步都是"复制 $\mu$ 个父代、变异出 $
 - $(\mu{+}\lambda)$ 从 6 个里挑前 2 个:选 $x'_4=0$($f=0$)与 $x'_2=0.3$($f=0.09$)。候选池里父代 $x_1=1$、$x_2=-1$ 的 $f=1$ 都差于 $x'_2$ 的 0.09,所以**本代父代全部落选**;新父代 $=\{0,0.3\}$,$f$ 最优为 0。
 - $(\mu,\lambda)$ 只看子代 $\{x'_1,x'_2,x'_3,x'_4\}=\{1.15,0.3,-0.75,0\}$,挑前 2 个:同样选 $x'_4=0$ 与 $x'_2=0.3$,新父代 $=\{0,0.3\}$,$f$ 最优为 0。
 
-本例中两策略结果**完全相同**——因为本代父代恰好都差于两个最好的子代,加号策略保留父代的"权利"没有改变结果。另外 $x'_3=-0.75$ 看着比父代好,却输给了 $x'_2=0.3$,所以没进下一代;这正是"按 $f$ 排序取前 $\mu$ 个"的含义。差别要到多峰、长期运行时才会显著。[Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
+本例中两策略结果**完全相同**——因为本代父代恰好都差于两个最好的子代,加号策略保留父代的"权利"没有改变结果。另外 $x'_3=-0.75$ 看着比父代好,却输给了 $x'_2=0.3$,所以没进下一代;这正是"按 $f$ 排序取前 $\mu$ 个"的含义。差别要到多峰、长期运行时才会显著。[Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
 #### 为什么逗号策略在多峰问题里更好
 
@@ -96,7 +96,7 @@ ES 里有两个常用版本,第一步都是"复制 $\mu$ 个父代、变异出 $
 
 **逗号策略 $(\mu,\lambda)$ 的解法**:它强制每代父代全部淘汰,只从子代里挑——这就"承认了暂时的退化"。代价是本代最优可能比上一代差;好处是能从一个浅谷底被推走、重新落到另一个区域。机制上有两条:① 变异本身可能产生"飞得更远"的子代($\delta$ 自适应放大);② $\lambda\approx 7\mu$ 提供足够多的候选位置。
 
-**一句话结论:多峰 / 崎岖地形用逗号 $(\mu,\lambda)$——它允许父代被淘汰、允许暂时退化,因此能逃出局部最优;单峰地形或要求每代都不退化时用加号 $(\mu{+}\lambda)$——它保留精英,收敛更快,但更容易早熟。** 这与第 1 章的"探索 vs 开发"是同一条线:调大一个参数 = 更偏探索 = 更不易早熟、但收敛更慢;调小一个参数 = 更偏开发。逗号更偏探索,加号更偏开发。[Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
+**一句话结论:多峰 / 崎岖地形用逗号 $(\mu,\lambda)$——它允许父代被淘汰、允许暂时退化,因此能逃出局部最优;单峰地形或要求每代都不退化时用加号 $(\mu{+}\lambda)$——它保留精英,收敛更快,但更容易早熟。** 这与第 1 章的"探索 vs 开发"是同一条线:调大一个参数 = 更偏探索 = 更不易早熟、但收敛更慢;调小一个参数 = 更偏开发。逗号更偏探索,加号更偏开发。[Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
 ### 步长的三级自适应:圆 → 椭圆 → 旋转椭圆
 
@@ -108,7 +108,7 @@ ES 最值得讲的一条主线:用同一个公式改三处,变异区域从圆升
 
 $$x'_{i,j}=x_{i,j}+\delta_{i,j}\cdot N_j(0,1)$$
 
-这里的 $\delta$ 是 ES 的**步长参数**,只出现在算法里;$\sigma$ 是**高斯分布的标准差**,只出现在 PDF 公式里。两个符号形状相近,角色不同,不要混用。本章的 $\delta$ 是逐维向量 $\delta_i=(\delta_{i,1},\ldots,\delta_{i,D})$,$D=1$ 时它就是一个实数。[Chapter 3_ Introduction to ES and EP.pdf · p.6](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
+这里的 $\delta$ 是 ES 的**步长参数**,只出现在算法里;$\sigma$ 是**高斯分布的标准差**,只出现在 PDF 公式里。两个符号形状相近,角色不同,不要混用。本章的 $\delta$ 是逐维向量 $\delta_i=(\delta_{i,1},\ldots,\delta_{i,D})$,$D=1$ 时它就是一个实数。[Chapter 3_ Introduction to ES and EP.pdf · p.6](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
 
 #### 第一级:圆
 
@@ -116,7 +116,7 @@ $$x'_{i,j}=x_{i,j}+\delta_{i,j}\cdot N_j(0,1)$$
 
 $$x'_i=x_i+\delta\cdot\exp(\tau N(0,1))\cdot N_j(0,1),\quad \tau=(\sqrt{D})^{-1}$$
 
-式中 $\delta\exp(\tau N(0,1))$ 是步长的自身变异(把"步长本身"也用高斯扰动一下),$\tau$ 是固定系数。PPT 自带算例:$\delta=0.5$、$\tau=0.3$、$D=10$ 时,抽到 $N(0,1)=0.2$ 得新步长 $0.5e^{0.06}\approx 0.53$,抽到 $N(0,1)=-0.2$ 得 $0.5e^{-0.06}\approx 0.47$——步长变大时搜索范围更广,变小时搜索更精细。[Chapter 3_ Introduction to ES and EP.pdf · p.6](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
+式中 $\delta\exp(\tau N(0,1))$ 是步长的自身变异(把"步长本身"也用高斯扰动一下),$\tau$ 是固定系数。PPT 自带算例:$\delta=0.5$、$\tau=0.3$、$D=10$ 时,抽到 $N(0,1)=0.2$ 得新步长 $0.5e^{0.06}\approx 0.53$,抽到 $N(0,1)=-0.2$ 得 $0.5e^{-0.06}\approx 0.47$——步长变大时搜索范围更广,变小时搜索更精细。[Chapter 3_ Introduction to ES and EP.pdf · p.6](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
 
 ![所有维度共用同一步长时的变异:后代落在以父代 $x_i$ 为中心、半径由 $\delta$ 决定的圆内;框内给出步长自适应算例,当 $\delta=0.5$、$N(0,1)=0.2$、$\tau=0.3$、$D=10$ 时新步长为 0.53](images/fig_022.png)
 
@@ -126,7 +126,7 @@ $$x'_i=x_i+\delta\cdot\exp(\tau N(0,1))\cdot N_j(0,1),\quad \tau=(\sqrt{D})^{-1}
 
 $$\delta'_{i,j}=\delta_{i,j}\exp(\tau' N(0,1)+\tau N_j(0,1)),\quad \tau'=(2D)^{-1},\;\tau=(2\sqrt{D})^{-1}$$
 
-这一步加了一个**全局学习率 $\tau'$** 与一个**逐维学习率 $\tau$**:$\tau' N(0,1)$ 那一项让所有维能一起被放大或缩小,$\tau N_j(0,1)$ 那一项让每维还能独立抖动。slide 6 的 $\tau=(\sqrt{D})^{-1}$ 与 slide 7 的 $\tau'=(2D)^{-1}$ 不是笔误,是两种不同的变异变体:前者只有 1 个系数(各维同步长),后者有 2 个系数(各维独立步长)。[Chapter 3_ Introduction to ES and EP.pdf · p.7](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=7)
+这一步加了一个**全局学习率 $\tau'$** 与一个**逐维学习率 $\tau$**:$\tau' N(0,1)$ 那一项让所有维能一起被放大或缩小,$\tau N_j(0,1)$ 那一项让每维还能独立抖动。slide 6 的 $\tau=(\sqrt{D})^{-1}$ 与 slide 7 的 $\tau'=(2D)^{-1}$ 不是笔误,是两种不同的变异变体:前者只有 1 个系数(各维同步长),后者有 2 个系数(各维独立步长)。[Chapter 3_ Introduction to ES and EP.pdf · p.7](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=7)
 
 ![各维度用不同步长时的变异:后代不再落在圆内,而是落在长短轴由各维步长 $\delta_{i,j}$ 决定的椭圆内](images/fig_023.png)
 
@@ -136,7 +136,7 @@ $$\delta'_{i,j}=\delta_{i,j}\exp(\tau' N(0,1)+\tau N_j(0,1)),\quad \tau'=(2D)^{-
 
 $$\zeta=\left(\prod_{k=1}^{D-1}\prod_{l=k+1}^{D}R(\alpha'_{k,l})\right)\boldsymbol\xi,\quad \boldsymbol\xi=(\xi_1,\ldots,\xi_D)^{\top},\;\xi_j\sim\mathcal{N}(0,\delta_{i,j}^2),\quad x'_i=x_i+\zeta$$
 
-这里的 $\boldsymbol\xi$ 是 **D 维高斯随机向量**(第 $j$ 个分量独立抽自均值为 0、标准差为 $\delta_{i,j}$ 的正态分布),$\boldsymbol\xi$ 只在这一级出现;旋转椭圆公式里不要把 $\boldsymbol\xi$ 写成 $\eta$。[Chapter 3_ Introduction to ES and EP.pdf · p.8](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=8)
+这里的 $\boldsymbol\xi$ 是 **D 维高斯随机向量**(第 $j$ 个分量独立抽自均值为 0、标准差为 $\delta_{i,j}$ 的正态分布),$\boldsymbol\xi$ 只在这一级出现;旋转椭圆公式里不要把 $\boldsymbol\xi$ 写成 $\eta$。[Chapter 3_ Introduction to ES and EP.pdf · p.8](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=8)
 
 ![再引入旋转角 $\alpha$ 后的变异:通过旋转矩阵 $R(\alpha)$ 把各维相关的方向耦合起来,后代落在旋转椭圆内,这是协方差矩阵思想的雏形](images/fig_024.png)
 
@@ -152,13 +152,13 @@ $$x_k^{(g+1)}\sim m^{(g)}+\sigma^{(g)}\cdot\mathcal{N}\bigl(0,C^{(g)}\bigr)$$
 
 ![CMA-ES 的核心思想:$x_k^{(g+1)}\sim m^{(g)}+\sigma^{(g)}\mathcal{N}(0,C^{(g)})$,均值 $m$、坐标系(协方差矩阵 $C$)与方差 $\sigma$ 三者随进化自适应更新](images/fig_025.png)
 
-**为什么 CMA-ES 强**:它能自动把"圆"扭成"任意方向的椭圆"。目标函数的等高线里往往有三个吸引域——一个圆、一个横躺椭圆、一个斜躺椭圆(旋转椭圆),每个吸引域的中心对应一个局部最优解;CMA-ES 能随进化自适应挑最合适的那个形状,采样分布的等高线与目标函数的等高线对齐,搜索方向就被地形决定了,普通 ES 则只能选圆或横躺椭圆。[Chapter 3_ Introduction to ES and EP.pdf · p.9](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=9) [Chapter 3_ Introduction to ES and EP.pdf · p.10](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=10) [Chapter 3_ Introduction to ES and EP.pdf · p.11](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=11)
+**为什么 CMA-ES 强**:它能自动把"圆"扭成"任意方向的椭圆"。目标函数的等高线里往往有三个吸引域——一个圆、一个横躺椭圆、一个斜躺椭圆(旋转椭圆),每个吸引域的中心对应一个局部最优解;CMA-ES 能随进化自适应挑最合适的那个形状,采样分布的等高线与目标函数的等高线对齐,搜索方向就被地形决定了,普通 ES 则只能选圆或横躺椭圆。[Chapter 3_ Introduction to ES and EP.pdf · p.9](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=9) [Chapter 3_ Introduction to ES and EP.pdf · p.10](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=10) [Chapter 3_ Introduction to ES and EP.pdf · p.11](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=11)
 
 ![CMA-ES 的优势:采样分布从圆到椭圆再到旋转椭圆自适应变形,使搜索方向与目标函数的等高线形状对齐;左下为目标函数三维图,右下为等高线](images/fig_026.png)
 
 ### ES 五步 vs EP 三步
 
-$(\mu,\lambda)$-ES 的完整流程有五步,每步都在 slide 5 的框图里画出:[Chapter 3_ Introduction to ES and EP.pdf · p.5](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=5)
+$(\mu,\lambda)$-ES 的完整流程有五步,每步都在 slide 5 的框图里画出:[Chapter 3_ Introduction to ES and EP.pdf · p.5](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=5)
 
 1. **初始化**:对 $i=1,\ldots,\mu$,每个个体是**解 $x_i=(x_{i,1},\ldots,x_{i,D})$ 与步长 $\delta_i=(\delta_{i,1},\ldots,\delta_{i,D})$ 的成对组合**;两者都随机初始化。
 2. **复制 (Copy)**:把每个父代 $(x_i,\delta_i)$ 顺序复制 $\lambda/\mu$ 次,得到 $\lambda$ 个候选。
@@ -188,7 +188,7 @@ $(\mu,\lambda)$-ES 的完整流程有五步,每步都在 slide 5 的框图里画
 | 选择对象 | 从 $\lambda$ 个子代(或 $\mu+\lambda$ 个)里挑 $\mu$ 个 | 从 $\mu$ 父代 + $\mu$ 子代 = $2\mu$ 参考集里挑 $\mu$ 个 |
 | 变异分布 | 通常只支持高斯变异 | 支持高斯或柯西两种 |
 
-一句话区分:ES 在进化这件事上更"工程化"(有交叉、有明确的 $\mu$ 与 $\lambda$);EP 更"直接"(只有变异,而且父代与子代一起进参考集排序)。[Chapter 3_ Introduction to ES and EP.pdf · p.13](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=13)
+一句话区分:ES 在进化这件事上更"工程化"(有交叉、有明确的 $\mu$ 与 $\lambda$);EP 更"直接"(只有变异,而且父代与子代一起进参考集排序)。[Chapter 3_ Introduction to ES and EP.pdf · p.13](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=13)
 
 ### 高斯变异 vs 柯西变异:尾巴厚度决定能不能跳出去
 
@@ -196,15 +196,15 @@ EP 有一个 ES 没有的可选项:把高斯变异换成柯西变异(Yao、Liu �
 
 $$f_{\text{Gaussian}}(x)=\frac{1}{\sqrt{2\pi}\,\sigma}\exp\left(-\frac{(x-m)^2}{2\sigma^2}\right),\qquad f_{\text{Cauchy}}(x)=\frac{\gamma}{\pi\left[\gamma^2+x^2\right]}$$
 
-高斯式中 $m$ 是均值、$\sigma$ 是标准差(PPT 把均值写作 $\mu$;本讲义改用 $m$,因为本章的 $\mu$ 已经是父代个数,避免一字母两义)。柯西式中 $\gamma>0$ 是**尺度参数 (scale parameter)**,控制曲线的胖瘦,$\gamma=1$ 时就是标准柯西分布。本讲义用 $\mathrm{Cauchy}_j(0,1)$ 表示"第 $j$ 维独立抽取的标准柯西量"(位置参数 0、尺度参数 1);PPT 原文把柯西的步长写作 $\delta_j$——那是字母撞车,不是 ES 的步长 $\delta$。两者都是钟形曲线、峰值在 0 附近、曲线下面积都是 1,差别在尾部厚薄。[Chapter 3_ Introduction to ES and EP.pdf · p.14](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=14) [Chapter 3_ Introduction to ES and EP.pdf · p.15](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=15)
+高斯式中 $m$ 是均值、$\sigma$ 是标准差(PPT 把均值写作 $\mu$;本讲义改用 $m$,因为本章的 $\mu$ 已经是父代个数,避免一字母两义)。柯西式中 $\gamma>0$ 是**尺度参数 (scale parameter)**,控制曲线的胖瘦,$\gamma=1$ 时就是标准柯西分布。本讲义用 $\mathrm{Cauchy}_j(0,1)$ 表示"第 $j$ 维独立抽取的标准柯西量"(位置参数 0、尺度参数 1);PPT 原文把柯西的步长写作 $\delta_j$——那是字母撞车,不是 ES 的步长 $\delta$。两者都是钟形曲线、峰值在 0 附近、曲线下面积都是 1,差别在尾部厚薄。[Chapter 3_ Introduction to ES and EP.pdf · p.14](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=14) [Chapter 3_ Introduction to ES and EP.pdf · p.15](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=15)
 
 ![高斯分布与柯西分布的密度曲线对比:柯西分布幅值(amplitude)更低、尾部(tail)更厚,因此更容易产生大步长,利于跳出局部最优;高斯分布集中在小步长,适合精细搜索](images/fig_028.png)
 
-**一句可直接背下来的口诀:远离最优解用柯西、接近最优解用高斯。** 理由:柯西尾厚 ⇒ 抽到 $|x|$ 很大值的概率比高斯高得多 ⇒ 容易跳出局部最优;高斯集中在小步长 ⇒ 适合在最优解附近精修。两者的组合让 EP 在各种问题上都稳定。[Chapter 3_ Introduction to ES and EP.pdf · p.20](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=20)
+**一句可直接背下来的口诀:远离最优解用柯西、接近最优解用高斯。** 理由:柯西尾厚 ⇒ 抽到 $|x|$ 很大值的概率比高斯高得多 ⇒ 容易跳出局部最优;高斯集中在小步长 ⇒ 适合在最优解附近精修。两者的组合让 EP 在各种问题上都稳定。[Chapter 3_ Introduction to ES and EP.pdf · p.20](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=20)
 
 ### 1/5 成功法则:步长自动调的依据
 
-**1/5 成功法则 (one-fifth success rule)** 是一条"自动调步长"的经验规则:**如果最近若干次变异中,成功的比例高于 1/5,说明步子还可以更大;低于 1/5 就该把步子收小。** 这里的"成功"指变异后的解比父代更好。[Chapter 3_ Introduction to ES and EP.pdf · p.17](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=17)
+**1/5 成功法则 (one-fifth success rule)** 是一条"自动调步长"的经验规则:**如果最近若干次变异中,成功的比例高于 1/5,说明步子还可以更大;低于 1/5 就该把步子收小。** 这里的"成功"指变异后的解比父代更好。[Chapter 3_ Introduction to ES and EP.pdf · p.17](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=17)
 
 **固定步长的局限**:在最小例子上能跑通,却不能同时兼顾远距离搜索与最优点附近的精细搜索。考虑 $f(x)=x^2$、$x=2$:取 $\delta=0.01$ 时,即使抽到 $N(0,1)=3$,位移也只有 $0.03$;取 $\delta=10$ 时,一次常规抽样就可能把解带到远离 $0$ 的位置。步长有个"对的值"——不大不小。这与第 1 章的"探索 vs 开发"是同一条线:$\delta$ 越大越偏探索,越小越偏开发。
 
@@ -218,7 +218,7 @@ $\partial f/\partial \delta$ 读作"只看 $\delta$ 这一个量变化时 $f$ �
 - 当 $\delta$ 超过某个值,$P(\delta)$ 随 $\delta$ 增大而**单调下降**(步子过大、反而把解打飞);
 - 中间存在 $\delta^*$,使 $P(\delta^*)$ 最大。
 
-几何解释:把 $f(x)$ 的钟形密度曲线画出来,$x^*-\epsilon$ 与 $x^*+\epsilon$ 是成功邻域的两条边界。固定 $x$、$x'=x+\delta N(0,1)$,把 $\delta$ 看作"曲线在 $x$ 轴上移动的距离"——步子 $\delta$ 太大时,钟形的中心已经偏到邻域之外,邻域内只剩尾巴那一小块面积,所以 $P$ 反而变小。[Chapter 3_ Introduction to ES and EP.pdf · p.17](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=17)
+几何解释:把 $f(x)$ 的钟形密度曲线画出来,$x^*-\epsilon$ 与 $x^*+\epsilon$ 是成功邻域的两条边界。固定 $x$、$x'=x+\delta N(0,1)$,把 $\delta$ 看作"曲线在 $x$ 轴上移动的距离"——步子 $\delta$ 太大时,钟形的中心已经偏到邻域之外,邻域内只剩尾巴那一小块面积,所以 $P$ 反而变小。[Chapter 3_ Introduction to ES and EP.pdf · p.17](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=17)
 
 ![步长与成功概率的几何解释:成功邻域为 $[x^*-\epsilon,\ x^*+\epsilon]$,只有落在该区间内的后代才算成功,改变步长 $\delta$ 相当于移动概率密度曲线的取值位置,这正是 1/5 成功法则的来源](images/fig_029.png)
 
@@ -241,7 +241,7 @@ $\partial f/\partial \delta$ 读作"只看 $\delta$ 这一个量变化时 $f$ �
 - **第 2 代**:抽 $N_1(0,1)=0.3$,$\delta'=0.5\times e^{0.3}=0.6749$;抽 $N_2(0,1)=-1.8$,$x'=2+0.6749\times(-1.8)=0.7851$,$f(0.7851)=0.6164<4$,接受,$x^{(2)}=0.7851$、$\delta^{(2)}=0.6749$。
 - **第 3 代**:抽 $N_1(0,1)=0.8$,$\delta'=0.6749\times e^{0.8}=1.5021$;抽 $N_2(0,1)=-0.7$,$x'=0.7851+1.5021\times(-0.7)=-0.2663$,$f(-0.2663)=0.0709<0.6164$,接受,$x^{(3)}=-0.2663$、$\delta^{(3)}=1.5021$。
 
-3 代后 $x^{(3)}=-0.2663$、$f=0.0709$,离真实最优 $x^*=0$($f=0$)已经很近。第 2 代因为 $N_2(0,1)=-1.8$ 抽到一个"大的负量",大步向最优方向跳了一步;步长在连续两次成功后被推到 1.5021——这正是"成功多、步长该放大"的雏形。第 1 代被拒绝时解与步长一起回退,说明**步长也是个体的一部分**,不能只留步长扔掉解。[Chapter 3_ Introduction to ES and EP.pdf · p.6](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
+3 代后 $x^{(3)}=-0.2663$、$f=0.0709$,离真实最优 $x^*=0$($f=0$)已经很近。第 2 代因为 $N_2(0,1)=-1.8$ 抽到一个"大的负量",大步向最优方向跳了一步;步长在连续两次成功后被推到 1.5021——这正是"成功多、步长该放大"的雏形。第 1 代被拒绝时解与步长一起回退,说明**步长也是个体的一部分**,不能只留步长扔掉解。[Chapter 3_ Introduction to ES and EP.pdf · p.6](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=6)
 
 #### 同样的 $f(x)=x^2$ 改用 $(\mu{+}\lambda)$,$\mu=2,\lambda=4$
 
@@ -252,7 +252,7 @@ $\partial f/\partial \delta$ 读作"只看 $\delta$ 这一个量变化时 $f$ �
 
 候选池 $\{x_1,x_2,x'_1,x'_2,x'_3,x'_4\}=\{2,-2,2.15,1.25,-2.2,-1.1\}$,对应 $f$ 值 $\{4,4,4.6225,1.5625,4.84,1.21\}$。选 $f$ 最小的 $\mu=2$ 个:$x'_4=-1.1$($f=1.21$)与 $x'_2=1.25$($f=1.5625$),下一代父代 $=\{1.25,-1.1\}$。
 
-本代 $f$ 最优由 $x'_2=1.25$(从 $x_1=2$ 跳过来)与 $x'_4=-1.1$(从 $x_2=-2$ 跳过来)占据,父代 $\{2,-2\}$ 全部被淘汰——这在 $(1{+}1)$ 里见不到,因为父代只有一个。**关键点**:加号策略保留了"父代也可以竞争"的权利,但**不代表父代一定赢**。[Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
+本代 $f$ 最优由 $x'_2=1.25$(从 $x_1=2$ 跳过来)与 $x'_4=-1.1$(从 $x_2=-2$ 跳过来)占据,父代 $\{2,-2\}$ 全部被淘汰——这在 $(1{+}1)$ 里见不到,因为父代只有一个。**关键点**:加号策略保留了"父代也可以竞争"的权利,但**不代表父代一定赢**。[Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
 #### 单峰与多峰分别该选哪种策略
 
@@ -262,7 +262,7 @@ $\partial f/\partial \delta$ 读作"只看 $\delta$ 这一个量变化时 $f$ �
 
 **换到多峰地形**:取 $f(x)=x^4-3x^2+x+1$($x\in[-3,3]$),它有两个谷底:全局最优在 $x^*\approx-1.3008$($f\approx-2.5139$),另有一个很浅的局部最优在 $x\approx1.1309$($f\approx-0.0702$)。若起点落在浅谷一侧,加号家族会因为"精英保留"守着这个浅谷不放(任何翻过中间山脊的移动都会先变差,被拒绝);这时应改用**逗号策略 $(\mu,\lambda)$**:它每代淘汰全部父代,允许暂时退化,因此有机会翻过山脊进入深谷。
 
-**单峰问题用加号 $(\mu{+}\lambda)$——精英保留、收敛快;多峰 / 崎岖问题用逗号 $(\mu,\lambda)$——允许退化、能逃出局部最优。** 要比较加号与逗号,必须固定 $\mu,\lambda$ 只改选择池。[Chapter 3_ Introduction to ES and EP.pdf · p.4](http://10.188.31.55:5244/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
+**单峰问题用加号 $(\mu{+}\lambda)$——精英保留、收敛快;多峰 / 崎岖问题用逗号 $(\mu,\lambda)$——允许退化、能逃出局部最优。** 要比较加号与逗号,必须固定 $\mu,\lambda$ 只改选择池。[Chapter 3_ Introduction to ES and EP.pdf · p.4](file:///Volumes/Nextcloud/School/Compute-Intelligence/converted/Chapter%203_%20Introduction%20to%20ES%20and%20EP.pdf#page=4)
 
 ### 易错点
 

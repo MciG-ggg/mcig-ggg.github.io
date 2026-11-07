@@ -17,7 +17,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 DRAFTS = REPO / "docs/course-drafts/adr"
 NOTE = REPO / "src/content/lecture/zh-cn/Auto-Drive-Intro/index.md"
-ALIST = "http://10.188.31.55:5244/Nextcloud/School/Auto-Drive-Intro"
+SOURCE = "file:///Volumes/Nextcloud/School/Auto-Drive-Intro"
 
 FRONTMATTER = """---
 title: Auto-Drive-Intro
@@ -25,16 +25,16 @@ timestamp: 2026-10-23T11:00:00+08:00
 series: Auto-Drive-Intro
 tags: [自动驾驶, 智能驾驶, 环境感知, 视觉感知, 激光雷达, 点云, 路径规划, 地图构建, SLAM, 定位, V2X, Apollo]
 description: 中南大学《智能驾驶导论》全六讲的读书笔记：智能驾驶概述、无人车基本框架、视觉感知、雷达感知、路径规划、地图与定位，附 APOLLO 平台上的四次大作业。每处结论都链回课件的对应幻灯片。
-source_url: {alist}/《智能驾驶导论》PPT-2020/
+source_url: {source}/《智能驾驶导论》PPT-2020/
 toc: true
 draft: false
 ---
 
 ```cardlink
-url: {alist}/《智能驾驶导论》PPT-2020/
+url: {source}/《智能驾驶导论》PPT-2020/
 title: "智能驾驶导论 · 全六讲课件"
 description: "中南大学人工智能与机器人实验室《智能驾驶导论》的六讲课件"
-host: 10.188.31.55:5244
+host: /Volumes/Nextcloud/School
 ```
 """
 
@@ -60,7 +60,7 @@ def main() -> None:
     parts = [(DRAFTS / name).read_text(encoding="utf-8").strip() for name in ORDER]
     body = "\n\n".join(part for part in parts if part)
 
-    NOTE.write_text(FRONTMATTER.format(alist=ALIST) + INDEX + "\n" + body + "\n", encoding="utf-8")
+    NOTE.write_text(FRONTMATTER.format(source=SOURCE) + INDEX + "\n" + body + "\n", encoding="utf-8")
     print(f"wrote {NOTE} ({len(NOTE.read_text(encoding='utf-8').splitlines())} lines)")
 
 

@@ -251,6 +251,14 @@ blog 能把 PDF 嵌在页面里，试卷不再只挂在文件服务器上。
 - 已验证：覆盖检查通过（75个标签），96处来源引用通过，六个程序自检通过，六份PDF双遍编译通过，题号与页面边界通过，发布 PDF 哈希一致，Astro 构建89页并显示 `Complete!`。单选答案比例未完全均匀，详见核验记录。
 - 下一步：检查 git diff，提交并推送博客 `main`。共享 exam-paper-latex skill 仍有未提交修改，所在仓库未配置 remote。
 
+### AList 链接改为本地磁盘路径
+
+- 32 篇 lecture 笔记的 1342 处引用从 `http://10.188.31.55:5244/Nextcloud/School/...` 改为 `file:///Volumes/Nextcloud/School/...`
+- frontmatter 的 `source_url`、cardlink 的 `host` 同步改为本地路径
+- `scripts/assemble-note.py`、`scripts/gen-exam-papers-page.py` 的生成常量改名 `SOURCE` 并指向本地路径，`docs/course-drafts/adr/*.md` 源片段同步
+- 已验证：`pnpm build:clean` 构建 89 页通过；1310 个渲染出的 `file://` 链接中 1116 个指向磁盘上存在的文件
+- 未解决：194 处链接指向 `Compute-Intelligence/converted/Chapter 9/10/12*.pdf`，磁盘上只有对应的 `.pptx`，这三份 PDF 不存在
+
 ## 下一步
 
 1. 打开 https://mcig-ggg.github.io/lecture/计算智能_进化算法与优化方法 从目录页进一章看看翻起来是否顺手。
